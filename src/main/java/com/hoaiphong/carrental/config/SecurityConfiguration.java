@@ -11,11 +11,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration {
+
+    @Autowired
+    private CustomSuccessHandler customSuccessHandler; // Tự động nạp CustomSuccessHandler
+
     @Bean
     public PasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
@@ -34,7 +39,7 @@ public class SecurityConfiguration {
                 .formLogin(formLogin -> formLogin
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/auth/login")
-                        .defaultSuccessUrl("/")
+                        .successHandler(customSuccessHandler) // Sử dụng CustomSuccessHandler ở đây
                         .failureUrl("/auth/login?errorMessage=Email or Password incorrect"))
                 .logout(LogoutConfigurer::permitAll)
                 .exceptionHandling(exceptionHandling -> exceptionHandling
