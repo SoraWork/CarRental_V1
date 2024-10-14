@@ -1,7 +1,7 @@
 package com.hoaiphong.carrental.services;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.time.LocalDateTime;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,4 +25,6 @@ public interface UserService {
     boolean deleteById(UUID id);
 
     String sendEmail(User user);
+
+    boolean hasExipred(LocalDateTime expiryDateTime);
 }

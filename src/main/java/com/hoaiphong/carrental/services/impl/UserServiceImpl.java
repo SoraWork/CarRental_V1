@@ -21,6 +21,7 @@ import com.hoaiphong.carrental.entities.PasswordResetToken;
 import com.hoaiphong.carrental.entities.Role;
 import com.hoaiphong.carrental.entities.User;
 import com.hoaiphong.carrental.repositories.RoleRepository;
+import com.hoaiphong.carrental.repositories.TokenRepository;
 import com.hoaiphong.carrental.repositories.UserRepository;
 import com.hoaiphong.carrental.services.UserService;
 
@@ -31,11 +32,13 @@ import jakarta.persistence.criteria.Predicate;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender javaMailSender;
 
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
-                           PasswordEncoder passwordEncoder, JavaMailSender javaMailSender) {
+                           PasswordEncoder passwordEncoder, JavaMailSender javaMailSender, TokenRepository tokenRepository) {
+        this.tokenRepository = tokenRepository;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -389,7 +392,7 @@ public class UserServiceImpl implements UserService {
 			String resetLink = generateResetToken(user);
 
 			SimpleMailMessage msg = new SimpleMailMessage();
-			msg.setFrom("");// input the senders email ID
+			msg.setFrom("phongnguyenhoai2003@gmail.com");// input the senders email ID
 			msg.setTo(user.getEmail());
 
 			msg.setSubject("Welcome To My Channel");
@@ -416,11 +419,16 @@ public class UserServiceImpl implements UserService {
 		resetToken.setUser(user);
 		PasswordResetToken token = tokenRepository.save(resetToken);
 		if (token != null) {
-			String endpointUrl = "http://localhost:8080/resetPassword";
+			String endpointUrl = "http://localhost:8080/auth/changepassword";
 			return endpointUrl + "/" + resetToken.getToken();
 		}
 		return "";
     }
 
-    
+    @Override
+    public boolean hasExipred(LocalDateTime expiryDateTime) {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+		return expiryDateTime.isAfter(currentDateTime);
+    }
+
 }

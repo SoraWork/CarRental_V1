@@ -21,6 +21,9 @@
         <div
                 class="d-flex justify-content-between bg-white rounded p-4"
         >
+        <div th:if="${param.error}" class="error-container">
+            <div class="alert alert-info text-white">User not Present with this Email.Please Register.</div>
+        </div>
             <!-- Phần đăng nhập -->
             <form
                     id="loginForm"

@@ -1,16 +1,20 @@
 package com.hoaiphong.carrental.controllers;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.hoaiphong.carrental.dtos.user.UserDTOBase;
+import com.hoaiphong.carrental.entities.PasswordResetToken;
 import com.hoaiphong.carrental.entities.User;
+import com.hoaiphong.carrental.repositories.TokenRepository;
 import com.hoaiphong.carrental.repositories.UserRepository;
 import com.hoaiphong.carrental.services.AuthService;
 import com.hoaiphong.carrental.services.RoleService;
@@ -26,9 +30,13 @@ public class AuthController {
     private final RoleService roleService;
     private final UserService userService;
     private final UserRepository userRepository;
+    private final TokenRepository tokenRepository;
+
+    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 
-    public AuthController(AuthService authService, RoleService roleService,  UserRepository userRepository, UserService userService) {
+    public AuthController(AuthService authService, RoleService roleService,  UserRepository userRepository, UserService userService, TokenRepository tokenRepository) {
+        this.tokenRepository = tokenRepository;
         this.userService = userService;
         this.roleService = roleService;
         this.authService = authService;
@@ -50,7 +58,7 @@ public class AuthController {
     public String signup() {
         return "auth/resetpassword";
     }
-    @GetMapping("/auth/resetpassword")
+    @PostMapping("/auth/resetpassword")
     public String forgotPassordProcess(@ModelAttribute UserDTOBase userDTOBase) {
         String output = "";
         User user = userRepository.findByEmail(userDTOBase.getEmail());
@@ -58,10 +66,10 @@ public class AuthController {
 			output = userService.sendEmail(user);
 		}
 		if (output.equals("success")) {
-			return "redirect:/forgotPassword?success";
+			return "redirect:/auth/resetpassword?success";
 		}
 
-        return "auth/resetpassword";
+        return "redirect:/auth/login?error";
     }
 
     @PostMapping("/auth/register")
@@ -73,6 +81,26 @@ public class AuthController {
 
         authService.save(userDTOBase);
         return "redirect:/auth/login";
+    }
+
+    @GetMapping("/auth/changepassword/{token}")
+    public String changePassword(@PathVariable String token, Model model) {
+        PasswordResetToken reset = tokenRepository.findByToken(token);
+		if (reset != null && userService.hasExipred(reset.getExpiryDateTime())) {
+			model.addAttribute("email", reset.getUser().getEmail());
+			return "resetPassword";
+		}
+		return "redirect:/auth/resetpassword?error";
+    }
+
+    @PostMapping("/auth/changepassword/{token}")
+    public String changePasswordProcess(@ModelAttribute UserDTOBase userDTOBase) {
+        User user = userRepository.findByEmail(userDTOBase.getEmail());
+		if(user != null) {
+			user.setPassword(passwordEncoder.encode(userDTOBase.getPassword()));
+			userRepository.save(user);
+		}
+		return "redirect:/auth/login";
     }
 
 }
