@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.hoaiphong.carrental.dtos.user.UserDTOBase;
+import com.hoaiphong.carrental.entities.User;
+import com.hoaiphong.carrental.repositories.UserRepository;
 import com.hoaiphong.carrental.services.AuthService;
 import com.hoaiphong.carrental.services.RoleService;
+import com.hoaiphong.carrental.services.UserService;
 
 import jakarta.validation.Valid;
 
@@ -21,10 +24,15 @@ public class AuthController {
 
     private final AuthService authService;
     private final RoleService roleService;
+    private final UserService userService;
+    private final UserRepository userRepository;
 
-    public AuthController(AuthService authService, RoleService roleService) {
+
+    public AuthController(AuthService authService, RoleService roleService,  UserRepository userRepository, UserService userService) {
+        this.userService = userService;
         this.roleService = roleService;
         this.authService = authService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/auth/login")
@@ -33,11 +41,6 @@ public class AuthController {
         if (errorMessage != null) {
             model.addAttribute("errorMessage", errorMessage);
         }
-        var owner = roleService.findByName("owner");
-        var customer = roleService.findByName("customer");
-
-        model.addAttribute("customer", customer);
-        model.addAttribute("owner", owner);
 
         model.addAttribute("userDTOBase", new UserDTOBase());
         return "auth/login";
@@ -45,6 +48,19 @@ public class AuthController {
 
     @GetMapping("/auth/resetpassword")
     public String signup() {
+        return "auth/resetpassword";
+    }
+    @GetMapping("/auth/resetpassword")
+    public String forgotPassordProcess(@ModelAttribute UserDTOBase userDTOBase) {
+        String output = "";
+        User user = userRepository.findByEmail(userDTOBase.getEmail());
+        if (user != null) {
+			output = userService.sendEmail(user);
+		}
+		if (output.equals("success")) {
+			return "redirect:/forgotPassword?success";
+		}
+
         return "auth/resetpassword";
     }
 

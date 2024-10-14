@@ -34,6 +34,8 @@ public class SecurityConfiguration {
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/about").permitAll()
                         .requestMatchers("/error/**").permitAll()
+                        .requestMatchers("/customer/**").hasAuthority("ROLE_CUSTOMER") // Chỉ cho phép CUSTOMER truy cập vào các URL bắt đầu bằng /customer/**
+                        .requestMatchers("/owner/**").hasAuthority("ROLE_OWNER") // Chỉ cho phép OWNER truy cập vào các URL bắt đầu bằng /owner/**
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin

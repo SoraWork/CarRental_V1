@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.hoaiphong.carrental.services.impl.util.CustomUserDetails;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -98,18 +99,38 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email);
-        System.out.println(user);
         if (user == null) {
             throw new UsernameNotFoundException("User not found with email: " + email);
         }
 
-        // Lấy các quyền (roles) của người dùng
         Set<GrantedAuthority> grantedAuthorities = user.getRoles().stream()
                 .map(auth -> "ROLE_" + auth.getName())
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toSet());
 
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
-                grantedAuthorities);
+        return new CustomUserDetails(user.getEmail(), user.getName(), user.getPassword(), grantedAuthorities);
+    }
+
+    @Override
+    public UserDTOBase findByEmail(String email) {
+        var user = userRepository.findByEmail(email);
+        if (user == null) {
+            return null;
+        }
+        var userDTOBase = new UserDTOBase();
+        userDTOBase.setId(user.getId());
+        userDTOBase.setName(user.getName());
+        userDTOBase.setDateOfBirth(user.getDateOfBirth());
+        userDTOBase.setNationalId(user.getNationalId());
+        userDTOBase.setPhone(user.getPhone());
+        userDTOBase.setAddress(user.getAddress());
+        userDTOBase.setEmail(user.getEmail());
+        userDTOBase.setDrivingLicense(user.getDrivingLicense());
+        userDTOBase.setWallet(user.getWallet());
+        userDTOBase.setUsername(user.getUsername());
+        userDTOBase.setEmail(user.getEmail());
+        
+        return userDTOBase;
+        
     }
 }

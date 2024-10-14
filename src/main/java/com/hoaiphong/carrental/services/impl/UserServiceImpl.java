@@ -1,5 +1,6 @@
 package com.hoaiphong.carrental.services.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -8,12 +9,15 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.hoaiphong.carrental.dtos.user.RoleDTO;
 import com.hoaiphong.carrental.dtos.user.UserDTOBase;
+import com.hoaiphong.carrental.entities.PasswordResetToken;
 import com.hoaiphong.carrental.entities.Role;
 import com.hoaiphong.carrental.entities.User;
 import com.hoaiphong.carrental.repositories.RoleRepository;
@@ -28,12 +32,14 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JavaMailSender javaMailSender;
 
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder, JavaMailSender javaMailSender) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.javaMailSender = javaMailSender;
     }
 
     @Override
@@ -192,7 +198,7 @@ public class UserServiceImpl implements UserService {
         user.setName(userDTOBase.getName());
         user.setDateOfBirth(userDTOBase.getDateOfBirth());
         user.setNationalId(userDTOBase.getNationalId());
-        user.setPhone(user.getPhone());
+        user.setPhone(userDTOBase.getPhone());
         user.setAddress(userDTOBase.getAddress());
         user.setEmail(userDTOBase.getEmail());
         user.setDrivingLicense(userDTOBase.getDrivingLicense());
@@ -274,7 +280,7 @@ public class UserServiceImpl implements UserService {
         user.setName(userDTOBase.getName());
         user.setDateOfBirth(userDTOBase.getDateOfBirth());
         user.setNationalId(userDTOBase.getNationalId());
-        user.setPhone(user.getPhone());
+        user.setPhone(userDTOBase.getPhone());
         user.setAddress(userDTOBase.getAddress());
         user.setEmail(userDTOBase.getEmail());
         user.setDrivingLicense(userDTOBase.getDrivingLicense());
@@ -376,4 +382,45 @@ public class UserServiceImpl implements UserService {
         // Return if entity is deleted
         return isDeleted;
     }
+
+    @Override
+    public String sendEmail(User user) {
+        try {
+			String resetLink = generateResetToken(user);
+
+			SimpleMailMessage msg = new SimpleMailMessage();
+			msg.setFrom("");// input the senders email ID
+			msg.setTo(user.getEmail());
+
+			msg.setSubject("Welcome To My Channel");
+			msg.setText("Hello \n\n" + "Please click on this link to Reset your Password :" + resetLink + ". \n\n"
+					+ "Regards \n" + "ABC");
+
+			javaMailSender.send(msg);
+
+			return "success";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "error";
+		}
+    }
+
+    private String generateResetToken(User user) {
+        UUID uuid = UUID.randomUUID();
+		LocalDateTime currentDateTime = LocalDateTime.now();
+		LocalDateTime expiryDateTime = currentDateTime.plusMinutes(30);
+		PasswordResetToken resetToken = new PasswordResetToken();
+		resetToken.setUser(user);
+		resetToken.setToken(uuid.toString());
+		resetToken.setExpiryDateTime(expiryDateTime);
+		resetToken.setUser(user);
+		PasswordResetToken token = tokenRepository.save(resetToken);
+		if (token != null) {
+			String endpointUrl = "http://localhost:8080/resetPassword";
+			return endpointUrl + "/" + resetToken.getToken();
+		}
+		return "";
+    }
+
+    
 }
