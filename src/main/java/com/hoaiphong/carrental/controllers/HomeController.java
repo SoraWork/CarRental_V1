@@ -20,4 +20,14 @@ public class HomeController {
     public String owner() {
         return "owner/owner";
     }
+
+    @GetMapping("myprofile")
+    public String myProfile() {
+        return "home/myprofile";
+    }
+
+    @GetMapping("mywallet")
+    public String myWallet() {
+        return "home/mywallet";
+    }
 }
