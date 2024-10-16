@@ -88,12 +88,12 @@ public class AuthController {
         PasswordResetToken reset = tokenRepository.findByToken(token);
 		if (reset != null && userService.hasExipred(reset.getExpiryDateTime())) {
 			model.addAttribute("email", reset.getUser().getEmail());
-			return "resetPassword";
+			return "auth/changePassword";
 		}
 		return "redirect:/auth/resetpassword?error";
     }
 
-    @PostMapping("/auth/changepassword/{token}")
+    @PostMapping("/auth/changepassword")
     public String changePasswordProcess(@ModelAttribute UserDTOBase userDTOBase) {
         User user = userRepository.findByEmail(userDTOBase.getEmail());
 		if(user != null) {
