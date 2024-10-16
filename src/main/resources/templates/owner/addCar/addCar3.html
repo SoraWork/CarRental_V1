@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{shared/layouts/layout}">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Owner Home</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}" />
+    <link rel="stylesheet" th:href="@{/css/owner.css}" />
+    <script type="module" th:src="@{/js/home/home.js}"></script>
+    <script type="module" th:src="@{/js/owner/owner.js}"></script>
+    <link rel="stylesheet" href="/css/addCar3.css">
+    <script src="/js/owner/addCar/addCar3.js"></script>
+</head>
+
+<body>
+    <section layout:fragment="content">
+        <tbody>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Add a car</li>
+                </ol>
+            </nav>
+    
+            <h1>Add a car</h1>
+    
+    
+            <div class="container">
+                <div class="steps">
+                    <div class="step active">Step 1: Basic</div>
+                    <div class="step">Step 2: Details</div>
+                    <div class="step">Step 3: Pricing</div>
+                    <div class="step">Step 4: Finish</div>
+                </div>
+                <div class="container mt-5">
+                    <form>
+                        <div class="mb-6 row baseprice">
+                            <label for="basePrice" class="col-sm-2 col-form-label" style="width: 270px;">Set base price for
+                                your car:</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="basePrice" placeholder="VND/Day"
+                                    style="width: 100px;">
+                            </div>
+                        </div>
+    
+                        <div class="mb-6 row">
+                            <label for="deposit" class="col-sm-2 col-form-label" style="width: 270px;">Required
+                                deposit:</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="deposit" placeholder="VND"
+                                    style="width: 100px;">
+                            </div>
+                        </div>
+    
+                        <fieldset class="mb-3">
+                            <legend>Terms of use</legend>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="noSmoking">
+                                        <label class="form-check-label" for="noSmoking">No smoking</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="noPet">
+                                        <label class="form-check-label" for="noPet">No pet</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="noFood">
+                                        <label class="form-check-label" for="noFood">No food in car</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="other">
+                                        <label class="form-check-label" for="other">Other</label>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div class="mt-2">
+                                <textarea class="form-control" id="otherDetails" rows="3" placeholder="Please specify"></textarea>
+                            </div>
+                        </fieldset>
+                        
+    
+                           <!-- button -->
+                <div class="btn-group">
+                    <button type="button" id="cancelBtn" class=" btn btn-secondary me-2 "
+                        style="border-radius: 5px">Cancel</button>
+                    <button type="button" id="nextBtn" class="btn btn-primary" style="
+                        border-radius: 5px;
+                    ">Next</button>
+                </div>
+                    </form>
+                </div>
+    
+    
+    
+                </tbody>
+    </section>
+</body>
+
+</html>

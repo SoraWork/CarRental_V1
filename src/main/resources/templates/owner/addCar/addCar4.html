@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{shared/layouts/layout}">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Owner Home</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}" />
+    <link rel="stylesheet" th:href="@{/css/owner.css}" />
+    <script type="module" th:src="@{/js/home/home.js}"></script>
+    <script type="module" th:src="@{/js/owner/owner.js}"></script>
+    <link rel="stylesheet" href="/css/addCar4.css">
+    <script src="/js/owner/addCar/addCar4.js"></script>
+</head>
+
+<body>
+    <section layout:fragment="content">
+       <tbody>
+        <!-- Carousel section -->
+<div class="container">
+    <div class="row">
+      <!-- Carousel Section -->
+<div class="col-md-6">
+    <div id="carouselExampleIndicators" class="carousel slide w-100" data-bs-ride="carousel">
+        <!-- Carousel Indicators -->
+        <ol class="carousel-indicators">
+            <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></li>
+            <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></li>
+            <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></li>
+        </ol>
+        
+        <!-- Carousel Inner -->
+        <div class="carousel-inner">
+            <!-- First Slide -->
+            <div class="carousel-item active">
+                <img class="d-block w-100" src="https://cdn.oto360.net/images/car/nissan/Terra2022.img.webp" alt="First slide">
+            </div>
+            <!-- Second Slide -->
+            <div class="carousel-item">
+                <img class="d-block w-100" src="https://cdn.autoxuyenviet.com/assets/media/products/860~10941696320903_1uajsBR0F1ViaELAwCi-6WFd.jpg" alt="Second slide">
+            </div>
+            <!-- Third Slide -->
+            <div class="carousel-item">
+                <img class="d-block w-100" src="https://sanbonbanh.com/uploads/sellcar/2024_07/l_1721313321.217.jpg" alt="Third slide">
+            </div>
+        </div>
+
+        <!-- Carousel Controls -->
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </a>
+    </div>
+</div>
+
+        <!-- Car Details Section -->
+        <div class="col-md-6 mt-3">
+            <h4>Nissan Navara El 2017</h4>
+            <p><strong>Ratings:</strong>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="fa fa-star"></span>
+                <span class="text-muted">(No ratings yet)</span>
+            </p>
+            <p><strong>No. of rides:</strong> 0</p>
+            <p><strong>Price:</strong> 900k/day</p>
+            <p><strong>Locations:</strong> Cau Giay, Hanoi</p>
+            <p><strong>Status:</strong> <span class="status-available">Available</span></p>
+
+            <button type="button" class="btn btn-secondary">Cancel</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+</div>
+
+
+       </tbody>
+
+    </section>
+</body>
+
+</html>
