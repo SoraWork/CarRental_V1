@@ -1,44 +1,34 @@
-// Định nghĩa các biến
-const steps = document.querySelectorAll(".step");
-const stepContents = document.querySelectorAll(".step-content");
-let currentIndex = 0;
-
-// Cập nhật trạng thái bước
-function updateSteps() {
-    // Cập nhật bước hiển thị
-    steps.forEach((step, index) => {
-        step.classList.remove("active");
-        if (index === currentIndex) {
-            step.classList.add("active");
-        }
-    });
-
-    // Cập nhật nội dung bước hiển thị
-    stepContents.forEach((content, index) => {
-        content.classList.remove("active");
-        if (index === currentIndex) {
-            content.classList.add("active");
-        }
-    });
-}
-
-// Xử lý nút Next
-document.getElementById("nextBtn").addEventListener("click", function() {
-    // Chuyển đến bước tiếp theo nếu chưa ở bước cuối
-    if (currentIndex < steps.length - 1) {
-        currentIndex++;
-        updateSteps();
-    } else {
-        alert("Bạn đã hoàn thành tất cả các bước!");
+function navigateToStep(stepNumber) {
+    switch(stepNumber) {
+        case 1:
+            window.location.href = "/addcar1"; // URL tương ứng cho Step 1
+            break;
+        case 2:
+            window.location.href = "/addCar2"; // URL tương ứng cho Step 2
+            break;
+        case 3:
+            window.location.href = "/addCar3"; // URL tương ứng cho Step 3
+            break;
+        case 4:
+            window.location.href = "/addCar4"; // URL tương ứng cho Step 4
+            break;
+        default:
+            console.error("Invalid step number");
     }
-});
 
-// Xử lý nút Cancel
-document.getElementById("cancelBtn").addEventListener("click", function() {
-    // Quay lại bước đầu tiên
-    currentIndex = 0;
-    updateSteps();
-});
 
-// Khởi tạo trạng thái ban đầu
-updateSteps();
+    // button js
+
+    document.getElementById('cancelBtn').addEventListener('click', function() {
+        // Hành động khi nhấn nút Cancel
+        // Ví dụ: Quay lại trang trước
+        window.history.back();
+    });
+    
+    document.getElementById('nextBtn').addEventListener('click', function() {
+        // Hành động khi nhấn nút Next
+        // Ví dụ: Chuyển hướng đến trang tiếp theo
+        window.location.href = 'addCar2.html'; // Thay 'nextPage.html' bằng trang bạn muốn chuyển đến
+    });
+    
+}

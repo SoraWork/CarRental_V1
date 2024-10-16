@@ -30,17 +30,46 @@ h1 {
     margin-bottom: 30px;
 }
 
-.step {
-    padding: 10px;
-    background-color: #e9ecef;
-    border-radius: 5px;
-    width: 23%;
-    text-align: center;
+.steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
 }
 
-.step.active {
-    background-color: #007bff;
-    color: white;
+.step1  {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    color: #333;
+}
+.step2  {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    color: #333;
+}
+.step3  {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    color: #333;
+}
+
+
+.step4  {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    background-color:#007bff;
+    border-radius: 5px;
+    color: #333;
+    color: #f4f4f9;
 }
 
 .carousel-item {
