@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{shared/layouts/layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/home.css}" />
+    <script type="module" th:src="@{/js/home/home.js}"></script>
+    <style>
+        .custom-padding {
+            padding-left: 15rem;
+            /* Padding bên trái */
+            padding-right: 6rem;
+            /* Padding bên phải */
+        }
+
+        .custom-background {
+            background-color: #5f5e5e;
+            /* Màu nền xám */
+        }
+
+        .full-height {
+            height: 500px;
+            /* Chiều cao cố định */
+        }
+
+        .border-black {
+            border: 2px solid black;
+            /* Border đen */
+        }
+
+        /* .image-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        } */
+    </style>
+</head>
+
+<body>
+    <section layout:fragment="content" class="text-center">
+        <div class="flex flex-col">
+            <div class="bg-gray-100 h-full w-screen">
+                <div class="w-full h-12 bg-white text-black flex items-center pl-16">
+                    <a href="#">Home</a> > Search Result > Detail
+                </div>
+                <div class="w-full h-auto bg-gray-100 flex flex-col items-center">
+                    <form class="custom-background flex flex-col w-full custom-padding space-y-8 py-5">
+                        <!-- Form input fields -->
+                        <div class="mb-4 text-left">
+                            <label for="pickup-location" class="block text-lg text-white font-bold mb-1">Pick Up
+                                Location</label>
+                            <input type="text" id="pickup-location"
+                                class="border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                placeholder="Pick-up location">
+                        </div>
+
+                        <div class="flex space-x-4 w-full">
+                            <div class="mb-4 flex-grow">
+                                <label class="block text-white font-bold mb-1 text-lg text-left">Pick Up Date and
+                                    Time</label>
+                                <div class="flex space-x-2">
+                                    <input type="date" class="w-1/2 border rounded py-2 px-3 text-gray-700">
+                                    <input type="time" class="w-1/4 border rounded py-2 px-3 text-gray-700">
+                                </div>
+                            </div>
+
+                            <div class="mb-4 flex-grow">
+                                <label class="block text-white font-bold mb-1 text-lg text-left">Drop Off Date and
+                                    Time</label>
+                                <div class="flex space-x-2">
+                                    <input type="date" class="w-1/2 border rounded py-2 px-3 text-gray-700">
+                                    <input type="time" class="w-1/4 border rounded py-2 px-3 text-gray-700">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-center mt-4">
+                            <button type="submit"
+                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-1/4">Search</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="bg-white h-auto w-screen flex flex-col px-4 py-4">
+                <div class="font-bold text-6xl text-left">Car Details</div>
+               
+            </div>
+
+            <div class="container-fluid">
+                <!-- Hàng 1 -->
+
+
+
+                <div class="row border border-black">
+                    <!-- Ô 1 -->
+                    <div
+                        class="col-6 full-height bg-white d-flex flex-column align-items-center justify-content-center  border border-black">
+                        <div id="carouselExampleCaptions" class="carousel slide">
+                            <div class="carousel-indicators">
+                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0"
+                                    class="active" aria-current="true" aria-label="Slide 1"></button>
+                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
+                                    aria-label="Slide 2"></button>
+                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
+                                    aria-label="Slide 3"></button>
+                            </div>
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="https://picsum.photos/id/238/800/400" class="d-block w-100" alt="...">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h5>First slide label</h5>
+                                        <p>Some representative placeholder content for the first slide.</p>
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="https://picsum.photos/id/237/800/400" class="d-block w-100" alt="...">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h5>Second slide label</h5>
+                                        <p>Some representative placeholder content for the second slide.</p>
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="https://picsum.photos/id/239/800/400" class="d-block w-100" alt="...">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h5>Third slide label</h5>
+                                        <p>Some representative placeholder content for the third slide.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button"
+                                data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button"
+                                data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Ô 2 -->
+                    <div
+                        class="col-6 full-height bg-white border border-black text-white d-flex align-items-center justify-content-center">
+                        <div class="container w-100 h-100" style="margin-top: 0px">
+                            <table class="table w-100 h-100 text-2xl">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2" scope="col"
+                                            class="text-center align-middle  text-4xl text-black ">Nissan Navara 2017
+                                        </th>
+                                        <th class="text-center font-bold bg-blue-600 text-white">
+                                            <button class="bg-blue-500 text-white font-bold py-3 px-7 rounded-lg">
+                                                Rent Now
+                                            </button>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="font-bold">Ratings</td>
+                                        <td class="font-bold">
+                                            <div class="flex flex-col items-center">
+                                                <span class="text-yellow-400 text-4xl">★ ★ ★ ★ ★</span>
+                                                <!-- 5 ngôi sao -->
+                                                <p class="text-gray-400 text-xl mt-4">(no rating yet)</p>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button class="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg">View
+                                                Detail</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold">No of rides</td>
+                                        <td class="font-bold">0</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold">Price</td>
+                                        <td class="font-bold">900k/day</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold">Locations</td>
+                                        <td class="font-bold">Cau Giay, Ha Noi</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold text-center">Status</td>
+                                        <td class="text-blue-500 text-center">Available</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Hàng 2 -->
+                <div class="row ps-5 mb-3">
+                  <nav>
+                    <div class="nav nav-tabs ps-md-5" id="nav-tab" role="tablist">
+                      <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button"
+                        role="tab" aria-controls="nav-home" aria-selected="true">Home</button>
+                      <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button"
+                        role="tab" aria-controls="nav-profile" aria-selected="false">Profile</button>
+                      <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button"
+                        role="tab" aria-controls="nav-contact" aria-selected="false">Contact</button>
+                    </div>
+                  </nav>
+                  <div class="tab-content" id="nav-tabContent">
+                    <!-- Tab Home -->
+                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+                      <div class="container mt-4" style="margin-left: 20px;">
+                        <div class="row row-cols-2 gy-4 gx-1">
+                          <div class="col fw-bold text-start">License Plate</div>
+                          <div class="col fw-bold text-start">Color :</div>
+                          <div class="col fw-bold text-start">Brand Name :</div>
+                          <div class="col fw-bold text-start">Model :</div>
+                          <div class="col fw-bold text-start">Production year :</div>
+                          <div class="col fw-bold text-start">Model :</div>
+                          <div class="col fw-bold text-start">Transmission :</div>
+                          <div class="col fw-bold text-start">Fuel :</div>
+                          <div class="col fw-bold text-start">Documents</div>
+                        </div>
+                      </div>
+                
+                      <div class="container mt-4" style="margin-left: 20px;">
+                        <table class="text-start table table-bordered border-2 border-black" style="width: 40%; border-color:black">
+                          <thead>
+                            <tr class="table-dark">
+                              <th scope="col" style="width: 10%">No</th>
+                              <th scope="col" style="width: 450px;">Name</th>
+                              <th scope="col" style="width: 45%;">Note</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr class="table-light">
+                              <td>1</td>
+                              <td>Register paper</td>
+                              <td>verified</td>
+                            </tr>
+                            <tr class="table-secondary">
+                              <td>2</td>
+                              <td>Certificate of Insurance</td>
+                              <td>verified</td>
+                            </tr>
+                            <tr class="table-light">
+                              <td>3</td>
+                              <td>Insurance</td>
+                              <td>Not availble</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <div class="ms-3 text-start">Note: Documents will be available for viewing after you've paid the deposit to rent.</div>
+                      </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
+                      <div class="container text-start mt-5 ms-5">
+                        <div class="row row-cols-1">
+                          <div class="col fw-bold fs-5 py-3">Mileage :</div>
+                          <div class="col fw-bold fs-5 py-3">Fuel consumption : <span>18 liter/100 km</span></div>
+                          <div class="col fw-bold fs-5 py-3">Address :</div>
+                          <div class="col py-3">Note: Full address will be available after you've paid the deposit to rent.</div>
+                          <div class="col fs-5 py-3 fw-bold">Description:</div>
+                          <div class="col py-3">
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                          </div>
+                          <div class="col fs-5 py-3 fw-bold">Additional functions:</div>
+                        </div>
+                
+                        <div class="container fw-bold">
+                          <div class="row">
+                            <!-- Column 1 -->
+                            <div class="col-md-4">
+                              <div class="form-check mb-3 d-flex align-items-center">
+                                <i class="fas fa-bluetooth fa-1x text-blue-500 me-2"></i>
+                                <label class="form-check-label me-3" for="bluetooth">Bluetooth</label>
+                                <input class="form-check-input" type="checkbox" id="bluetooth">
+                              </div>
+                        
+                              <div class="form-check mb-3 d-flex align-items-center">
+                                <i class="fas fa-map-marker-alt fa-1x text-red-500 me-2"></i>
+                                <label class="form-check-label me-3" for="gps">GPS</label>
+                                <input class="form-check-input" type="checkbox" id="gps">
+                              </div>
+                        
+                              <div class="form-check mb-3 d-flex align-items-center">
+                                <i class="fas fa-sun fa-1x text-yellow-500 me-2"></i>
+                                <label class="form-check-label me-3" for="camera">Camera</label>
+                                <input class="form-check-input" type="checkbox" id="camera">
+                              </div>
+                            </div>
+                        
+                            <!-- Column 2 -->
+                            <div class="col-md-4">
+                              <div class="form-check mb-3 d-flex align-items-center">
+                                <i class="fas fa-lock fa-1x text-gray-500 me-2"></i>
+                                <label class="form-check-label me-3" for="sunroof">Sun Roof</label>
+                                <input class="form-check-input" type="checkbox" id="sunroof">
+                              </div>
+                        
+                              <div class="form-check mb-3 d-flex align-items-center">
+                                <i class="fas fa-lock fa-1x text-gray-500 me-2"></i>
+                                <label class="form-check-label me-3" for="childLock">Child Lock</label>
+                                <input class="form-check-input" type="checkbox" id="childLock">
+                              </div>
+                        
+                              <div class="form-check mb-3 d-flex align-items-center">
+                                <i class="fas fa-chair fa-1x text-orange-500 me-2"></i>
+                                <label class="form-check-label me-3" for="childSeat">Child Seat</label>
+                                <input class="form-check-input" type="checkbox" id="childSeat">
+                              </div>
+                            </div>
+                        
+                            <!-- Column 3 -->
+                            <div class="col-md-4">
+                              <div class="form-check mb-3 d-flex align-items-center">
+                                <i class="fas fa-compact-disc fa-1x text-purple-500 me-2"></i>
+                                <input class="form-check-input me-2" type="checkbox" id="dvd">
+                                <label class="form-check-label" for="dvd">DVD</label>
+                              </div>
+                        
+                              <div class="form-check mb-3 d-flex align-items-center">
+                                <i class="fas fa-usb fa-1x text-teal-500 me-2"></i>
+                                <input class="form-check-input me-2" type="checkbox" id="usb">
+                                <label class="form-check-label" for="usb">USB</label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                      </div>
+                    </div>
+                  </div>
+                  <div class="container mt-4 fw-bold ms-3">
+                    <div class="container text-start mt-4 ms-5">
+                      <div class="row align-items-center">
+                        <!-- Base price -->
+                        <div class="col-3 fw-bold my-1">Base price</div>
+                        <div class="col-2 fw-bold my-1 px-1 border border-dark">900.000</div>
+                        <div class="col-2 fw-bold my-1 ms-4 ps-5">VND/Day</div>
+                      </div>
+                  
+                      <div class="row align-items-center">
+                        <!-- Required deposit -->
+                        <div class="col-3 fw-bold my-1">Required deposit</div>
+                        <div class="col-2 px-1 border border-dark my-1">15.000.000</div>
+                        <div class="col-2 ms-4 ps-5 my-1">VND</div>
+                      </div>
+                  
+                      <div class="row">
+                        <!-- Terms of use -->
+                        <div class="col-12 my-3">Terms of use</div>
+                      </div>
+                  
+                      <div class="container">
+                        <div class="row">
+                          <!-- Column 1 -->
+                          <div class="col-md-4">
+                            <div class="form-check mb-1">
+                              <input class="form-check-input me-2 d-inline" type="checkbox" id="noFoodInCar">
+                              <label class="form-check-label d-inline" for="noFoodInCar">No Food In Car</label>
+                            </div>
+                            <div class="form-check mb-1">
+                              <input class="form-check-input me-2 d-inline" type="checkbox" id="other">
+                              <label class="form-check-label d-inline" for="other">Other</label>
+                            </div>
+                          </div>
+                  
+                          <!-- Column 2 -->
+                          <div class="col-md-4">
+                            <div class="form-check mb-1">
+                              <input class="form-check-input me-2 d-inline" type="checkbox" id="noSmoking">
+                              <label class="form-check-label d-inline" for="noSmoking">No Smoking</label>
+                            </div>
+                            <div class="form-check mb-1">
+                              <input class="form-check-input me-2 d-inline" type="checkbox" id="noPet">
+                              <label class="form-check-label" for="noPet">No Pet</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  
+              
+                </div>
+                
+                </div>
+            </div>
+          
+
+
+       
+        <script>
+            function changePerPage(delta) {
+                const input = document.getElementById('perPage');
+                let currentValue = parseInt(input.value);
+                input.value = Math.max(1, currentValue + delta); // Giới hạn tối thiểu là 1
+            }
+        </script>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+    </section>
+</body>
+
+</html>

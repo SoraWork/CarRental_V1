@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{shared/layouts/layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/home.css}" />
+    <script type="module" th:src="@{/js/home/home.js}"></script>
+    <style>
+        .custom-padding {
+            padding-left: 15rem;
+            /* Padding bÃªn trÃ¡i */
+            padding-right: 6rem;
+            /* Padding bÃªn pháº£i */
+        }
+
+        .custom-background {
+            background-color: #5f5e5e;
+            /* MÃ u ná»n xÃ¡m */
+        }
+
+        .full-height {
+            height: 500px;
+            /* Chiá»u cao cá»‘ Ä‘á»‹nh */
+        }
+
+        .border-black {
+            border: 2px solid black;
+            /* Border Ä‘en */
+        }
+
+        /* .image-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        } */
+      
+        img{
+            max-width: 100px;
+        }
+     
+        
+        
+    </style>
+</head>
+
+<body>
+    <section layout:fragment="content" class="text-center">
+        <div class="flex flex-col">
+            <div class="bg-gray-100 h-full w-screen">
+                <div class="w-full h-12 bg-white text-black flex items-center pl-16">
+                    <a href="#">Home</a> > Search Result
+                </div>
+                <div class="w-full h-auto bg-gray-100 flex flex-col items-center">
+                    <form class="custom-background flex flex-col w-full custom-padding space-y-8 py-5">
+                        <!-- Form input fields -->
+                        <div class="mb-4 text-left">
+                            <label for="pickup-location" class="block text-lg text-white font-bold mb-1 ">Pick Up
+                                Location</label>
+                            <input type="text" id="pickup-location" style="width: 700px !important;"
+                                class="border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                placeholder="Pick-up location">
+
+                        </div>
+
+                        <div class="flex space-x-4 w-full">
+                            <div class="mb-4 flex-grow">
+                                <label class="block text-white font-bold mb-1 text-lg text-left">Pick Up Date and
+                                    Time</label>
+                                <div class="flex space-x-2">
+                                    <input type="date" class="w-1/2 border rounded py-2 px-3 text-gray-700">
+                                    <input type="time" class="w-1/4 border rounded py-2 px-3 text-gray-700">
+                                </div>
+                            </div>
+
+                            <div class="mb-4 flex-grow">
+                                <label class="block text-white font-bold mb-1 text-lg text-left">Drop Off Date and
+                                    Time</label>
+                                <div class="flex space-x-2">
+                                    <input type="date" class="w-1/2 border rounded py-2 px-3 text-gray-700">
+                                    <input type="time" class="w-1/4 border rounded py-2 px-3 text-gray-700">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-center mt-4">
+                            <button type="submit"
+                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-1/4">Search</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="bg-white h-auto w-screen flex flex-col px-4 py-4">
+                <div class="font-bold text-6xl text-left">Search Result</div>
+                <div class="flex items-center justify-between pt-4">
+                    <div class="pl-5 text-4xl">There are 10 cars that are available for you</div>
+                    <div class="flex items-center space-x-4 pr-16">
+                        <i class="fa-solid fa-compact-disc text-4xl"></i>
+                        <i class="fa-solid fa-list text-4xl"></i>
+                        <div class="relative inline-block text-left">
+                            <button
+                                class="inline-flex items-center justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none">
+                                Newest to Latest
+                                <i class="ml-2 fa-solid fa-caret-down"></i>
+                            </button>
+                            <div
+                                class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none hidden group-hover:block">
+                                <div class="py-1">
+                                    <a href="#"
+                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Newest</a>
+                                    <a href="#"
+                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Oldest</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container mt-5 tabel-reponsive " style="max-height: 700px; overflow-y: auto;">
+                <table class="table  fw-bold   border-black table-hover h-50
+                 ">
+                    <thead class="table-secondary">
+                        <tr class="">
+                            <th class="px-5">No</th>
+                            <th>name</th>
+                            <th>image-container</th>
+                            <th>Ratings</th>
+                            <th>No of RIdes</th>
+                            <th> Price</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-center" >
+                        <tr  >
+                            <td class="align-middle">1</td>
+                            <td class="align-middle text-center">Car</td>
+                            <td class="flex justify-center "><img src="https://th.bing.com/th/id/OIP.x-Wi2uyxQ9xBxxCjAlmozgHaHa?rs=1&pid=ImgDetMain"
+                                    alt="image" ></td>
+                            <td class="align-middle text-center">4.5</td>
+                            <td class="align-middle text-center">10</td>
+                            <td class="align-middle text-center">$100</td>
+                            <td class="align-middle text-center">New York</td >
+                            <td class="align-middle text-center">available</td >
+                            <td class="align-middle text-center">
+                                <div class="flex flex-col">
+                                    <button class="btn btn-outline-dark bg-blue-500 text-white font-bold py-1 px-1 rounded-lg">
+                                        Rent Now
+                                    </button>
+                                    <button class="btn btn-outline-dark  mt-2 bg-blue-500 text-white font-bold py-1 px-1 rounded-lg">View
+                                        Detail</button>
+                                </div>
+                            </td >
+                            
+
+                        </tr>
+                        <tr class="table-secondary " >
+                            <td class="align-middle text-center">1</td >
+                            <td class="align-middle text-center">Car</td >
+                            <td class="flex justify-center "><img src="https://th.bing.com/th/id/OIP.x-Wi2uyxQ9xBxxCjAlmozgHaHa?rs=1&pid=ImgDetMain"
+                                    alt="image" ></td>
+                            <td class="align-middle text-center">4.5</td >
+                            <td class="align-middle text-center">10</td >
+                            <td class="align-middle text-center">$100</td >
+                            <td class="align-middle text-center">New York</td >
+                            <td class="align-middle text-center">available</td>
+                            <td class="align-middle text-center">
+                                <div class="flex flex-col">
+                                    <button class="btn btn-outline-dark bg-blue-500 text-white font-bold py-1 px-1 rounded-lg">
+                                        Rent Now
+                                    </button>
+                                    <button class="btn btn-outline-dark  mt-2 bg-blue-500 text-white font-bold py-1 px-1 rounded-lg">View
+                                        Detail</button>
+                                </div>
+                            </td >
+                            
+                        </tr>
+                        <tr >
+                            <td class="align-middle text-center">1</td >
+                            <td class="align-middle text-center">Car</td>
+                            <td class="flex justify-center "><img src="https://th.bing.com/th/id/OIP.x-Wi2uyxQ9xBxxCjAlmozgHaHa?rs=1&pid=ImgDetMain"
+                                    alt="image" ></td>
+                            <td class="align-middle text-center">4.5</td>
+                            <td class="align-middle text-center">10</td>
+                            <td class="align-middle text-center">$100</td>
+                            <td class="align-middle text-center">New York</td>
+                            <td class="align-middle text-center">available</td>
+                            <td class="align-middle text-center">
+                                <div class="flex flex-col">
+                                    <button class="btn btn-outline-dark bg-blue-500 text-white font-bold py-1 px-1 rounded-lg">
+                                        Rent Now
+                                    </button>
+                                    <button class="btn btn-outline-dark  mt-2 bg-blue-500 text-white font-bold py-1 px-1 rounded-lg">View
+                                        Detail</button>
+                                </div>
+                            </td>
+                            
+                        </tr>
+                        <tr class="table-secondary" >
+                            <td class="align-middle text-center">1</td>
+                            <td class="align-middle text-center">Car</td>
+                            <td class="flex justify-center "><img src="https://th.bing.com/th/id/OIP.x-Wi2uyxQ9xBxxCjAlmozgHaHa?rs=1&pid=ImgDetMain"
+                                    alt="image" ></td>
+                            <td class="align-middle text-center">4.5</td>
+                            <td class="align-middle text-center">10</td>
+                            <td class="align-middle text-center">$100</td>
+                            <td class="align-middle text-center">New York</td>
+                            <td class="align-middle text-center">available</td>
+                            <td class="align-middle text-center">
+                                <div class="flex flex-col">
+                                    <button class="btn btn-outline-dark bg-blue-500 text-white font-bold py-1 px-1 rounded-lg">
+                                        Rent Now
+                                    </button>
+                                    <button class="btn btn-outline-dark  mt-2 bg-blue-500 text-white font-bold py-1 px-1 rounded-lg">View
+                                        Detail</button>
+                                </div>
+                            </td>
+                            
+                        </tr>
+                        <tr >
+                            <td class="align-middle text-center">1</td>
+                            <td class="align-middle text-center">Car</td>
+                            <td class="flex justify-center "><img src="https://th.bing.com/th/id/OIP.x-Wi2uyxQ9xBxxCjAlmozgHaHa?rs=1&pid=ImgDetMain"
+                                    alt="image" ></td>
+                            <td class="align-middle text-center">4.5</td>
+                            <td class="align-middle text-center">10</td>
+                            <td class="align-middle text-center">$100</td>
+                            <td class="align-middle text-center">New York</td>
+                            <td class="align-middle text-center">available</td>
+                            <td class="align-middle text-center">
+                                <div class="flex flex-col">
+                                    <button class="btn btn-outline-dark bg-blue-500 text-white font-bold py-1 px-1 rounded-lg">
+                                        Rent Now
+                                    </button>
+                                    <button class="btn btn-outline-dark  mt-2 bg-blue-500 text-white font-bold py-1 px-1 rounded-lg">View
+                                        Detail</button>
+                                </div>
+                            </td>
+                            
+                        </tr>
+                        <tr class="table-secondary">
+                            <td class="align-middle text-center">1</td>
+                            <td class="align-middle text-center">Car</td>
+                            <td class="flex justify-center "><img src="https://th.bing.com/th/id/OIP.x-Wi2uyxQ9xBxxCjAlmozgHaHa?rs=1&pid=ImgDetMain"
+                                    alt="image" ></td>
+                            <td class="align-middle text-center">4.5</td>
+                            <td class="align-middle text-center">10</td>
+                            <td class="align-middle text-center">$100</td>
+                            <td class="align-middle text-center">New York</td>
+                            <td class="align-middle text-center">available</td>
+                            <td class="align-middle text-center">
+                                <div class="flex flex-col">
+                                    <button class="btn btn-outline-dark bg-blue-500 text-white font-bold py-1 px-1 rounded-lg">
+                                        Rent Now
+                                    </button>
+                                    <button class="btn btn-outline-dark  mt-2 bg-blue-500 text-white font-bold py-1 px-1 rounded-lg">View
+                                        Detail</button>
+                                </div>
+                            </td>
+                            
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="px-1 flex  justify-end items-center">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo; <<< /span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">&lt;</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">...</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">&gt;</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&gt; &raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="flex items-center ml-40" style="margin-left:100px">
+                    <label for="perPage" class="mr-2">Items per page:</label>
+                    <input type="number" id="perPage" class="border border-gray-300 rounded w-16 text-center" value="10"
+                        min="1">
+                    <div class="ml-2 flex flex-col">
+                        <button class="bg-gray-200 hover:bg-gray-300 rounded px-2 py-1"
+                            onclick="changePerPage(1)">&#9650;</button>
+                        <button class="bg-gray-200 hover:bg-gray-300 rounded px-2 py-1"
+                            onclick="changePerPage(-1)">&#9660;</button>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <script>
+            function changePerPage(delta) {
+                const input = document.getElementById('perPage');
+                let currentValue = parseInt(input.value);
+                input.value = Math.max(1, currentValue + delta); // Giá»›i háº¡n tá»‘i thiá»ƒu lÃ  1
+            }
+        </script>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+    </section>
+</body>
+
+</html>
