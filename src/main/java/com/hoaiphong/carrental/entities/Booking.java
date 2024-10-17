@@ -23,6 +23,9 @@ public class Booking {
 
     @Column(name = "End_date")
     private LocalDateTime endDate;
+
+    @Column(name = "Booking_location")
+    private String bookingLocation;
     
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
