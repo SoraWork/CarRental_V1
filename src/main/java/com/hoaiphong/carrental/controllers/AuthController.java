@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.hoaiphong.carrental.dtos.user.UserDTOBase;
 import com.hoaiphong.carrental.services.AuthService;
-import com.hoaiphong.carrental.services.RoleService;
 
 import jakarta.validation.Valid;
 
@@ -20,10 +19,8 @@ import jakarta.validation.Valid;
 public class AuthController {
 
     private final AuthService authService;
-    private final RoleService roleService;
 
-    public AuthController(AuthService authService, RoleService roleService) {
-        this.roleService = roleService;
+    public AuthController(AuthService authService) {
         this.authService = authService;
     }
 

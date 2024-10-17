@@ -32,15 +32,15 @@
     <div class="tab-content" id="profileTabContent">
         <div class="tab-pane fade show active" id="personal-info" role="tabpanel">
             <!-- Form starts here -->
-            <form action="/your-server-endpoint" method="POST">
+            <form th:action="@{/myprofile}" th:object="${userUpdateDTO}" method="post">
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="fullName" class="form-label"><strong>Full Name:</strong></label>
                         <input type="text" class="form-control" id="fullName" name="fullName">
                     </div>
                     <div class="col-md-6">
-                        <label for="dob" class="form-label"><strong> Date of Birth: </strong> </label>
-                        <input type="date" class="form-control" id="dob" name="dob">
+                        <label for="dateOfBirth" class="form-label"><strong> Date of Birth: </strong> </label>
+                        <input type="date" class="form-control" id="dateOfBirth" name="dateOfBirth">
                     </div>
                 </div>
     
@@ -71,35 +71,11 @@
                 </div>
     
                 <h3>Address</h3>
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label for="province" class="form-label"></label>
-                        <select class="form-select" id="province" name="province">
-                            <option>Select City/Province</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label for="district" class="form-label"></label>
-                        <select class="form-select" id="district" name="district">
-                            <option>Select District</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label for="ward" class="form-label"></label>
-                        <select class="form-select" id="ward" name="ward">
-                            <option>Select Ward</option>
-                        </select>
-                    </div>
-                </div>
     
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label for="address" class="form-label"></label>
-                        <input type="text" class="form-control" id="address" name="address" placeholder="HouseNumber, Street">
+                        <input type="text" class="form-control" id="address" name="address" placeholder="Address">
                     </div>
                 </div>
     
