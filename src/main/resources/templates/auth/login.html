@@ -3,7 +3,7 @@
         lang="en"
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{shared/layouts/authLayout}"
->
+        xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -214,10 +214,29 @@
                         th:errors="*{roleName}"
                         class="text-danger"
                 ></div>
+                <div class="my-3 d-flex flex-wrap gap-2">
+                    <div>
+                        <input
+                                type="checkbox"
+                                id="agreement"
+                                name="agreement"
+                                class="mx-1"
+                        />
+                        <label for="agreement" >
+                            I have read and agree with the
+                        </label>
+                    </div>
+                    <a
+                            href="/termcondition"
+                            class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover hover-italic"
+                    >
+                        Term and Conditions
+                    </a>
+                </div>
 
                 <!-- Submit -->
                 <div class="my-3">
-                    <button
+                    <button id="sign-up-btn"
                             type="submit"
                             class="btn btn-primary w-100 border border-black py-2"
                     >

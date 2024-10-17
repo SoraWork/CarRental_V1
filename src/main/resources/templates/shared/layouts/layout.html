@@ -29,6 +29,19 @@
 
 <main class="flex gap-4 bg-gray-200">
     <section layout:fragment="content" class="bg-gray-200"></section>
+    <div id="logout-popup" class="logout-popup">
+        <div class="popup-content">
+            <div class="p-2">
+                <h5>Logout</h5>
+                <p>Are you sure you want to logout?</p>
+            </div>
+            <div class="border-top border-black d-flex text-center">
+                <button id="cancel-logout" class="btn col">Cancel</button>
+                <div class="straight-line"></div>
+                <button id="confirm-logout" class="btn col">Ok</button>
+            </div>
+        </div>
+    </div>
 </main>
 
 <footer th:replace="shared/fragments/footer:: footer"></footer>

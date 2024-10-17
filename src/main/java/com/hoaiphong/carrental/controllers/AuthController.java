@@ -33,11 +33,6 @@ public class AuthController {
         if (errorMessage != null) {
             model.addAttribute("errorMessage", errorMessage);
         }
-        var owner = roleService.findByName("owner");
-        var customer = roleService.findByName("customer");
-
-        model.addAttribute("customer", customer);
-        model.addAttribute("owner", owner);
 
         model.addAttribute("userDTOBase", new UserDTOBase());
         return "auth/login";

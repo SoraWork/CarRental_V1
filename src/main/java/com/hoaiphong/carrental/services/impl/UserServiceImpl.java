@@ -192,7 +192,7 @@ public class UserServiceImpl implements UserService {
         user.setName(userDTOBase.getName());
         user.setDateOfBirth(userDTOBase.getDateOfBirth());
         user.setNationalId(userDTOBase.getNationalId());
-        user.setPhone(user.getPhone());
+        user.setPhone(userDTOBase.getPhone());
         user.setAddress(userDTOBase.getAddress());
         user.setEmail(userDTOBase.getEmail());
         user.setDrivingLicense(userDTOBase.getDrivingLicense());
@@ -274,7 +274,7 @@ public class UserServiceImpl implements UserService {
         user.setName(userDTOBase.getName());
         user.setDateOfBirth(userDTOBase.getDateOfBirth());
         user.setNationalId(userDTOBase.getNationalId());
-        user.setPhone(user.getPhone());
+        user.setPhone(userDTOBase.getPhone());
         user.setAddress(userDTOBase.getAddress());
         user.setEmail(userDTOBase.getEmail());
         user.setDrivingLicense(userDTOBase.getDrivingLicense());
