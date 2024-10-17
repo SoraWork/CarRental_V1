@@ -2,12 +2,14 @@ package com.hoaiphong.carrental.controllers;
 
 import java.util.List;
 
+import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.hoaiphong.carrental.entities.Car;
@@ -76,30 +78,16 @@ public String search(Model model,
 
   
     
-    @GetMapping("bookingInfomation")
-    public String bookingInfomation(Model model) {
-        model.addAttribute("car", new Car());
-        return "SearchAndBook/bookingInfomation";
-    }
-     
+@GetMapping("/detail/{carId}")
+public String detail(Model model, @PathVariable UUID carId) {
+    var car = carBookingService.findByCarId(carId);
+    model.addAttribute("carBooking", car);
+    return "SearchAndBook/detail";
+}
 
-    @GetMapping("listCar")
-    public String listCar(Model model) {
-        model.addAttribute("car", new Car());
-        return "SearchAndBook/listCar";
-    }
-
-    @GetMapping("bookingPayment")
-    public String book(Model model) {
-        model.addAttribute("car", new Car());
-        return "SearchAndBook/bookingPayment";
-    }
-    @GetMapping("bookingFinish")
-    public String myBooking(Model model) {
-        model.addAttribute("car", new Car());
-        return "SearchAndBook/bookingFinish";
-    }
-   
-
-
+@GetMapping("/listCar")
+public String listCar(Model model) {
+    model.addAttribute("car", new Car());
+    return "SearchAndBook/listCar";
+}
 }
