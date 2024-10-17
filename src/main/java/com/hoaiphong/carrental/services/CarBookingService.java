@@ -3,6 +3,7 @@ package com.hoaiphong.carrental.services;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.validator.constraints.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,4 +16,5 @@ public interface CarBookingService {
     List<CarBooking> findByAddress(String address);
     Page<CarBooking> searchByAddress(String address, Pageable pageable);
     List<CarBooking>findAll();
+    CarBooking findById(UUID id);
     }

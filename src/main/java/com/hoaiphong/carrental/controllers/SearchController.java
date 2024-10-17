@@ -1,8 +1,5 @@
 package com.hoaiphong.carrental.controllers;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -25,75 +22,66 @@ public class SearchController {
     public SearchController(CarBookingService carBookingService) {
         this.carBookingService = carBookingService;
     }
-
     @GetMapping("search")
-    public String search(Model model,
-            @RequestParam(defaultValue = "name") String sort,
-            @RequestParam(defaultValue = "asc") String order,
-            @RequestParam(defaultValue = "0") int page, // Page Index - Trang thứ bao nhiêu
-            @RequestParam(defaultValue = "2") int size,
-            @RequestParam(required = false) String pickupLocation,
-            @RequestParam(required = false) String startDate,
-            @RequestParam(required = false) String startTime,
-            @RequestParam(required = false) String endDate,
-            @RequestParam(required = false) String endTime) {
+public String search(Model model,
+        @RequestParam(defaultValue = "car.name") String sort,
+        @RequestParam(defaultValue = "asc") String order,
+        @RequestParam(defaultValue = "0") int page, // Page Index - Trang thứ bao nhiêu
+        @RequestParam(defaultValue = "2") int size,
+        @RequestParam(required = false) String pickupLocation) {
 
-        Sort.Direction direction = Sort.Direction.fromString(order); // Convert string to Direction
-        var pageable = PageRequest.of(page, size, Sort.by(direction, sort));
+    Sort.Direction direction = Sort.Direction.fromString(order); // Convert string to Direction
+    var pageable = PageRequest.of(page, size, Sort.by(direction, sort));
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    // Khai báo biến carBookingsFind ở bên ngoài if/else
+    Object carBookingsFind;
 
-        LocalDateTime startDateTime = null;
-        if (startDate != null && !startDate.isEmpty() && startTime != null && !startTime.isEmpty()) {
-            String startDateTimeString = startDate + " " + startTime; // Chỉnh lại định dạng
-            try {
-                startDateTime = LocalDateTime.parse(startDateTimeString, formatter);
-            } catch (DateTimeParseException e) {
-                model.addAttribute("error", "Invalid start date or time format.");
-                return "SearchAndBook/search";
-            }
-        }
+    if (pickupLocation == null || pickupLocation.trim().isEmpty()) {
+        // Nếu pickupLocation rỗng hoặc null, tìm tất cả xe
+        carBookingsFind = carBookingService.findAll();
+    } else {
+        // Nếu có pickupLocation, tìm xe theo location và phân trang
+        carBookingsFind = carBookingService.searchByAddress(pickupLocation, pageable);
+    }
 
-        LocalDateTime endDateTime = null;
-        if (endDate != null && !endDate.isEmpty() && endTime != null && !endTime.isEmpty()) {
-            String endDateTimeString = endDate + " " + endTime; // Chỉnh lại định dạng
-            try {
-                endDateTime = LocalDateTime.parse(endDateTimeString, formatter);
-            } catch (DateTimeParseException e) {
-                model.addAttribute("error", "Invalid end date or time format.");
-                return "SearchAndBook/search";
-            }
-        }
-        if (pickupLocation == null) {
-            List<CarBooking> carBookingsFind = carBookingService.findAll();
-            model.addAttribute("cars", carBookingsFind);
-            return "SearchAndBook/search";
+    // Thêm các tham số vào model
+    model.addAttribute("cars", carBookingsFind);
+    model.addAttribute("sort", sort);  // Không cần kiểm tra null vì đã có defaultValue
+    model.addAttribute("order", order);  // Không cần kiểm tra null vì đã có defaultValue
+    model.addAttribute("pickupLocation", pickupLocation == null ? "" : pickupLocation);
+    model.addAttribute("currentPage", page);
+    model.addAttribute("pageSize", size);
 
-        } else {
-            Page<CarBooking> carBookingsFind = carBookingService.searchByAddress(pickupLocation, pageable);
-            System.out.println(carBookingsFind);
-            model.addAttribute("currentPage", page);
-            model.addAttribute("sort", sort);
-            model.addAttribute("order", order);
-            model.addAttribute("pageSize", size);
-            model.addAttribute("totalPages", carBookingsFind.getTotalPages());
-            model.addAttribute("totalElements", carBookingsFind.getTotalElements());
-            model.addAttribute("pageSizes", new int[] { 2, 5, 10, 20 });
-            model.addAttribute("cars", carBookingsFind);
+    // Kiểm tra loại của carBookingsFind, nếu là Page<CarBooking> thì lấy totalPages và totalElements
+    if (carBookingsFind instanceof Page) {
+        // Nếu là Page<CarBooking>, lấy các thông tin phân trang
+        Page<CarBooking> pageCars = (Page<CarBooking>) carBookingsFind;
+        model.addAttribute("totalPages", pageCars.getTotalPages());
+        model.addAttribute("totalElements", pageCars.getTotalElements());
+    } else if (carBookingsFind instanceof List) {
+        // Nếu là List<CarBooking>, lấy size() cho totalElements và set totalPages = 1
+        List<CarBooking> listCars = (List<CarBooking>) carBookingsFind;
+        model.addAttribute("totalPages", 1); // Vì không phân trang nên chỉ có 1 trang
+        model.addAttribute("totalElements", listCars.size());
+    } else {
+        // Nếu không phải Page cũng không phải List, mặc định là 0
+        model.addAttribute("totalPages", 0);
+        model.addAttribute("totalElements", 0);
+    }
 
-            return "SearchAndBook/search";
+    model.addAttribute("pageSizes", new int[] { 2, 5, 10, 20 });
 
-        }
+    return "SearchAndBook/search";
+}
 
+  
     
-
-    }
-
-    @GetMapping("detail")
-    public String detail(Model model) {
+    @GetMapping("bookingInfomation")
+    public String bookingInfomation(Model model) {
         model.addAttribute("car", new Car());
-        return "SearchAndBook/detail";
+        return "SearchAndBook/bookingInfomation";
     }
+     
 
     @GetMapping("listCar")
     public String listCar(Model model) {
@@ -101,10 +89,17 @@ public class SearchController {
         return "SearchAndBook/listCar";
     }
 
-    @GetMapping("book")
+    @GetMapping("bookingPayment")
     public String book(Model model) {
         model.addAttribute("car", new Car());
-        return "SearchAndBook/book";
+        return "SearchAndBook/bookingPayment";
     }
+    @GetMapping("bookingFinish")
+    public String myBooking(Model model) {
+        model.addAttribute("car", new Car());
+        return "SearchAndBook/bookingFinish";
+    }
+   
+
 
 }

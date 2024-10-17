@@ -3,11 +3,13 @@ package com.hoaiphong.carrental.services.impl;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.validator.constraints.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.hoaiphong.carrental.entities.CarBooking;
+import com.hoaiphong.carrental.entities.CarBookingId;
 import com.hoaiphong.carrental.repositories.CarBookingRepository;
 import com.hoaiphong.carrental.services.CarBookingService;
 
@@ -50,6 +52,11 @@ public class CarBookingServiceimpl implements CarBookingService {
     public List<CarBooking> findAll() {
         // TODO Auto-generated method stub
         return carBookingRepository.findAll();
+    }
+
+    @Override
+    public CarBooking findById(UUID id) {
+        return carBookingRepository.findById((CarBookingId) id).orElse(null);
     }
 
    
