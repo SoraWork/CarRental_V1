@@ -20,4 +20,6 @@ public interface CarBookingRepository extends JpaRepository<CarBooking, CarBooki
         List<CarBooking> findByCarAddressContaining(String address);
         Page<CarBooking> findByCarAddressContaining(String address, Pageable pageable);
         CarBooking findByCar_Id(UUID carId);
+        Page<CarBooking> findAll(Pageable pageable);
+    
 }

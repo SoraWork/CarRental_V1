@@ -109,9 +109,20 @@
                     <form class="custom-background flex flex-col w-full custom-padding space-y-8 py-5 fw-bold">
                         <h2 class="text-white text-3xl">Books Detail</h2>
                         <ul class="list-disc ms-4">
-                            <li class="text-white ml-5 my-2">Pick-up location: Trung Kinh, Cau Giay, Hanoi</li>
-                            <li class="text-white ml-5 my-2">Pick up date and time: 13/02/2022 - 12:00 PM</li>
-                            <li class="text-white ml-5 my-2">Return date and time: 23/02/2022 - 14:00 PM</li>
+                            <li class="text-white ml-5 my-2">Pick-up location: <span
+                                    th:text="${carBooking.Car.address}">: Trung Kinh, Cau Giay, Hanoi</span></li>
+                            <li class="text-white ml-5 my-2">Pick up date and time :<span
+                                    th:text="${#temporals.format(carBooking.booking.startDate, 'dd/MM/yyyy')}">13/02/2022</span>
+                                <span th:text="${#temporals.format(carBooking.booking.startDate, 'hh:mm a')}">12:00
+                                    PM</span>
+                            </li>
+                            <li class="text-white ml-5 my-2">Return date and time : <span
+                                    th:text="${#temporals.format(carBooking.booking.endDate, 'dd/MM/yyyy')}">23/02/2022</span>
+                                <span th:text="${#temporals.format(carBooking.booking.endDate, 'hh:mm a')}">12:00
+                                    PM</span>
+                            </li>
+
+
                         </ul>
                     </form>
                 </div>
@@ -160,23 +171,25 @@
                                 </tr>
                                 <tr class="font-weight-bold text-right">
                                     <td>Price per day:</td>
-                                    <td>900,000 VND</td>
+                                    <td th:text="${carBooking.Car.deposit}">900,000 VND</td>
                                 </tr>
                             </table>
                         </div>
                     </div>
                 </div>
-                
+
 
                 <!-- Báº£ng giÃ¡ -->
                 <div class="row">
                     <!-- Cá»™t 1: ThÃ´ng tin chi tiáº¿t -->
-                    <div class="col-12 col-sm-6 mt-4 " >
-                        <div class="square-column bg-white d-flex flex-column align-items-center justify-content-between h-100" style="margin-left:5vw">
+                    <div class="col-12 col-sm-6 mt-4 ">
+                        <div class="square-column bg-white d-flex flex-column align-items-center justify-content-between h-100"
+                            style="margin-left:5vw">
                             <table class="table w-100 text-2xl mb-0 text-left me-10">
                                 <thead>
                                     <tr>
-                                        <th colspan="2" class="text-left text-2xl" style="border-bottom: none;">Nissan Navara 2017</th>
+                                        <th colspan="2" class="text-left text-2xl" th:text="${carBooking.Car.name}" style="border-bottom: none;">Nissan
+                                            Navara 2017</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -191,36 +204,36 @@
                                     </tr>
                                     <tr>
                                         <td class="font-bold">No of rides</td>
-                                        <td class="font-bold">0</td>
+                                        <td class="font-bold" th:text="${carBooking.Car.numOfSeats}">0</td>
                                     </tr>
                                     <tr>
                                         <td class="font-bold">Price</td>
-                                        <td class="font-bold">900k/day</td>
+                                        <td class="font-bold" th:text="${carBooking.Car.basePrice}">900k/day</td>
                                     </tr>
                                     <tr>
                                         <td class="font-bold">Locations</td>
-                                        <td class="font-bold">Cau Giay, Ha Noi</td>
+                                        <td class="font-bold" th:text="${carBooking.Car.address}">Cau Giay, Ha Noi</td>
                                     </tr>
                                     <tr>
                                         <td class="font-bold">Status</td>
-                                        <td class="text-blue-500">Available</td>
+                                        <td class="text-blue-500" th:text="${carBooking.status}">Available</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                
+
                     <!-- Cá»™t 2: Tá»•ng giÃ¡ -->
                     <div class="col-12 col-sm-6 mt-4 border-l-2 border-l-black border-t-8 border-t-black-300">
                         <div class="bg-white mr-6">
                             <table class="table w-100 text-xl">
                                 <tr class="font-weight-bold text-right">
                                     <td class="p-4 w-3/4 border-t">Total:</td>
-                                    <td class="p-4 w-3/4">13,500,000 VND</td>
+                                    <td class="p-4 w-3/4" >13,500,000 VND</td>
                                 </tr>
                                 <tr class="font-weight-bold text-right">
                                     <td class="p-4">Deposit:</td>
-                                    <td class="p-4">15,000,000 VND</td>
+                                    <td class="p-4" th:text="${carBooking.Car.deposit}">15,000,000 VND</td>
                                 </tr>
                             </table>
                         </div>
@@ -229,59 +242,62 @@
 
 
             </div>
-            <div class="container-fluid  border-black w-full-screen" >
+            <div class="container-fluid  border-black w-full-screen">
                 <form class="text-left pl-20 mt-10">
-                  <!-- Heading -->
-                  <div class="mb-3">
-                    <label class="form-label font-weight-bold text-xl">Please select your payment</label>
-                  </div>
-            
-                  <!-- My Wallet Radio -->
-                  <div class="form-check mb-3 pl-40">
-                    <input class="form-check-input" type="radio" name="paymentMethod" id="walletRadio" value="wallet">
-                    <label class="form-check-label" for="walletRadio">My Wallet</label>
-                  </div>
-            
-                  <!-- Current Balance -->
-                  <div class="mb-3 pl-40">
-                    <span class="current-balance text-xs">Current Balance: <a class="text-green-500">20.000.000 VND</a></span>
-                  </div>
-            
-                  <!-- Cash Radio -->
-                  <div class="form-check mb-1 pl-40">
-                    <input class="form-check-input" type="radio" name="paymentMethod" id="cashRadio" value="cash">
-                    <label class="form-check-label" for="cashRadio">Cash</label>
-                  </div>
-            
-                  <!-- Small text -->
-                  <div class="mb-3 small-text text-xs pl-40 italic">
-                    Our operator will contact you for further instruction
-                  </div>
-            
-                  <!-- Bank Transfer Radio -->
-                  <div class="form-check mb-1 pl-40">
-                    <input class="form-check-input" type="radio" name="paymentMethod" id="bankTransferRadio" value="bankTransfer">
-                    <label class="form-check-label" for="bankTransferRadio">Bank Transfer</label>
-                  </div>
-            
-                  <!-- Small text -->
-                  <div class="mb-4 small-text text-xs pl-40 italic">
-                    Our operator will contact you for further instruction
-                  </div>
-            
-                  <!-- Buttons -->
-                  <div class="flex justify-center space-x-4 mt-4">
-                    <div >
-                        <button type="sbmit" class="bg-blue-500 hover:bg-gray-100 text-black font-bold
-                        py-2 px-7 rounded" style="min-width: 30vh;" >Cancel</button>
+                    <!-- Heading -->
+                    <div class="mb-3">
+                        <label class="form-label font-weight-bold text-xl">Please select your payment</label>
                     </div>
-                    <div class="flex align-items-center">
-                        <button type="button" class="bg-blue-500 hover:bg-gray-100 text-black font-bold
+
+                    <!-- My Wallet Radio -->
+                    <div class="form-check mb-3 pl-40">
+                        <input class="form-check-input" type="radio" name="paymentMethod" id="walletRadio"
+                            value="wallet">
+                        <label class="form-check-label" for="walletRadio">My Wallet</label>
+                    </div>
+
+                    <!-- Current Balance -->
+                    <div class="mb-3 pl-40">
+                        <span class="current-balance text-xs">Current Balance: <a class="text-green-500" th:text="${wallet}"></a></span>
+                    </div>
+
+                    <!-- Cash Radio -->
+                    <div class="form-check mb-1 pl-40">
+                        <input class="form-check-input" type="radio" name="paymentMethod" id="cashRadio" value="cash">
+                        <label class="form-check-label" for="cashRadio">Cash</label>
+                    </div>
+
+                    <!-- Small text -->
+                    <div class="mb-3 small-text text-xs pl-40 italic">
+                        Our operator will contact you for further instruction
+                    </div>
+
+                    <!-- Bank Transfer Radio -->
+                    <div class="form-check mb-1 pl-40">
+                        <input class="form-check-input" type="radio" name="paymentMethod" id="bankTransferRadio"
+                            value="bankTransfer">
+                        <label class="form-check-label" for="bankTransferRadio">Bank Transfer</label>
+                    </div>
+
+                    <!-- Small text -->
+                    <div class="mb-4 small-text text-xs pl-40 italic">
+                        Our operator will contact you for further instruction
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex justify-center space-x-4 mt-4">
+                        <div>
+                            <button type="sbmit" class="bg-blue-500 hover:bg-gray-100 text-black font-bold
+                        py-2 px-7 rounded" style="min-width: 30vh;">Cancel</button>
+                        </div>
+                        <div class="flex align-items-center">
+                            <button type="button" class="bg-blue-500 hover:bg-gray-100 text-black font-bold
                         py-2 px-5 rounded " style="min-width: 30vh;">Confirm Payment</button>
-                        <div class=" bg-blue-300  text-sm italic font-bold ml-10 align-middle">The deposit amount will be deducted from your wallet.</div>
-                    </div>
+                            <div class=" bg-blue-300  text-sm italic font-bold ml-10 align-middle">The deposit amount
+                                will be deducted from your wallet.</div>
+                        </div>
                 </form>
-              </div>
+            </div>
 
         </div>
 
@@ -300,4 +316,3 @@
 </body>
 
 </html>
-

@@ -2,6 +2,7 @@ package com.hoaiphong.carrental.services.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -25,16 +26,13 @@ public class CarBookingServiceimpl implements CarBookingService {
         carBookingRepository.save(carBooking);
     }
 
-
-
-
     @Override
-    public List<CarBooking>find(String address,
-    LocalDateTime startDate, LocalDateTime endDate) {
-                List<CarBooking> carBookings = carBookingRepository.findByCar_AddressAndBooking_StartDateGreaterThanEqualAndBooking_EndDateLessThanEqual(
-                        address, startDate, endDate 
-                );
-                return carBookings;
+    public List<CarBooking> find(String address,
+            LocalDateTime startDate, LocalDateTime endDate) {
+        List<CarBooking> carBookings = carBookingRepository.findByCar_AddressAndBooking_StartDateGreaterThanEqualAndBooking_EndDateLessThanEqual(
+                address, startDate, endDate
+        );
+        return carBookings;
     }
 
     @Override
@@ -45,15 +43,14 @@ public class CarBookingServiceimpl implements CarBookingService {
 
     @Override
     public Page<CarBooking> searchByAddress(String address, Pageable pageable) {
-        return carBookingRepository.findByCarAddressContaining(address, pageable);    }
+        return carBookingRepository.findByCarAddressContaining(address, pageable);
+    }
 
     @Override
     public List<CarBooking> findAll() {
         // TODO Auto-generated method stub
         return carBookingRepository.findAll();
     }
-
- 
 
     @Override
     public CarBooking findByCarId(UUID carId) {
@@ -66,12 +63,10 @@ public class CarBookingServiceimpl implements CarBookingService {
         throw new UnsupportedOperationException("Unimplemented method 'findById'");
     }
 
-   
- 
+    public Page<CarBooking> findByAll(Pageable pageable) {
+        return carBookingRepository.findAll(pageable);
+    }
 
- 
 
-
- 
 
 }

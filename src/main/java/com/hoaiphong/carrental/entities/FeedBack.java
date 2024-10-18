@@ -3,8 +3,16 @@ package com.hoaiphong.carrental.entities;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Setter
 @Getter
@@ -26,7 +34,7 @@ public class FeedBack {
     @Column(name = "Date_time")
     private LocalDateTime dateTime;
 
-    @OneToOne(mappedBy = "feedBack")
-    private CarBooking carBooking;
+    // @OneToOne(mappedBy = "feedBack")
+    // private CarBooking carBooking;
 
 }

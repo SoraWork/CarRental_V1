@@ -77,21 +77,21 @@
               </div>
               <div class="carousel-inner">
                 <div class="carousel-item active">
-                  <img th:src="${carBooking.car.imageBack}" class="d-block w-100" alt="...">
+                  <img th:src="${car.imageBack}" class="d-block w-100" alt="...">
                   <div class="carousel-caption d-none d-md-block">
                     <h5>First slide label</h5>
                     <p>Some representative placeholder content for the first slide.</p>
                   </div>
                 </div>
                 <div class="carousel-item">
-                  <img th:src="${carBooking.car.imageFront}" class="d-block w-100" alt="...">
+                  <img th:src="${car.imageFront}" class="d-block w-100" alt="...">
                   <div class="carousel-caption d-none d-md-block">
                     <h5>Second slide label</h5>
                     <p>Some representative placeholder content for the second slide.</p>
                   </div>
                 </div>
                 <div class="carousel-item">
-                  <img th:src="${carBooking.car.imageLeft}" class="d-block w-100" alt="...">
+                  <img th:src="${car.imageLeft}" class="d-block w-100" alt="...">
                   <div class="carousel-caption d-none d-md-block">
                     <h5>Third slide label</h5>
                     <p>Some representative placeholder content for the third slide.</p>
@@ -119,7 +119,7 @@
                 <thead>
                   <tr>
                     <th colspan="2" scope="col" class="text-center align-middle  text-4xl text-black ">
-                      <span th:text="${carBooking.car.name}">Nissan Navara 2017</span>
+                      <span th:text="${car.name}">Nissan Navara 2017</span>
                     </th>
                     <th class="text-center font-bold bg-blue-600 text-white">
                       <button class="bg-blue-500 text-white font-bold py-3 px-7 rounded-lg">
@@ -145,20 +145,20 @@
                   </tr>
                   <tr>
                     <td class="font-bold">No of rides</td>
-                    <td class="font-bold" th:text="${carBooking.car.numOfSeats}">0</td>
+                    <td class="font-bold" th:text="${car.numOfSeats}">0</td>
 
                   </tr>
                   <tr>
                     <td class="font-bold">Price</td>
-                    <td class="font-bold" th:text="${carBooking.car.basePrice}">900k/day</td>
+                    <td class="font-bold" th:text="${car.basePrice}">900k/day</td>
                   </tr>
                   <tr>
                     <td class="font-bold">Locations</td>
-                    <td class="font-bold" th:text="${carBooking.car.address}">Cau Giay, Ha Noi</td>
+                    <td class="font-bold" th:text="${car.address}">Cau Giay, Ha Noi</td>
                   </tr>
                   <tr>
                     <td class="font-bold text-center">Status</td>
-                    <td class="text-blue-500 text-center" th:text="${carBooking.status}">Available</td>
+                    <td class="text-blue-500 text-center" >Available</td>
                   </tr>
 
                 </tbody>
@@ -187,22 +187,22 @@
               <div class="container mt-4" style="margin-left: 20px;">
                 <div class="row row-cols-2 gy-4 gx-1">
                   <div class="col fw-bold text-start">License Plate : <span
-                      th:text="${carBooking.car.licensePlate}"></span></div>
-                  <div class="col fw-bold text-start">Color :<span th:text="${carBooking.car.color}"></span></div>
-                  <div class="col fw-bold text-start">Brand Name : <span th:text="${carBooking.car.brand}"></span></div>
-                  <div class="col fw-bold text-start">Model : <span th:text="${carBooking.car.model}"></span></div>
+                      th:text="${car.licensePlate}"></span></div>
+                  <div class="col fw-bold text-start">Color :<span th:text="${car.color}"></span></div>
+                  <div class="col fw-bold text-start">Brand Name : <span th:text="${car.brand}"></span></div>
+                  <div class="col fw-bold text-start">Model : <span th:text="${car.model}"></span></div>
                   <div class="col fw-bold text-start">Production year : <span
-                      th:text="${carBooking.car.productionYear}"></span></div>
-                  <div class="col fw-bold text-start">numOfSeats : <span th:text="${carBooking.car.numOfSeats}"></span>
+                      th:text="${car.productionYear}"></span></div>
+                  <div class="col fw-bold text-start">numOfSeats : <span th:text="${car.numOfSeats}"></span>
                   </div>
                   <div class="col fw-bold text-start">Transmission:
-                    <span th:text="${carBooking.car.transmissionType==1 ? 'Yes' : 'No'}"></span>
+                    <span th:text="${car.transmissionType==1 ? 'Yes' : 'No'}"></span>
                   </div>
                   <div class="col fw-bold text-start">Fuel:
-                    <span th:text="${carBooking.car.fuelType ==1 ? 'Yes' : 'No'}"></span>
+                    <span th:text="${car.fuelType ==1 ? 'Yes' : 'No'}"></span>
                   </div>
                   <div class="col fw-bold text-start">Documents : <span
-                      th:text="${carBooking.car.registrationPaper}"></span></div>
+                      th:text="${car.registrationPaper}"></span></div>
                 </div>
               </div>
 
@@ -222,7 +222,7 @@
                       <td>Register paper</td>
                       <td>
                         <span
-                          th:text="${carBooking.car.registrationPaper == 'not verified' ? 'not verified' : 'verified'}"></span>
+                          th:text="${car.registrationPaper == 'not verified' ? 'not verified' : 'verified'}"></span>
 
                       </td>
                     </tr>
@@ -231,7 +231,7 @@
                       <td>Certificate of Insurance</td>
                       <td>
                         <span
-                          th:text="${carBooking.car.certificateOfInspection == 'not verified' ? 'not verified' : 'verified'}"></span>
+                          th:text="${car.certificateOfInspection == 'not verified' ? 'not verified' : 'verified'}"></span>
                       </td>
                     </tr>
                     <tr class="table-light">
@@ -239,7 +239,7 @@
                       <td>Insurance</td>
                       <td>
                         <span
-                          th:text="${carBooking.car.insurance == 'not verified' ? 'not verified' : 'verified'}"></span>
+                          th:text="${car.insurance == 'not verified' ? 'not verified' : 'verified'}"></span>
                       </td>
                     </tr>
                   </tbody>
@@ -253,15 +253,15 @@
             <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
               <div class="container text-start mt-5 ms-5">
                 <div class="row row-cols-1">
-                  <div class="col fw-bold fs-5 py-3">Mileage : <span th:text="${carBooking.car.mileage}"></span></div>
+                  <div class="col fw-bold fs-5 py-3">Mileage : <span th:text="${car.mileage}"></span></div>
                   <div class="col fw-bold fs-5 py-3">Fuel consumption : <span
-                      th:text="${carBooking.car.fuelConsumption}"></span>18 liter/100 km</span></div>
-                  <div class="col fw-bold fs-5 py-3">Address : <span th:text="${carBooking.car.address}"> </span></div>
+                      th:text="${car.fuelConsumption}"></span>18 liter/100 km</span></div>
+                  <div class="col fw-bold fs-5 py-3">Address : <span th:text="${car.address}"> </span></div>
                   <div class="col py-3">Note: Full address will be available after you've paid the deposit to rent.
                   </div>
                   <div class="col fs-5 py-3 fw-bold">Description:</div>
                   <div class="col py-3">
-                    <span th:text="${carBooking.car.description}"> Lorem ipsum dolor sit amet, consectetur adipisicing
+                    <span th:text="${car.description}"> Lorem ipsum dolor sit amet, consectetur adipisicing
                       elit, sed do eiusmod tempor incididunt ut labore
                       et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
                       aliquip ex ea commodo consequat.</span>
@@ -277,21 +277,21 @@
                         <i class="fas fa-bluetooth fa-1x text-blue-500 me-2"></i>
                         <label class="form-check-label me-3" for="bluetooth">Bluetooth</label>
                         <input class="form-check-input" type="checkbox" id="bluetooth"
-                        th:checked="${carBooking.car.functionsBluetooth == 1}">
+                        th:checked="${car.functionsBluetooth == 1}">
                       </div>
 
                       <div class="form-check mb-3 d-flex align-items-center">
                         <i class="fas fa-map-marker-alt fa-1x text-red-500 me-2"></i>
                         <label class="form-check-label me-3" for="gps">GPS</label>
                         <input class="form-check-input" type="checkbox" id="gps"
-                          th:checked="${carBooking.car.functionsGPS == 1}">
+                          th:checked="${car.functionsGPS == 1}">
                       </div>
 
                       <div class="form-check mb-3 d-flex align-items-center">
                         <i class="fas fa-sun fa-1x text-yellow-500 me-2"></i>
                         <label class="form-check-label me-3" for="camera">Camera</label>
                         <input class="form-check-input" type="checkbox" id="camera"
-                        th:checked="${carBooking.car.functionsCamera == 1}">
+                        th:checked="${car.functionsCamera == 1}">
                       </div>
                     </div>
 
@@ -301,21 +301,21 @@
                         <i class="fas fa-lock fa-1x text-gray-500 me-2"></i>
                         <label class="form-check-label me-3" for="sunroof">Sun Roof</label>
                         <input class="form-check-input" type="checkbox" id="sunroof"
-                        th:checked="${carBooking.car.functionsSunRoof == 1}">
+                        th:checked="${car.functionsSunRoof == 1}">
                       </div>
 
                       <div class="form-check mb-3 d-flex align-items-center">
                         <i class="fas fa-lock fa-1x text-gray-500 me-2"></i>
                         <label class="form-check-label me-3" for="childLock">Child Lock</label>
                         <input class="form-check-input" type="checkbox" id="childLock"
-                          th:checked="${carBooking.car.functionsChildLock == 1 ? 'checked' : 'unchecked'}">
+                          th:checked="${car.functionsChildLock == 1 ? 'checked' : 'unchecked'}">
                       </div>
 
                       <div class="form-check mb-3 d-flex align-items-center">
                         <i class="fas fa-chair fa-1x text-orange-500 me-2"></i>
                         <label class="form-check-label me-3" for="childSeat">Child Seat</label>
                         <input class="form-check-input" type="checkbox" id="childSeat"
-                          th:checked="${carBooking.car.functionsChildSeat == 1 ? 'checked' : 'unchecked'}">
+                          th:checked="${car.functionsChildSeat == 1 ? 'checked' : 'unchecked'}">
                       </div>
                     </div>
 
@@ -324,14 +324,14 @@
                       <div class="form-check mb-3 d-flex align-items-center">
                         <i class="fas fa-compact-disc fa-1x text-purple-500 me-2"></i>
                         <input class="form-check-input me-2" type="checkbox" id="dvd"
-                          th:checked="${carBooking.car.functionsDvd == 1 ? 'checked' : 'unchecked'}">
+                          th:checked="${car.functionsDvd == 1 ? 'checked' : 'unchecked'}">
                         <label class="form-check-label" for="dvd">DVD</label>
                       </div>
 
                       <div class="form-check mb-3 d-flex align-items-center">
                         <i class="fas fa-usb fa-1x text-teal-500 me-2"></i>
                         <input class="form-check-input me-2" type="checkbox" id="usb"
-                          th:checked="${carBooking.car.functionsUSB == 1 ? 'checked' : 'unchecked'}">
+                          th:checked="${car.functionsUSB == 1 ? 'checked' : 'unchecked'}">
                         <label class="form-check-label" for="usb">USB</label>
                       </div>
                     </div>
@@ -351,7 +351,7 @@
                     <!-- Base price -->
                     <div class="col-3 fw-bold my-1">Base price</div>
                     <div class="col-2 fw-bold my-1 px-1 border border-dark"><span
-                        th:text="${carBooking.car.basePrice}">900.000</span></div>
+                        th:text="${car.basePrice}">900.000</span></div>
                     <div class="col-2 fw-bold my-1 ms-4 ps-5">VND/Day</div>
                   </div>
 
@@ -359,7 +359,7 @@
                     <!-- Required deposit -->
                     <div class="col-3 fw-bold my-1">Required deposit</div>
                     <div class="col-2 px-1 border border-dark my-1"><span
-                        th:text="${carBooking.car.deposit}">15.000.000</span></div>
+                        th:text="${car.deposit}">15.000.000</span></div>
                     <div class="col-2 ms-4 ps-5 my-1">VND</div>
                   </div>
 
@@ -375,11 +375,11 @@
                         <div class="form-check mb-1">
                           <input class="form-check-input me-2 d-inline" type="checkbox" id="noFoodInCar">
                           <label class="form-check-label d-inline" for="noFoodInCar"
-                            type="${carBooking.car.noFoodInCar == 1 ? 'checked' : 'unchecked'}">No Food In Car</label>
+                            type="${car.noFoodInCar == 1 ? 'checked' : 'unchecked'}">No Food In Car</label>
                         </div>
                         <div class="form-check mb-1">
                           <input class="form-check-input me-2 d-inline" type="checkbox" id="other"
-                            checked="${carBooking.car.other == 1 ? 'checked' : 'unchecked'}">
+                            checked="${car.other == 1 ? 'checked' : 'unchecked'}">
                           <label class="form-check-label d-inline" for="other">Other</label>
                         </div>
                       </div>
@@ -388,13 +388,13 @@
                       <div class="col-md-4">
                         <div class="form-check mb-1">
                           <input class="form-check-input me-2 d-inline" type="checkbox" id="noSmoking"
-                            th:checked="${carBooking.car.noSmoking == 1 ? 'checked' : 'unchecked'}">
+                            th:checked="${car.noSmoking == 1 ? 'checked' : 'unchecked'}">
                           <label class="form-check-label d-inline" for="noSmoking">No Smoking</label>
                         </div>
                         <div class="form-check mb-1">
                           <input class="form-check-input me-2 d-inline" type="checkbox" id="noPet">
                           <label class="form-check-label" for="noPet"
-                            th:checked="${carBooking.car.noPet == 1 ? 'checked' : 'unchecked'}">No Pet</label>
+                            th:checked="${car.noPet == 1 ? 'checked' : 'unchecked'}">No Pet</label>
                         </div>
                       </div>
                     </div>
