@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{shared/layouts/layout}">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Owner Home</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}" />
+    <link rel="stylesheet" th:href="@{/css/owner.css}" />
+    <script type="module" th:src="@{/js/home/home.js}"></script>
+    <script type="module" th:src="@{/js/owner/owner.js}"></script>
+    <link rel="stylesheet" href="/css/addCar.css">
+    <script src="/js/owner/addCar/addCar.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Thêm jQuery -->
+</head>
+
+<body>
+    <section layout:fragment="content">
+        <tbody>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Add a car</li>
+                </ol>
+            </nav>
+
+            <h1>Add a car</h1>
+
+            <form th:action="@{/owner/add-car}" method="post" id="carForm" >
+                <div class="container">
+                    <div class="container mt-4">
+                        <ul class="nav nav-pills justify-content-center step-nav">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#step1" data-bs-toggle="pill">Step 1: Basic</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#step2" data-bs-toggle="pill">Step 2: Details</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#step3" data-bs-toggle="pill">Step 3: Pricing</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#step4" data-bs-toggle="pill">Step 4: Finish</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content mt-4">
+                            <div class="tab-pane fade show active step" id="step1">
+
+                                <fieldset>
+                                    <div class="step-content active">
+                                        <h2>Step 1: Basic</h2>
+                                        <p>Please check your information carefully before proceeding.</p>
+
+                                        <!-- Form fields in two columns -->
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="license" class="form-label">License plate:</label>
+                                                <input type="text" id="license" class="form-control" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="color" class="form-label">Color:</label>
+                                                <select id="color" class="form-select" required>
+                                                    <option value="Black">Black</option>
+                                                    <option value="White">White</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="brand" class="form-label">Brand name:</label>
+                                                <select id="brand" class="form-select" required>
+                                                    <option value="Audi">Audi</option>
+                                                    <option value="BMW">BMW</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="model" class="form-label">Model:</label>
+                                                <select id="model" class="form-select" required>
+                                                    <option value="Audi A1">Audi A1</option>
+                                                    <option value="BMW X5">BMW X5</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="year" class="form-label">Production year:</label>
+                                                <select id="year" class="form-select" required>
+                                                    <option value="2022">2022</option>
+                                                    <option value="2023">2023</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="seats" class="form-label">No. of seats:</label>
+                                                <select id="seats" class="form-select" required>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label>Transmission:</label>
+                                                <div>
+                                                    <input type="radio" name="transmission" value="Automatic" checked>
+                                                    Automatic
+                                                    <input type="radio" name="transmission" value="Manual"> Manual
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label> Fuel:</label>
+
+
+                                                <div>
+                                                    <input type="radio" name="fuel" value="Gasoline" checked> Gasoline
+                                                    <input type="radio" name="fuel" value="Diesel"> Diesel
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="container py-5">
+                                            <h5>Documents</h5>
+                                            <div class="row">
+                                                <!-- Registration paper -->
+                                                <div class="col-md-4">
+                                                    <label for="registration" class="form-label">Registration
+                                                        paper:<span class="text-danger">*</span></label>
+                                                    <div class="file-upload border rounded p-3 text-center">
+                                                        <i class="fa fa-upload fa-2x"></i>
+                                                        <p>Drag and drop <br> OR</p>
+                                                        <a href="#">Select file</a>
+                                                    </div>
+                                                </div>
+                                                <!-- Certificate of inspection -->
+                                                <div class="col-md-4">
+                                                    <label for="inspection" class="form-label">Certificate of
+                                                        inspection:<span class="text-danger">*</span></label>
+                                                    <div class="file-upload border rounded p-3 text-center">
+                                                        <i class="fa fa-upload fa-2x"></i>
+                                                        <p>Drag and drop <br> OR</p>
+                                                        <a href="#">Select file</a>
+                                                    </div>
+                                                </div>
+                                                <!-- Insurance -->
+                                                <div class="col-md-4">
+                                                    <label for="insurance" class="form-label">Insurance:</label>
+                                                    <div class="file-upload border rounded p-3 text-center">
+                                                        <i class="fa fa-upload fa-2x"></i>
+                                                        <p>Drag and drop <br> OR</p>
+                                                        <a href="#">Select file</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <p class="text-muted mt-3">File type: doc, docx, pdf, jpg, jpeg, png</p>
+                                        </div>
+                                        <!-- button -->
+                                        <div class="btn-group">
+                                            <button type="button" id="cancelBtn" class="btn btn-secondary me-2"
+                                                style="border-radius: 5px">Cancel</button>
+                                            <button type="button" id="nextBtn" class="btn btn-primary"
+                                                style="border-radius: 5px">Next</button>
+                                        </div>
+
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="tab-pane fade step" id="step2">
+                                <!-- <h4>Step 2: Details</h4> -->
+                                <fieldset>
+                                    <div class="container">
+                                        <h2 class="text-center">Vehicle Information Form</h2>
+
+                                        <!-- Mileage and Fuel Consumption -->
+                                        <div class="form-row">
+                                            <div class="form-group col-6">
+                                                <label for="mileage">Mileage <span class="text-danger">*</span></label>
+                                                <input type="number" class="form-control" id="mileage"
+                                                    placeholder="Enter mileage" required>
+                                            </div>
+                                            <div class="form-group col-6">
+                                                <label for="fuelConsumption">Fuel Consumption</label>
+                                                <input type="number" class="form-control" id="fuelConsumption"
+                                                    placeholder="liters/100 km">
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <!-- Address Section -->
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="searchAddress">Address <span
+                                                            class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" id="searchAddress"
+                                                        placeholder="Search for an address" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="cityProvince">City/Province</label>
+                                                    <select id="cityProvince" class="form-control">
+                                                        <option selected>Choose...</option>
+                                                        <option>City 1</option>
+                                                        <option>City 2</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="district">District</label>
+                                                    <select id="district" class="form-control">
+                                                        <option selected>Choose...</option>
+                                                        <option>District 1</option>
+                                                        <option>District 2</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="ward">Ward</label>
+                                                    <select id="ward" class="form-control">
+                                                        <option selected>Choose...</option>
+                                                        <option>Ward 1</option>
+                                                        <option>Ward 2</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="houseStreet">House Number, Street</label>
+                                                    <input type="text" class="form-control" id="houseStreet"
+                                                        placeholder="House number, Street">
+                                                </div>
+                                            </div>
+
+                                            <!-- Description Section -->
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="description">Description of your vehicle</label>
+                                                    <textarea class="form-control" id="description" rows="10"
+                                                        placeholder="Description of your vehicle"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="container">
+                                            <h4>Additional functions:</h4>
+                                            <div class="row">
+                                                <!-- First column (Bluetooth, GPS, Camera) -->
+                                                <div class="col-md-4">
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" id="bluetooth">
+                                                        <label class="form-check-label" for="bluetooth"><i
+                                                                class="fas fa-bluetooth"></i> Bluetooth</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" id="gps">
+                                                        <label class="form-check-label" for="gps"><i
+                                                                class="fas fa-map-marked-alt"></i> GPS</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" id="camera">
+                                                        <label class="form-check-label" for="camera"><i
+                                                                class="fas fa-camera"></i> Camera</label>
+                                                    </div>
+                                                </div>
+                                                <!-- Second column (Sun roof, Child lock, Child seat) -->
+                                                <div class="col-md-4">
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" id="sunRoof">
+                                                        <label class="form-check-label" for="sunRoof"><i
+                                                                class="fas fa-sun"></i> Sun roof</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" id="childLock"
+                                                            checked>
+                                                        <label class="form-check-label" for="childLock"><i
+                                                                class="fas fa-lock"></i> Child lock</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" id="childSeat"
+                                                            checked>
+                                                        <label class="form-check-label" for="childSeat"><i
+                                                                class="fas fa-child"></i> Child seat</label>
+                                                    </div>
+                                                </div>
+                                                <!-- Third column (DVD, USB) -->
+                                                <div class="col-md-4">
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" id="dvd">
+                                                        <label class="form-check-label" for="dvd"><i
+                                                                class="fas fa-compact-disc"></i> DVD</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" id="usb">
+                                                        <label class="form-check-label" for="usb"><i
+                                                                class="fas fa-usb"></i> USB</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="container py-5">
+                                            <h5>Documents</h5>
+                                            <div class="row">
+                                                <!-- Registration paper -->
+                                                <div class="col-md-6">
+                                                    <label for="registration" class="form-label">Registration
+                                                        paper:<span class="text-danger">*</span></label>
+                                                    <div class="file-upload border rounded p-3 text-center">
+                                                        <i class="fa fa-upload fa-2x"></i>
+                                                        <p>Drag and drop <br> OR</p>
+                                                        <a href="#">Select file</a>
+                                                    </div>
+                                                </div>
+                                                <!-- Certificate of inspection -->
+                                                <div class="col-md-6">
+                                                    <label for="inspection" class="form-label">Certificate of
+                                                        inspection:<span class="text-danger">*</span></label>
+                                                    <div class="file-upload border rounded p-3 text-center">
+                                                        <i class="fa fa-upload fa-2x"></i>
+                                                        <p>Drag and drop <br> OR</p>
+                                                        <a href="#">Select file</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <p class="text-muted mt-3">File type: doc, docx, pdf, jpg, jpeg, png</p>
+                                        </div>
+
+                                        <!-- button -->
+                                        <div class="btn-group">
+                                            <button type="button" id="cancelBtn" class="btn btn-secondary me-2"
+                                                style="border-radius: 5px">Cancel</button>
+                                            <button type="button" id="nextBtn" class="btn btn-primary"
+                                                style="border-radius: 5px">Next</button>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="tab-pane fade step" id="step3">
+                                <!-- <h4>Step 3: Pricing</h4> -->
+                                <fieldset>
+                                    <div>
+                                        <div class="mb-6 row baseprice">
+                                            <label for="basePrice" class="col-sm-2 col-form-label"
+                                                style="width: 270px;">Set base price for
+                                                your car:</label>
+                                            <div class="col-sm-2">
+                                                <input type="text" class="form-control" id="basePrice"
+                                                    placeholder="VND/Day" style="width: 100px;">
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-6 row">
+                                            <label for="deposit" class="col-sm-2 col-form-label"
+                                                style="width: 270px;">Required
+                                                deposit:</label>
+                                            <div class="col-sm-2">
+                                                <input type="text" class="form-control" id="deposit" placeholder="VND"
+                                                    style="width: 100px;">
+                                            </div>
+                                        </div>
+
+                                        <fieldset class="mb-3">
+                                            <legend>Terms of use</legend>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" id="noSmoking">
+                                                        <label class="form-check-label" for="noSmoking">No
+                                                            smoking</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" id="noPet">
+                                                        <label class="form-check-label" for="noPet">No pet</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" id="noFood">
+                                                        <label class="form-check-label" for="noFood">No food in
+                                                            car</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" id="other">
+                                                        <label class="form-check-label" for="other">Other</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="mt-2">
+                                                <textarea class="form-control" id="otherDetails" rows="3"
+                                                    placeholder="Please specify"></textarea>
+                                            </div>
+                                        </fieldset>
+
+
+                                        <!-- button -->
+                                        <div class="btn-group">
+                                            <button type="button" id="cancelBtn" class=" btn btn-secondary me-2 "
+                                                style="border-radius: 5px">Cancel</button>
+                                            <button type="button" id="nextBtn" class="btn btn-primary" style="
+                                border-radius: 5px;
+                            ">Next</button>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="tab-pane fade step" id="step4">
+                                <!-- <h4>Step 4: Finish</h4> -->
+                                <fieldset>
+                                    <div class="row">
+                                        <!-- Carousel Section -->
+                                        <div class="col-md-6">
+                                            <div id="carouselExampleIndicators" class="carousel slide w-100"
+                                                data-bs-ride="carousel">
+                                                <!-- Carousel Indicators -->
+                                                <ol class="carousel-indicators">
+                                                    <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
+                                                        class="active"></li>
+                                                    <li data-bs-target="#carouselExampleIndicators"
+                                                        data-bs-slide-to="1"></li>
+                                                    <li data-bs-target="#carouselExampleIndicators"
+                                                        data-bs-slide-to="2"></li>
+                                                </ol>
+
+                                                <!-- Carousel Inner -->
+                                                <div class="carousel-inner">
+                                                    <!-- First Slide -->
+                                                    <div class="carousel-item active">
+                                                        <img class="d-block w-100 carousel-image"
+                                                            src="https://cdn.oto360.net/images/car/nissan/Terra2022.img.webp"
+                                                            alt="First slide">
+                                                    </div>
+                                                    <!-- Second Slide -->
+                                                    <div class="carousel-item">
+                                                        <img class="d-block w-100 carousel-image"
+                                                            src="https://cdn.autoxuyenviet.com/assets/media/products/860~10941696320903_1uajsBR0F1ViaELAwCi-6WFd.jpg"
+                                                            alt="Second slide">
+                                                    </div>
+                                                    <!-- Third Slide -->
+                                                    <div class="carousel-item">
+                                                        <img class="d-block w-100 carousel-image"
+                                                            src="https://sanbonbanh.com/uploads/sellcar/2024_07/l_1721313321.217.jpg"
+                                                            alt="Third slide">
+                                                    </div>
+                                                </div>
+
+                                                <!-- Carousel Controls -->
+                                                <a class="carousel-control-prev" href="#carouselExampleIndicators"
+                                                    role="button" data-bs-slide="prev">
+                                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                    <span class="visually-hidden">Previous</span>
+                                                </a>
+                                                <a class="carousel-control-next" href="#carouselExampleIndicators"
+                                                    role="button" data-bs-slide="next">
+                                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                    <span class="visually-hidden">Next</span>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        <!-- Car Details Section -->
+                                        <div class="col-md-6 mt-3">
+                                            <h4>Nissan Navara El 2017</h4>
+                                            <p><strong>Ratings:</strong>
+                                                <span class="fa fa-star"></span>
+                                                <span class="fa fa-star"></span>
+                                                <span class="fa fa-star"></span>
+                                                <span class="fa fa-star"></span>
+                                                <span class="fa fa-star"></span>
+                                                <span class="text-muted">(No ratings yet)</span>
+                                            </p>
+                                            <p><strong>No. of rides:</strong> 0</p>
+                                            <p><strong>Price:</strong> 900k/day</p>
+                                            <p><strong>Locations:</strong> Cau Giay, Hanoi</p>
+                                            <p><strong>Status:</strong> <span class="status-available">Available</span>
+                                            </p>
+
+                                            <button type="button" id="cancelBtn"
+                                                class="btn btn-secondary">Cancel</button>
+                                            <button type="submit" id="submitBtn" class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </tbody>
+
+    </section>
+</body>
+
+</html>
