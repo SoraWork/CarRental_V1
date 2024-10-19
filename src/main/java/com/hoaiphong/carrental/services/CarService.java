@@ -1,9 +1,6 @@
 package com.hoaiphong.carrental.services;
 
-import com.hoaiphong.carrental.dtos.car.CarCreateDTO;
-import com.hoaiphong.carrental.dtos.car.CarDTO;
-import com.hoaiphong.carrental.dtos.car.CarUpdateDetailDTO;
-import com.hoaiphong.carrental.dtos.car.CarUpdatePricingDTO;
+import com.hoaiphong.carrental.dtos.car.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -23,4 +20,5 @@ public interface CarService {
 
     CarDTO update(UUID id, CarUpdatePricingDTO carUpdatePricingDTO);
 
+    CarDTO update(UUID id, CarUpdateStatusDTO carUpdateStatusDTO);
 }
