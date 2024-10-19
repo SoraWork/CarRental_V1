@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        layout:decorate="~{shared/layouts/layout}"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Owner Home</title>
+    <!--    <link rel="stylesheet" th:href="@{/css/home.css}"/>-->
+    <link rel="stylesheet" th:href="@{/css/edit-car/edit-car.css}"/>
+    <!--    <script th:src="@{/js/home/home.js}" type="module"></script>-->
+    <script th:src="@{/js/owner/edit-car/edit-car.js}" type="module"></script>
+</head>
+
+<body>
+<section layout:fragment="content">
+    <div class="edit-car-nav-23r">
+        <div>
+            <a href="">Home</a>
+            <i class="fa-solid fa-chevron-right"></i>
+        </div>
+        <div>
+            <a href="">My Car</a>
+            <i class="fa-solid fa-chevron-right"></i>
+        </div>
+        <div>
+            <a class="underline text-primary" href="">Edit Details</a>
+        </div>
+    </div>
+    <div class=edit-car-container-12s>
+        <h1>Edit car details</h1>
+        <div class=edit-car-content-sa1>
+            <div class=edit-car-content-slide-asd2>
+                <div class='row row-cols-2 w-100 border border-black my-2 mx-auto'>
+                    <div class="carousel slide col" data-bs-ride="carousel" id=carouselExampleIndicators>
+                        <div class="carousel-indicators">
+                            <button aria-current="true" aria-label="Slide 1" class="active"
+                                    data-bs-slide-to="0" data-bs-target="carouselExampleIndicators"
+                                    type="button"></button>
+                            <button aria-label="Slide 2" data-bs-slide-to="1" data-bs-target="carouselExampleIndicators"
+                                    type="button"></button>
+                            <button aria-label="Slide 3" data-bs-slide-to="2" data-bs-target="carouselExampleIndicators"
+                                    type="button"></button>
+                            <button aria-label="Slide 4" data-bs-slide-to="3" data-bs-target="carouselExampleIndicators"
+                                    type="button"></button>
+                        </div>
+
+                        <div class="carousel-inner" th:if="${carDTO != null}">
+                            <div class="carousel-item active">
+                                <span th:unless="${carDTO.imageFront != null}">No image available</span>
+                                <img alt="First slide" class="d-block w-100"
+                                     th:if="${carDTO.imageFront != null}"
+                                     th:src="${carDTO.imageFront}"/>
+                            </div>
+                            <div class="carousel-item">
+                                <span th:unless="${carDTO.imageBack != null}">No image available</span>
+                                <img alt="Second slide" class="d-block w-100"
+                                     th:if="${carDTO.imageBack != null}"
+                                     th:src="${carDTO.imageBack}"/>
+                            </div>
+                            <div class="carousel-item">
+                                <span th:unless="${carDTO.imageLeft != null}">No image available</span>
+                                <img alt="Third slide" class="d-block w-100"
+                                     th:if="${carDTO.imageLeft != null}"
+                                     th:src="${carDTO.imageLeft}"/>
+                            </div>
+                            <div class="carousel-item">
+                                <span th:unless="${carDTO.imageRight != null}">No image available</span>
+                                <img alt="Fourth slide" class="d-block w-100"
+                                     th:if="${carDTO.imageRight != null}"
+                                     th:src="${carDTO.imageRight}"/>
+                            </div>
+                        </div>
+
+
+                        <button class="carousel-control-prev p-0 m-0" data-bs-slide="prev"
+                                data-bs-target="#carouselExampleIndicators"
+                                type="button">
+                            <span aria-hidden="true" class="carousel-control-prev-icon"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" data-bs-slide="next"
+                                data-bs-target="#carouselExampleIndicators"
+                                type="button">
+                            <span aria-hidden="true" class="carousel-control-next-icon"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                    <div class="col d-flex justify-content-between mt-2">
+                        <div class="col-8">
+                            <h1 th:if="${carDTO != null}" th:text="${carDTO.brand + ' ' + carDTO.model}"></h1>
+                            <h1 th:unless="${carDTO != null}">No car information available</h1>
+                            <p class="fs-3">
+                                <strong>Ratings:</strong>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                            </p>
+                            <span class="text-muted fs-4">(No ratings yet)</span>
+                            <p class="fs-3"><strong>No. of rides:</strong> 0</p>
+                            <p class="fs-3" th:if="${carDTO != null && carDTO.basePrice != null}"
+                               th:text="${carDTO.basePrice}">
+                                <strong>Price:</strong> /day
+                            </p>
+                            <p class="fs-3" th:unless="${carDTO != null && carDTO.basePrice != null}">
+                                <strong>Price:</strong> Not available
+                            </p>
+
+                            <p class="fs-3" th:if="${carDTO != null && carDTO.address != null}"
+                               th:text="${carDTO.address}">
+                                <strong>Locations:</strong> {location}
+                            </p>
+                            <p class="fs-3" th:unless="${carDTO != null && carDTO.address != null}">
+                                <strong>Locations:</strong> Not available
+                            </p>
+
+                            <p class="fs-3"><strong>Status:</strong> <span
+                                    class="status-available">Available</span></p>
+                        </div>
+
+                        <div class="col-4 d-flex flex-column gap-2">
+                            <button class="btn btn-primary px-4 py-2" type="button">Rent now</button>
+                            <button class="btn btn-primary" type="button">View Details</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="edit-car-content-main">
+                    <div class="edit-car-tabs">
+                        <button class="active" data-tab="basicinformation">Basic Information</button>
+                        <button data-tab="detail">Detail</button>
+                        <button data-tab="pricing">Pricing</button>
+                    </div>
+                    <div id="content">
+                        <!-- Tab Basic Information -->
+                        <div class="tab-content basicinformation">
+                            <div class="basic-info-xzc">
+                                <div class="basic-info-left-xzc">
+                                    <p>License plates:
+                                        <span th:unless="${carDTO != null && carDTO.licensePlate != null}">Not available</span>
+                                        <span th:if="${carDTO != null && carDTO.licensePlate != null}" th:text="${carDTO.licensePlate}"></span>
+                                    </p>
+                                    <p>Brand name:
+                                        <span th:unless="${carDTO != null && carDTO.brand != null}">Not available</span>
+                                        <span th:if="${carDTO != null && carDTO.brand != null}" th:text="${carDTO.brand}"></span>
+                                    </p>
+                                    <p>Production year:
+                                        <span th:unless="${carDTO != null && carDTO.productionYear != null}">Not available</span>
+                                        <span th:if="${carDTO != null && carDTO.productionYear != null}" th:text="${carDTO.productionYear}"></span>
+                                    </p>
+                                    <p>Transmission:
+                                        <span th:unless="${carDTO != null && carDTO.transmissionType != null}">Not available</span>
+                                        <span th:if="${carDTO != null && carDTO.transmissionType != null}" th:text="${carDTO.transmissionType}"></span>
+                                    </p>
+                                </div>
+                                <div class="basic-info-right-xzc">
+                                    <p>Color:
+                                        <span th:unless="${carDTO != null && carDTO.color != null}">Not available</span>
+                                        <span th:if="${carDTO != null && carDTO.color != null}" th:text="${carDTO.color}"></span>
+                                    </p>
+                                    <p>Model:
+                                        <span th:unless="${carDTO != null && carDTO.model != null}">Not available</span>
+                                        <span th:if="${carDTO != null && carDTO.model != null}" th:text="${carDTO.model}"></span>
+                                    </p>
+                                    <p>No. of seats:
+                                        <span th:unless="${carDTO != null && carDTO.numOfSeats != null}">Not available</span>
+                                        <span th:if="${carDTO != null && carDTO.numOfSeats != null}" th:text="${carDTO.numOfSeats}"></span>
+                                    </p>
+                                    <p>Fuel:
+                                        <span th:unless="${carDTO != null && carDTO.fuelType != null}">Not available</span>
+                                        <span th:if="${carDTO != null && carDTO.fuelType != null}" th:text="${carDTO.fuelType}"></span>
+                                    </p>
+                                </div>
+
+                            </div>
+                            <div class="basic-info-doc-zxc">
+                                <p class="fs-5 fw-semibold">Documents:</p>
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr class="table-dark">
+                                        <td scope="col">No</td>
+                                        <td scope="col">Name</td>
+                                        <td scope="col">Note</td>
+                                        <td scope="col">Link</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr class="table-secondary" th:if="${carDTO != null}">
+                                        <td>1</td>
+                                        <td>Registration paper</td>
+                                        <td>
+                                            <span th:unless="${carDTO.registrationPaper != null}">Not available</span>
+                                            <span th:if="${carDTO.registrationPaper != null}">Verified</span>
+                                        </td>
+                                        <td>
+                                            <a th:href="${carDTO.registrationPaper != null ? carDTO.registrationPaper : ''}">
+                                                <span th:unless="${carDTO.registrationPaper != null}">Not available</span>
+                                                <span th:if="${carDTO.registrationPaper != null}" th:text="${carDTO.registrationPaper}"></span>
+                                            </a>
+                                        </td>
+                                    </tr>
+
+
+                                    <tr class="table-secondary" th:if="${carDTO != null}">
+                                        <td>2</td>
+                                        <td>Certificate of Inspection</td>
+                                        <td>
+                                            <span th:unless="${carDTO.certificateOfInspection != null}">Not available</span>
+                                            <span th:if="${carDTO.certificateOfInspection != null}">Verified</span>
+                                        </td>
+                                        <td>
+                                            <a th:href="${carDTO.certificateOfInspection != null ? carDTO.certificateOfInspection : ''}">
+                                                <span th:unless="${carDTO.certificateOfInspection != null}">Not available</span>
+                                                <span th:if="${carDTO.certificateOfInspection != null}" th:text="${carDTO.certificateOfInspection}"></span>
+                                            </a>
+                                        </td>
+                                    </tr>
+
+
+                                    <tr class="table-secondary" th:if="${carDTO != null}">
+                                        <td>3</td>
+                                        <td>Insurance</td>
+                                        <td>
+                                            <span th:unless="${carDTO.insurance != null}">Not available</span>
+                                            <span th:if="${carDTO.insurance != null}">Verified</span>
+                                        </td>
+                                        <td>
+                                            <a th:href="${carDTO.insurance != null ? carDTO.insurance : ''}">
+                                                <span th:if="${carDTO.insurance != null}" th:text="${carDTO.insurance}"></span>
+                                            </a>
+                                                <span th:unless="${carDTO.insurance != null}">Not available</span>
+                                        </td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Tab Detail -->
+                        <div class="tab-content detail" style="display: none;">
+                            <form class="detail-123" th:action="@{/car/edit-detail/{id}(id=${carUpdateDetailDTO.id}) }" th:object="${carUpdateDetailDTO}" method="post" enctype="multipart/form-data">
+                                <input type="hidden" th:field="*{id}" /> <!-- Thêm trường ID ẩn -->
+
+                                <div class="mileage-and-fuel-123">
+                                    <div class="d-flex flex-column fw-bold col">
+                                        <label class="fs-5" for="mileage">Mileage: </label>
+                                        <input id="mileage" type="number" th:field="*{mileage}"/>
+                                    </div>
+                                    <div class="d-flex flex-column fw-bold col">
+                                        <label class="fs-5" for="fuel-consumption">Fuel consumption: </label>
+                                        <div>
+                                            <input class="w-75" id="fuel-consumption" type="text" th:field="*{fuelConsumption}"/>
+                                            <span> liter/100km</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="address-and-description-123">
+                                    <div class="fw-bold col">
+                                        <p class="fs-5">Address: </p>
+                                        <div>
+                                            <input class="w-100" id="search-address" placeholder="Search for an address" type="text" th:field="*{address}"/>
+                                        </div>
+                                    </div>
+                                    <div class="fw-bold col">
+                                        <div>
+                                            <p class="fs-5">Description</p>
+                                            <textarea class='w-100' id="description" rows="10" th:field="*{description}"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="additional-function-123">
+                                    <p class="fs-5 fw-bold">Additional functions:</p>
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <div class="d-flex gap-2 align-items-center">
+                                                <i class="fa-brands fa-bluetooth"></i>
+                                                <label for="functionsBluetooth">Bluetooth</label>
+                                                <input id="functionsBluetooth" type="checkbox" th:field="*{functionsBluetooth}"/>
+                                            </div>
+                                            <div class="d-flex gap-2 align-items-center">
+                                                <i class="fa-solid fa-map"></i>
+                                                <label for="functionsGPS">GPS</label>
+                                                <input id="functionsGPS" type="checkbox" th:field="*{functionsGPS}"/>
+                                            </div>
+                                            <div class="d-flex gap-2 align-items-center">
+                                                <i class="fa-solid fa-camera"></i>
+                                                <label for="functionsCamera">Camera</label>
+                                                <input id="functionsCamera" type="checkbox" th:field="*{functionsCamera}"/>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="d-flex gap-2 align-items-center">
+                                                <i class="fa-solid fa-sun"></i>
+                                                <label for="functionsSunRoof">Sun roof</label>
+                                                <input id="functionsSunRoof" type="checkbox" th:field="*{functionsSunRoof}"/>
+                                            </div>
+                                            <div class="d-flex gap-2 align-items-center">
+                                                <i class="fa-solid fa-lock-open"></i>
+                                                <label for="functionsChildLock">Child lock</label>
+                                                <input id="functionsChildLock" type="checkbox" th:field="*{functionsChildLock}"/>
+                                            </div>
+                                            <div class="d-flex gap-2 align-items-center">
+                                                <i class="fa-solid fa-child-reaching"></i>
+                                                <label for="functionsChildSeat">Child seat</label>
+                                                <input id="functionsChildSeat" type="checkbox" th:field="*{functionsChildSeat}"/>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="d-flex gap-2 align-items-center">
+                                                <i class="fa-solid fa-compact-disc"></i>
+                                                <label for="functionsDvd">DVD</label>
+                                                <input id="functionsDvd" type="checkbox" th:field="*{functionsDvd}"/>
+                                            </div>
+                                            <div class="d-flex gap-2 align-items-center">
+                                                <i class="fa-brands fa-usb"></i>
+                                                <label for="functionsUSB">USB</label>
+                                                <input id="functionsUSB" type="checkbox" th:field="*{functionsUSB}"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="images-comps-123">
+                                    <p class="fs-5 fw-bold">Images:</p>
+                                    <div th:with="car=${carUpdateDetailDTO}">
+                                        <div class="image-sad1" th:if="${car != null}">
+                                            <div class="img-container-123">
+                                                <div th:if="${car.imageFront}">
+                                                    <p>Front</p>
+                                                    <div class="image-container">
+                                                        <label for="imageFront" class="hidden"></label>
+                                                        <input id="imageFront1" th:field="*{imageFront}" type="file" data-index="0" class="hidden"/>
+                                                        <img alt="Front" class="image" th:src="${car.imageFront}"/>
+                                                        <button class="delete-button" type="button" data-index="0">-</button>
+                                                    </div>
+                                                </div>
+                                                <div th:unless="${car.imageFront}">
+                                                    <div class="file-upload border rounded p-3 text-center">
+                                                        <i class="fa fa-upload fa-2x"></i>
+                                                        <p>Drag and drop <br/> OR</p>
+                                                        <label for="imageFront">Choose file</label>
+                                                        <input id="imageFront" th:field="*{imageFront}" type="file" data-index="0"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="img-container-123">
+                                                <div th:if="${car.imageBack}">
+                                                    <p>Back</p>
+                                                    <div class="image-container">
+                                                        <label for="imageBack" class="hidden"></label>
+                                                        <input id="imageBack1" th:field="*{imageBack}" type="file" data-index="1" class="hidden"/>
+                                                        <img alt="Back" class="image" th:src="${car.imageBack}"/>
+                                                        <button class="delete-button" type="button" data-index="1">-</button>
+                                                    </div>
+                                                </div>
+                                                <div th:unless="${car.imageBack}">
+                                                    <div class="file-upload border rounded p-3 text-center">
+                                                        <i class="fa fa-upload fa-2x"></i>
+                                                        <p>Drag and drop <br/> OR</p>
+                                                        <label for="imageBack">Choose file</label>
+                                                        <input id="imageBack" th:field="*{imageBack}" type="file" data-index="1"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="img-container-123">
+                                                <div th:if="${car.imageLeft}">
+                                                    <p>Left</p>
+                                                    <div class="image-container">
+                                                        <label for="imageLeft" class="hidden"></label>
+                                                        <input id="imageLeft1" th:field="*{imageLeft}" type="file" data-index="2" class="hidden"/>
+                                                        <img alt="Left" class="image" th:src="${car.imageLeft}"/>
+                                                        <button class="delete-button" type="button" data-index="2">-</button>
+                                                    </div>
+                                                </div>
+                                                <div th:unless="${car.imageLeft}">
+                                                    <div class="file-upload border rounded p-3 text-center">
+                                                        <i class="fa fa-upload fa-2x"></i>
+                                                        <p>Drag and drop <br/> OR</p>
+                                                        <label for="imageLeft">Choose file</label>
+                                                        <input id="imageLeft" th:field="*{imageLeft}" type="file" data-index="2"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="img-container-123">
+                                                <div th:if="${car.imageRight}">
+                                                    <p>Right</p>
+                                                    <div class="image-container">
+                                                        <label for="imageRight" class="hidden"></label>
+                                                        <input id="imageRight1" th:field="*{imageRight}" type="file" data-index="3" class="hidden"/>
+                                                        <img alt="Right" class="image" th:src="${car.imageRight}"/>
+                                                        <button class="delete-button" type="button" data-index="3">-</button>
+                                                    </div>
+                                                </div>
+                                                <div th:unless="${car.imageRight}">
+                                                    <div class="file-upload border rounded p-3 text-center">
+                                                        <i class="fa fa-upload fa-2x"></i>
+                                                        <p>Drag and drop <br/> OR</p>
+                                                        <label for="imageRight">Choose file</label>
+                                                        <input id="imageRight" th:field="*{imageRight}" type="file" data-index="3"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-center">
+                                        <button class="fs-3 btn border border-white" type="reset">Discard</button>
+                                        <button class="fs-3 btn btn-primary border border-black rounded" type="submit">
+                                            Save
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+
+                        <!-- Tab Pricing -->
+                        <div class="tab-content pricing" style="display: none;">
+                            <form class="pricing-123sa" th:action="@{/car/edit-pricing/{id}(id=${carUpdatePricingDTO.id})}" method="post" th:object="${carUpdatePricingDTO}" enctype="multipart/form-data">
+                                <input type="hidden" th:field="*{id}" /> <!-- Thêm trường ID ẩn -->
+
+                                <div class="d-flex fs-3 justify-content-between w-75 my-5 fw-semibold">
+                                    <label for="base-price">Base price:</label>
+                                    <div>
+                                        <input class="w-25 mx-5" id="base-price" name="basePrice" type="text" th:field="*{basePrice}" />
+                                        <span>VND/Day</span>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex fs-3 justify-content-between w-75 my-5 fw-semibold">
+                                    <label for="required-deposit">Required deposit:</label>
+                                    <div>
+                                        <input class="w-25 mx-5" id="required-deposit" name="deposit" type="text" th:field="*{deposit}" />
+                                        <span>VND</span>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <p class="fw-semibold fs-3">Term of use</p>
+                                    <div class="term-of-use-sad2">
+                                        <div>
+                                            <div>
+                                                <input id="no-smoking" name="noSmoking" type="checkbox" th:field="*{noSmoking}" />
+                                                <label for="no-smoking">No Smoking</label>
+                                            </div>
+                                            <div>
+                                                <input id="no-pet" name="noPet" type="checkbox" th:field="*{noPet}" />
+                                                <label for="no-pet">No pet</label>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div>
+                                                <input id="no-food-in-car" name="noFoodInCar" type="checkbox" th:field="*{noFoodInCar}" />
+                                                <label for="no-food-in-car">No food in car</label>
+                                            </div>
+                                            <div>
+                                                <input id="other" name="other" type="checkbox" th:field="*{other}" />
+                                                <label for="other">Other</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-center">
+                                    <button class="fs-5 btn border border-white" type="reset">Discard</button>
+                                    <button class="fs-5 btn btn-primary border border-black rounded" type="submit">Save</button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+</section>
+</body>
+</html>
