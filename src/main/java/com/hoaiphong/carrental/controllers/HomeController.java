@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.hoaiphong.carrental.dtos.user.UserUpdateDTO;
+import com.hoaiphong.carrental.dtos.user.UserUpdatePasswordDTO;
 import com.hoaiphong.carrental.services.UserService;
 
 import jakarta.validation.Valid;
@@ -25,8 +26,7 @@ public class HomeController {
     }
 
     @GetMapping
-    public String index( @AuthenticationPrincipal UserDetails userDetails) {
-        System.out.println(userDetails.getUsername());
+    public String index( ) {
         return "home/index";
     }
 
@@ -53,14 +53,29 @@ public class HomeController {
         // if (bindingResult.hasErrors()) {
         // return "home/userprofile";
         // }
-
         var updatemember = userService.update(userUpdateDTO, userDetails.getUsername());
+        if (updatemember == null) {
+            model.addAttribute("message", "create content failed");
+            return "home/userprofile";
+        }
+        return "redirect:/";
+    }
+
+    @PostMapping("myprofile-updatepassword")
+    public String updatePassword(@ModelAttribute @Valid UserUpdatePasswordDTO userUpdatePasswordDTO, BindingResult bindingResult,
+            Model model,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        if (bindingResult.hasErrors()) {
+        return "home/userprofile";
+        }
+        var updatemember = userService.update(userUpdatePasswordDTO, userDetails.getUsername());
 
         if (updatemember == null) {
             model.addAttribute("message", "create content failed");
             return "home/userprofile";
         }
-        return "redirect:/viewcontent";
+        return "redirect:/";
     }
 
     @GetMapping("mywallet")

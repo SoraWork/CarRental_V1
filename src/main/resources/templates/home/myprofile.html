@@ -49,11 +49,11 @@
                         <label for="phone" class="form-label"><strong>Phone number:</strong> <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="phone" name="phone" required>
                     </div>
-                    <div class="col-md-6">
+                    <!-- <div class="col-md-6">
                         <label for="email" class="form-label"><strong>Email address:
                         </strong> <span class="text-danger">*</span></label>
                         <input type="email" class="form-control" id="email" name="email" required>
-                    </div>
+                    </div> -->
                 </div>
     
                 <div class="row mb-3">
@@ -64,8 +64,7 @@
                     <div class="col-md-6">
                         <label for="drivingLicense" class="form-label"><strong>Driving license:</strong></label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="drivingLicense" name="drivingLicense">
-                            <button class="btn btn-outline-secondary" type="button">Upload</button>
+                            <input type="file" class="form-control" id="drivingLicense" name="drivingLicense">
                         </div>
                     </div>
                 </div>
@@ -91,11 +90,11 @@
     
         <div class="tab-pane fade" id="security" role="tabpanel">
             <h2>Change Password</h2>
-            <form action="/your-server-endpoint" method="POST">
+            <form th:action="@{/myprofile-updatepassword}" th:object="${userUpdatePasswordDTO}" method="post">
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label for="newPassword" class="form-label"><strong>New Password</strong> <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                        <label for="password" class="form-label"><strong>New Password</strong> <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" id="password" name="password" required>
                     </div>
                     <div class="col-md-6">
                         <label for="confirmPassword" class="form-label"><strong>Confirm Password</strong> <span class="text-danger">*</span></label>
