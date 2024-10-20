@@ -15,11 +15,11 @@ import com.hoaiphong.carrental.entities.CarBookingId;
 public interface CarBookingRepository extends JpaRepository<CarBooking, CarBookingId>,
  JpaSpecificationExecutor<CarBooking> {
     // Câu truy vấn sửa lại, bỏ toán tử BETWEEN cho từng trường riêng biệt
-    List<CarBooking> findByCar_AddressAndBooking_StartDateGreaterThanEqualAndBooking_EndDateLessThanEqual(
+        List<CarBooking> findByCar_AddressAndBooking_StartDateGreaterThanEqualAndBooking_EndDateLessThanEqual(
         String address, LocalDateTime startDate, LocalDateTime endDate);
         List<CarBooking> findByCarAddressContaining(String address);
         Page<CarBooking> findByCarAddressContaining(String address, Pageable pageable);
         CarBooking findByCar_Id(UUID carId);
-        Page<CarBooking> findAll(Pageable pageable);
-    
-}
+        Page<CarBooking> findByBooking_User_Id(UUID userId, Pageable pageable);
+
+ }

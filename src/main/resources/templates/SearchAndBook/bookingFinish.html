@@ -109,9 +109,17 @@
                     <form class="custom-background flex flex-col w-full custom-padding space-y-8 py-5 fw-bold">
                         <h2 class="text-white text-3xl">Books Detail </h2>
                         <ul class="list-disc ms-4">
-                            <li class="text-white ml-5 my-2">Pick-up location: Trung Kinh, Cau Giay, Hanoi</li>
-                            <li class="text-white ml-5 my-2">Pick up date and time: 13/02/2022 - 12:00 PM</li>
-                            <li class="text-white ml-5 my-2">Return date and time: 23/02/2022 - 14:00 PM</li>
+                            <li class="text-white ml-5 my-2">Pick-up location: <span
+                                    th:text="${carBooking.Car.address}"> Trung Kinh, Cau Giay, Hanoi</span></li>
+                            <li class="text-white ml-5 my-2">Pick up date and time:
+                                <span
+                                    th:text="${#temporals.format(carBooking.booking.startDate, 'dd/MM/yyyy')}">13/02/2022</span>
+                                <span th:text="${#temporals.format(carBooking.booking.startDate, 'hh:mm a')}"></span>
+                            </li>
+                            <li class="text-white ml-5 my-2">Return date and time:
+                                <span th:text="${#temporals.format(carBooking.booking.endDate, 'hh:mm a')}"></span>
+                                <span th:text="${#temporals.format(carBooking.booking.endDate, 'dd/MM/yyyy')}"></span>
+                            </li>
                         </ul>
                     </form>
                 </div>
@@ -119,26 +127,42 @@
 
             <div class="container mt-4 mb-5">
                 <div class="step-container">
-                    <div class="step active">Step 1: Booking Information</div>
+                    <div class="step ">Step 1: Booking Information</div>
                     <div class="step-separator">></div>
                     <div class="step">Step 2: Payment</div>
                     <div class="step-separator">></div>
-                    <div class="step">Step 3: Finish</div>
+                    <div class="step active">Step 3: Finish</div>
                 </div>
             </div>
 
             <div class="container-fluid border-black font-bold">
                 <ul class="list-group list-group-flush text-left ">
-                    <li class="list-group-item border-0 pl-40">You've successfully booked Nissan Navara El 2017 from
-                        13/02/2022 - 12:00 PM to 23/02/2022 - 14:00 PM.</li>
+                    <li class="list-group-item border-0 pl-40">You've successfully booked <span
+                            th:text="${carBooking.Car.address}"> </span>
+                        from
+                        <span
+                            th:text="${#temporals.format(carBooking.booking.startDate, 'dd/MM/yyyy')}">13/02/2022</span>
+                        <span th:text="${#temporals.format(carBooking.booking.startDate, 'hh:mm a')}"></span>
+                        to
+                        <span th:text="${#temporals.format(carBooking.booking.endDate, 'hh:mm a')}"></span>
+                        <span th:text="${#temporals.format(carBooking.booking.endDate, 'dd/MM/yyyy')}"></span>.
+                    </li>
                     <li class="list-group-item border-0 pl-40">Your booking number is: 012345</li>
                     <li class="list-group-item border-0 pl-40">Our operator will contact you with further guidance about
                         pickup.</li>
                 </ul>
                 <div class="flex justify-center items-center space-x-7 mb-10">
                     <div><a href="#" class=" text-blue-500 hover:underline"> Go to homepage</a></div>
-                    <div><button class="bg-red-100 py-2 px-4 border-black rounded"> Book anther car</button></div>
-                    <div><button class="bg-blue-300 px-5 py-2 border-black rounded">View Book</button></div>
+                    <a th:href="@{/search}">
+                        <div><button class="bg-red-100 py-2 px-4 border-black rounded"> Book anther car</button></div>
+                    </a>
+                    <div>
+                        <form th:action="@{/viewBookingDetail}" method="get">
+                            <input type="hidden" name="daysBetween" th:value="${daysBetween}">
+                            <input type="hidden" name="totalPrice" th:value="${totalPrice}">
+                            <button class="bg-blue-300 px-5 py-2 border-black rounded">View Book</button>
+                        </form>
+                    </div>
 
                 </div>
             </div>
@@ -161,4 +185,3 @@
 </body>
 
 </html>
-

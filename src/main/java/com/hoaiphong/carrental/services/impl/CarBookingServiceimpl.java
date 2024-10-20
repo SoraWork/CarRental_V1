@@ -2,7 +2,6 @@ package com.hoaiphong.carrental.services.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -66,6 +65,18 @@ public class CarBookingServiceimpl implements CarBookingService {
     public Page<CarBooking> findByAll(Pageable pageable) {
         return carBookingRepository.findAll(pageable);
     }
+
+    @Override
+    public List<CarBooking> findByBooking_User_Id(UUID userId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findByBooking_User_Id'");
+    }
+
+    @Override
+    public Page<CarBooking> findByAll(UUID userId, Pageable pageable) {
+return carBookingRepository.findByBooking_User_Id(userId, pageable);  }
+
+    
 
 
 

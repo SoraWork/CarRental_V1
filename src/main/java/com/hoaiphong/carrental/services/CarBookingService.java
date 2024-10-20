@@ -18,5 +18,6 @@ public interface CarBookingService {
     List<CarBooking>findAll();
     CarBooking findById(UUID id);
     CarBooking findByCarId(UUID carId);
-    Page<CarBooking> findByAll(Pageable pageable);
+    List<CarBooking> findByBooking_User_Id(UUID userId);
+    Page<CarBooking> findByAll(UUID userId,Pageable pageable);
     }
