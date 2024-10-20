@@ -1,12 +1,13 @@
 package com.hoaiphong.carrental.services;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.time.LocalDateTime;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.hoaiphong.carrental.dtos.user.UserDTOBase;
+import com.hoaiphong.carrental.entities.User;
 
 public interface UserService {
     List<UserDTOBase> findAll();
@@ -22,4 +23,8 @@ public interface UserService {
     UserDTOBase updatePassword(UUID id, String password);
 
     boolean deleteById(UUID id);
+
+    String sendEmail(User user);
+
+    boolean hasExipred(LocalDateTime expiryDateTime);
 }

@@ -110,4 +110,27 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
 
         return new CustomUserDetails(user.getEmail(), user.getName(), user.getPassword(), grantedAuthorities);
     }
+
+    @Override
+    public UserDTOBase findByEmail(String email) {
+        var user = userRepository.findByEmail(email);
+        if (user == null) {
+            return null;
+        }
+        var userDTOBase = new UserDTOBase();
+        userDTOBase.setId(user.getId());
+        userDTOBase.setName(user.getName());
+        userDTOBase.setDateOfBirth(user.getDateOfBirth());
+        userDTOBase.setNationalId(user.getNationalId());
+        userDTOBase.setPhone(user.getPhone());
+        userDTOBase.setAddress(user.getAddress());
+        userDTOBase.setEmail(user.getEmail());
+        userDTOBase.setDrivingLicense(user.getDrivingLicense());
+        userDTOBase.setWallet(user.getWallet());
+        userDTOBase.setUsername(user.getUsername());
+        userDTOBase.setEmail(user.getEmail());
+        
+        return userDTOBase;
+        
+    }
 }

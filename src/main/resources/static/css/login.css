@@ -32,3 +32,10 @@
 .min-h-screen {
     min-height: 100vh;
 }
+
+.success-container {
+    background-color: green;
+}
+.error-container {
+    background-color: red;
+}
