@@ -1,5 +1,6 @@
 package com.hoaiphong.carrental.services.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -8,15 +9,21 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.hoaiphong.carrental.dtos.user.RoleDTO;
 import com.hoaiphong.carrental.dtos.user.UserDTOBase;
+import com.hoaiphong.carrental.dtos.user.UserUpdateDTO;
+import com.hoaiphong.carrental.dtos.user.UserUpdatePasswordDTO;
+import com.hoaiphong.carrental.entities.PasswordResetToken;
 import com.hoaiphong.carrental.entities.Role;
 import com.hoaiphong.carrental.entities.User;
 import com.hoaiphong.carrental.repositories.RoleRepository;
+import com.hoaiphong.carrental.repositories.TokenRepository;
 import com.hoaiphong.carrental.repositories.UserRepository;
 import com.hoaiphong.carrental.services.UserService;
 
@@ -27,13 +34,17 @@ import jakarta.persistence.criteria.Predicate;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JavaMailSender javaMailSender;
 
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder, JavaMailSender javaMailSender, TokenRepository tokenRepository) {
+        this.tokenRepository = tokenRepository;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.javaMailSender = javaMailSender;
     }
 
     @Override
@@ -376,4 +387,98 @@ public class UserServiceImpl implements UserService {
         // Return if entity is deleted
         return isDeleted;
     }
+
+    @Override
+    public UserUpdateDTO update(UserUpdateDTO userUpdateDTO, String email) {
+        var existingMember = userRepository.findByEmail(email);
+        if (existingMember == null) {
+            throw new IllegalArgumentException("User with email " + email + " does not exist");
+        }
+
+        // Update fields with data from DTO
+        existingMember.setName(userUpdateDTO.getFullName());
+        existingMember.setPhone(userUpdateDTO.getPhone());
+        existingMember.setNationalId(userUpdateDTO.getNationalId());
+        existingMember.setDateOfBirth(userUpdateDTO.getDateOfBirth());
+        existingMember.setAddress(userUpdateDTO.getAddress());
+        // existingMember.setDrivingLicense(userUpdateDTO.getDrivingLicense());
+        // Save the updated member
+        var updateMember = userRepository.save(existingMember);
+
+        // Convert updated entity to DTO and return
+        var updateUserDTO = new UserUpdateDTO();
+        updateUserDTO.setFullName(updateMember.getName());
+        updateUserDTO.setPhone(updateMember.getPhone());
+        updateUserDTO.setNationalId(updateMember.getNationalId());
+        updateUserDTO.setDateOfBirth(updateMember.getDateOfBirth());
+        updateUserDTO.setAddress(updateMember.getAddress());
+        // updateUserDTO.setDrivingLicense(updateMember.getDrivingLicense());
+
+        return updateUserDTO;
+    }
+
+    @Override
+    public UserDTOBase update(UserUpdatePasswordDTO userUpdatePasswordDTO, String email) {
+        var existingMember = userRepository.findByEmail(email);
+        if (existingMember == null) {
+            throw new IllegalArgumentException("User with email " + email + " does not exist");
+        }
+
+        // Update fields with data from DTO
+        existingMember.setPassword(passwordEncoder.encode(userUpdatePasswordDTO.getPassword()));
+        // Save the updated member
+        var updateMember = userRepository.save(existingMember);
+
+        // Convert updated entity to DTO and return
+        var updateUserDTO = new UserDTOBase();
+        updateUserDTO.setPassword(updateMember.getPassword());
+
+        return updateUserDTO;
+    }
+
+    @Override
+    public String sendEmail(User user) {
+        try {
+			String resetLink = generateResetToken(user);
+
+			SimpleMailMessage msg = new SimpleMailMessage();
+			msg.setFrom("phongnguyenhoai2003@gmail.com");// input the senders email ID
+			msg.setTo(user.getEmail());
+
+			msg.setSubject("Welcome To My Channel");
+			msg.setText("Hello \n\n" + "Please click on this link to Reset your Password :" + resetLink + ". \n\n"
+					+ "Regards \n" + "ABC");
+
+			javaMailSender.send(msg);
+
+			return "success";
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "error";
+		}
+    }
+
+    private String generateResetToken(User user) {
+        UUID uuid = UUID.randomUUID();
+		LocalDateTime currentDateTime = LocalDateTime.now();
+		LocalDateTime expiryDateTime = currentDateTime.plusMinutes(30);
+		PasswordResetToken resetToken = new PasswordResetToken();
+		resetToken.setUser(user);
+		resetToken.setToken(uuid.toString());
+		resetToken.setExpiryDateTime(expiryDateTime);
+		resetToken.setUser(user);
+		PasswordResetToken token = tokenRepository.save(resetToken);
+		if (token != null) {
+			String endpointUrl = "http://localhost:8080/auth/changepassword";
+			return endpointUrl + "/" + resetToken.getToken();
+		}
+		return "";
+    }
+
+    @Override
+    public boolean hasExipred(LocalDateTime expiryDateTime) {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+		return expiryDateTime.isAfter(currentDateTime);
+    }
+
 }

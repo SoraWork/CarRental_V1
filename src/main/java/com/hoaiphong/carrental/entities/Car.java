@@ -131,6 +131,9 @@ public class Car {
     @Column(name = "Image_right")
     private String imageRight;
 
+    @Column(name = "Status")
+    private String status;
+
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
