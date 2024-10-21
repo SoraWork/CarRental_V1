@@ -259,7 +259,7 @@
                             <form class="detail-123" enctype="multipart/form-data"
                                   method="post" th:action="@{/car/edit-detail/{id}(id=${carUpdateDetailDTO.id}) }"
                                   th:object="${carUpdateDetailDTO}">
-                                <input th:field="*{id}" type="hidden"/> <!-- Thêm trường ID ẩn -->
+                                <input th:field="*{id}" type="hidden"/>
 
                                 <div class="mileage-and-fuel-123">
                                     <div class="d-flex flex-column fw-bold col">
@@ -360,7 +360,7 @@
                                                            for="imageBack">Image</label>
                                                     <input class="form-control w-full p-2 border border-slate-300 rounded-md"
                                                            id="imageFront" min="1"
-                                                           th:field="*{imageFront}"
+                                                           name="imageFrontFile"
                                                            type="file">
                                                     <span class="text-red-500" th:errors="*{imageFront}"
                                                           th:if="${#fields.hasErrors('imageFront')}"></span>
@@ -380,7 +380,7 @@
                                                            for="imageBack">Image</label>
                                                     <input class="form-control w-full p-2 border border-slate-300 rounded-md"
                                                            id="imageBack" min="1"
-                                                           th:field="*{imageBack}"
+                                                           name="imageBackFile"
                                                            type="file">
                                                     <span class="text-red-500" th:errors="*{imageBack}"
                                                           th:if="${#fields.hasErrors('imageBack')}"></span>
@@ -400,7 +400,7 @@
                                                            for="imageLeft">Image</label>
                                                     <input class="form-control w-full p-2 border border-slate-300 rounded-md"
                                                            id="imageLeft" min="1"
-                                                           th:field="*{imageLeft}"
+                                                           name="imageLeftFile"
                                                            type="file">
                                                     <span class="text-red-500" th:errors="*{imageLeft}"
                                                           th:if="${#fields.hasErrors('imageLeft')}"></span>
@@ -420,7 +420,7 @@
                                                            for="imageRight">Image</label>
                                                     <input class="form-control w-full p-2 border border-slate-300 rounded-md"
                                                            id="imageRight" min="1"
-                                                           th:field="*{imageRight}"
+                                                           name="imageRightFile"
                                                            type="file">
                                                     <span class="text-red-500" th:errors="*{imageRight}"
                                                           th:if="${#fields.hasErrors('imageRight')}"></span>
