@@ -255,53 +255,57 @@
                     <div class="mb-3 pl-40">
                         <p th:if="${errorMessage}" class="text-red-500" th:text="${errorMessage}"></p>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label class="form-label font-weight-bold text-xl">Please select your payment</label>
                     </div>
-                
+
                     <!-- My Wallet Radio -->
                     <div class="form-check mb-3 pl-40">
-                        <input class="form-check-input" type="radio" name="paymentMethod" id="walletRadio" value="wallets">
+                        <input class="form-check-input" type="radio" name="paymentMethod" id="walletRadio"
+                            value="wallets">
                         <label class="form-check-label" for="walletRadio">My Wallet</label>
                     </div>
-                
+
                     <!-- Current Balance -->
                     <div class="mb-3 pl-40">
-                        <span class="current-balance text-xs">Current Balance: <span id="walletBalance" th:text="${wallet}"></span></span>
+                        <span class="current-balance text-xs">Current Balance: <span id="walletBalance"
+                                th:text="${wallet}"></span></span>
                     </div>
-                
+
                     <div class="mb-3 pl-40">
                         <p id="warningMessage" class="text-red-500 hidden">Your wallet balance is insufficient!</p>
                     </div>
-                
+
                     <!-- Cash Radio -->
                     <div class="form-check mb-1 pl-40">
                         <input class="form-check-input" type="radio" name="paymentMethod" id="cashRadio" value="cash">
                         <label class="form-check-label" for="cashRadio">Cash</label>
                     </div>
-                
+
                     <!-- Small text for Cash -->
                     <div class="mb-3 small-text text-xs pl-40 italic">
                         Our operator will contact you for further instruction
                     </div>
-                
+
                     <!-- Bank Transfer Radio -->
                     <div class="form-check mb-1 pl-40">
-                        <input class="form-check-input" type="radio" name="paymentMethod" id="bankTransferRadio" value="bankTransfer">
+                        <input class="form-check-input" type="radio" name="paymentMethod" id="bankTransferRadio"
+                            value="bankTransfer">
                         <label class="form-check-label" for="bankTransferRadio">Bank Transfer</label>
                     </div>
-                
+
                     <!-- Small text for Bank Transfer -->
                     <div class="mb-4 small-text text-xs pl-40 italic">
                         Our operator will contact you for further instruction
                     </div>
-                
+
                     <!-- Buttons -->
                     <div class="flex justify-center space-x-4 mt-4">
                         <div>
-                            <a th:href="@{/search}"> 
-                                <button type="button" class="bg-blue-500 hover:bg-gray-100 text-black font-bold py-2 px-7 rounded"
+                            <a th:href="@{/search}">
+                                <button type="button"
+                                    class="bg-blue-500 hover:bg-gray-100 text-black font-bold py-2 px-7 rounded"
                                     style="min-width: 30vh;">Cancel</button>
                             </a>
                         </div>
@@ -314,40 +318,39 @@
                         </div>
                     </div>
                 </form>
-                
+
             </div>
 
         </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                document.getElementById("paymentForm").addEventListener("submit", function (event) {
+                    var paymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+                    var walletBalance = parseFloat(document.getElementById("walletBalance").innerText);
+                    var totalPrice = parseFloat(document.querySelector('input[name="totalPrice"]').value);
 
+                    if (!paymentMethod) {
+                        event.preventDefault();
+                        alert("Please select a payment method.");
+                        return;
+                    }
+
+                    if (paymentMethod.value === "wallets" && walletBalance < totalPrice) {
+                        event.preventDefault();
+                        document.getElementById("warningMessage").classList.remove("hidden");
+                        return;
+                    }
+                });
+            });
+        </script>
     </section>
 
 
 
-    <script>
-        // document.addEventListener("DOMContentLoaded", function() {
-        //     document.getElementById("paymentForm").addEventListener("submit", function(event) {
-        //         var paymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
-        //         var walletBalance = parseFloat(document.getElementById("walletBalance").innerText);
-        //         var totalPrice = parseFloat(document.querySelector('input[name="totalPrice"]').value);
-    
-        //         if (!paymentMethod) {
-        //             event.preventDefault();  
-        //             alert("Please select a payment method.");
-        //             return;
-        //         }
-    
-        //         if (paymentMethod.value === "wallet" && walletBalance < totalPrice) {
-        //             event.preventDefault();  
-        //             document.getElementById("warningMessage").classList.remove("hidden");
-        //             return;
-        //         }
-    
-            
-        //     });
-        // });
-    </script>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
 
 </body>
 
