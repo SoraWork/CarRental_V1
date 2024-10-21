@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{shared/layouts/layout}"
+>
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Home</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}"/>
+    <script type="module" th:src="@{/js/home/home.js}"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .balance {
+            color: green;
+            font-size: 24px;
+        }
+        .dialog {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 400px;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+<section layout:fragment="content" class="container my-5">
+    <div class="row mb-3">
+        <div class="col">
+            <a href="#">Home</a> &gt; <a href="#">My Wallet</a>
+        </div>
+    </div>
+    <div class="container mt-4">
+        <h1>My Wallet</h1>
+        <p class="balance">Your current balance: <strong id="currentBalance">20,000,000 VND</strong></p>
+    
+        <div class="actions mb-3">
+            <button id="topUpBtn" class="btn btn-success">Top-up</button>
+            <button id="withdrawBtn" class="btn btn-danger">Withdraw</button>
+        </div>
+    
+        <h2>Transactions</h2>
+        <form class="mb-3">
+            <div class="d-flex mb-2 justify-content-between">
+                <div class="me-2 flex-grow-1">
+                    <label for="from" class="form-label"><strong>From:</strong></label>
+                    <input type="date" id="from" name="from" class="form-control" style="width: 150%; max-width: 600px;">
+                </div>
+                <div class="me-2 flex-grow-1">
+                    <label for="to" class="form-label"><strong>To: </strong></label>
+                    <input type="date" id="to" name="to" class="form-control" style="width: 150%; max-width: 600px;">
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary btn-lg">Search</button>
+            </div>
+            
+        </form>     
+        
+        
+    
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                    <th>Date/Time</th>
+                    <th>Booking No</th>
+                    <th>Car Name</th>
+                </tr>
+            </thead>
+            <tbody id="transactionTable">
+                <!-- Transactions will be appended here -->
+            </tbody>
+        </table>
+    
+        <div class="pagination">
+            <p>Page: << 1, 2, 3, 4 .... >></p>
+        </div>
+    </div>
+    
+    <!-- Top-up Dialog -->
+    <div class="overlay" id="topUpOverlay"></div>
+    <div class="dialog" id="topUpDialog">
+        <h3>Top-up</h3>
+        <p>Please select the amount to top-up to your wallet</p>
+        <select id="topUpAmount" class="form-select mb-2">
+            <option value="2000000">2,000,000</option>
+            <option value="5000000">5,000,000</option>
+            <option value="10000000">10,000,000</option>
+        </select>
+        <button id="confirmTopUp" class="btn btn-primary">OK</button>
+        <button id="cancelTopUp" class="btn btn-secondary">Cancel</button>
+    </div>
+    
+    <!-- Withdraw Dialog -->
+    <div class="overlay" id="withdrawOverlay"></div>
+    <div class="dialog" id="withdrawDialog">
+        <h3>Withdraw</h3>
+        <p>Your current balance is <span id="withdrawBalance">1,500,000</span>. Please select the amount to withdraw from your wallet</p>
+        <select id="withdrawAmount" class="form-select mb-2">
+            <option value="2000000">2,000,000</option>
+            <option value="5000000">5,000,000</option>
+            <option value="10000000">10,000,000</option>
+            <option value="all">All balance</option>
+        </select>
+        <button id="confirmWithdraw" class="btn btn-primary">OK</button>
+        <button id="cancelWithdraw" class="btn btn-secondary">Cancel</button>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentBalance = 20000000; // Initial balance
+    
+        function updateBalanceDisplay() {
+            document.getElementById("currentBalance").textContent = currentBalance.toLocaleString('vi-VN') + " VND";
+            document.getElementById("withdrawBalance").textContent = currentBalance.toLocaleString('vi-VN') + " VND";
+        }
+    
+        // Top-up event
+        document.getElementById("topUpBtn").addEventListener("click", function() {
+            document.getElementById("topUpOverlay").style.display = "block";
+            document.getElementById("topUpDialog").style.display = "block";
+        });
+    
+        document.getElementById("confirmTopUp").addEventListener("click", function() {
+            const amount = parseInt(document.getElementById("topUpAmount").value);
+            currentBalance += amount;
+            updateBalanceDisplay();
+            addTransaction("+" + amount.toLocaleString('vi-VN') + " VND", "Top-up");
+            closeTopUpDialog();
+        });
+    
+        document.getElementById("cancelTopUp").addEventListener("click", closeTopUpDialog);
+    
+        function closeTopUpDialog() {
+            document.getElementById("topUpOverlay").style.display = "none";
+            document.getElementById("topUpDialog").style.display = "none";
+        }
+    
+        // Withdraw event
+        document.getElementById("withdrawBtn").addEventListener("click", function() {
+            document.getElementById("withdrawOverlay").style.display = "block";
+            document.getElementById("withdrawDialog").style.display = "block";
+        });
+    
+        document.getElementById("confirmWithdraw").addEventListener("click", function() {
+            let amount = document.getElementById("withdrawAmount").value;
+            if (amount === "all") {
+                amount = currentBalance;
+            } else {
+                amount = parseInt(amount);
+            }
+    
+            if (amount <= currentBalance) {
+                currentBalance -= amount;
+                updateBalanceDisplay();
+                addTransaction("-" + amount.toLocaleString('vi-VN') + " VND", "Withdraw");
+                closeWithdrawDialog();
+            } else {
+                alert("Insufficient balance.");
+            }
+        });
+    
+        document.getElementById("cancelWithdraw").addEventListener("click", closeWithdrawDialog);
+    
+        function closeWithdrawDialog() {
+            document.getElementById("withdrawOverlay").style.display = "none";
+            document.getElementById("withdrawDialog").style.display = "none";
+        }
+    
+        // Add a new transaction
+        function addTransaction(amount, type) {
+            const table = document.getElementById("transactionTable");
+            const row = table.insertRow();
+            const noCell = row.insertCell(0);
+            const amountCell = row.insertCell(1);
+            const typeCell = row.insertCell(2);
+            const dateTimeCell = row.insertCell(3);
+            const bookingNoCell = row.insertCell(4);
+            const carNameCell = row.insertCell(5);
+    
+            noCell.textContent = table.rows.length;
+            amountCell.textContent = amount;
+            typeCell.textContent = type;
+            dateTimeCell.textContent = new Date().toLocaleString();
+            bookingNoCell.textContent = "N/A";
+            carNameCell.textContent = "N/A";
+        }
+    
+        // Initialize balance display
+        updateBalanceDisplay();
+    </script>
+    
+    
+</div>
+    
+</section>
+</body>
+</html>

@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hoaiphong.carrental.dtos.user.RoleDTO;
 import com.hoaiphong.carrental.dtos.user.UserDTOBase;
+import com.hoaiphong.carrental.dtos.user.UserUpdateDTO;
+import com.hoaiphong.carrental.dtos.user.UserUpdatePasswordDTO;
 import com.hoaiphong.carrental.entities.PasswordResetToken;
 import com.hoaiphong.carrental.entities.Role;
 import com.hoaiphong.carrental.entities.User;
@@ -384,6 +386,54 @@ public class UserServiceImpl implements UserService {
 
         // Return if entity is deleted
         return isDeleted;
+    }
+
+    @Override
+    public UserUpdateDTO update(UserUpdateDTO userUpdateDTO, String email) {
+        var existingMember = userRepository.findByEmail(email);
+        if (existingMember == null) {
+            throw new IllegalArgumentException("User with email " + email + " does not exist");
+        }
+
+        // Update fields with data from DTO
+        existingMember.setName(userUpdateDTO.getFullName());
+        existingMember.setPhone(userUpdateDTO.getPhone());
+        existingMember.setNationalId(userUpdateDTO.getNationalId());
+        existingMember.setDateOfBirth(userUpdateDTO.getDateOfBirth());
+        existingMember.setAddress(userUpdateDTO.getAddress());
+        // existingMember.setDrivingLicense(userUpdateDTO.getDrivingLicense());
+        // Save the updated member
+        var updateMember = userRepository.save(existingMember);
+
+        // Convert updated entity to DTO and return
+        var updateUserDTO = new UserUpdateDTO();
+        updateUserDTO.setFullName(updateMember.getName());
+        updateUserDTO.setPhone(updateMember.getPhone());
+        updateUserDTO.setNationalId(updateMember.getNationalId());
+        updateUserDTO.setDateOfBirth(updateMember.getDateOfBirth());
+        updateUserDTO.setAddress(updateMember.getAddress());
+        // updateUserDTO.setDrivingLicense(updateMember.getDrivingLicense());
+
+        return updateUserDTO;
+    }
+
+    @Override
+    public UserDTOBase update(UserUpdatePasswordDTO userUpdatePasswordDTO, String email) {
+        var existingMember = userRepository.findByEmail(email);
+        if (existingMember == null) {
+            throw new IllegalArgumentException("User with email " + email + " does not exist");
+        }
+
+        // Update fields with data from DTO
+        existingMember.setPassword(passwordEncoder.encode(userUpdatePasswordDTO.getPassword()));
+        // Save the updated member
+        var updateMember = userRepository.save(existingMember);
+
+        // Convert updated entity to DTO and return
+        var updateUserDTO = new UserDTOBase();
+        updateUserDTO.setPassword(updateMember.getPassword());
+
+        return updateUserDTO;
     }
 
     @Override

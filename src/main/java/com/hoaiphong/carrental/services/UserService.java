@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.hoaiphong.carrental.dtos.user.UserDTOBase;
+import com.hoaiphong.carrental.dtos.user.UserUpdateDTO;
+import com.hoaiphong.carrental.dtos.user.UserUpdatePasswordDTO;
 import com.hoaiphong.carrental.entities.User;
 
 public interface UserService {
@@ -23,6 +25,10 @@ public interface UserService {
     UserDTOBase updatePassword(UUID id, String password);
 
     boolean deleteById(UUID id);
+
+    UserUpdateDTO update(UserUpdateDTO userUpdateDTO, String email);
+
+    UserDTOBase update(UserUpdatePasswordDTO userUpdatePasswordDTO, String email);
 
     String sendEmail(User user);
 
