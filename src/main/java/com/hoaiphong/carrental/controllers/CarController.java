@@ -1,33 +1,25 @@
 package com.hoaiphong.carrental.controllers;
 
+import com.hoaiphong.carrental.dtos.car.CarCreateDTO;
+import com.hoaiphong.carrental.dtos.car.CarUpdateDetailDTO;
+import com.hoaiphong.carrental.dtos.car.CarUpdatePricingDTO;
+import com.hoaiphong.carrental.dtos.car.CarUpdateStatusDTO;
+import com.hoaiphong.carrental.dtos.messages.Message;
+import com.hoaiphong.carrental.services.CarService;
+import jakarta.validation.Valid;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.hoaiphong.carrental.dtos.car.CarCreateDTO;
-import com.hoaiphong.carrental.dtos.car.CarDTO;
-import com.hoaiphong.carrental.dtos.car.CarUpdateDetailDTO;
-import com.hoaiphong.carrental.dtos.car.CarUpdatePricingDTO;
-import com.hoaiphong.carrental.dtos.messages.Message;
-import com.hoaiphong.carrental.services.CarService;
-
-import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/car")
@@ -49,6 +41,7 @@ public class CarController {
         model.addAttribute("carCreateDTO", carCreateDTO);
         return "car/create";
     }
+
     @PostMapping("/create")
     public String create(@Valid @ModelAttribute CarCreateDTO carCreateDTO,
                          BindingResult bindingResult,
@@ -301,12 +294,15 @@ public class CarController {
         redirectAttributes.addFlashAttribute("message", successMessage);
         return "redirect:car/mycars";
     }
+
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable UUID id, Model model) {
         var carDTO = carService.findById(id);
         var carUpdateDetailDTO = carService.findById(id);
         var carUpdatePricingDTO = carService.findById(id);
+        var carUpdateStatusDTO = carService.findById(id);
 
+        model.addAttribute("carUpdateStatusDTO", carUpdateStatusDTO);
         model.addAttribute("carUpdatePricingDTO", carUpdatePricingDTO);
         model.addAttribute("carUpdateDetailDTO", carUpdateDetailDTO);
         model.addAttribute("carDTO", carDTO);
@@ -322,22 +318,21 @@ public class CarController {
                        @RequestParam("imageLeft") MultipartFile imageLeft,
                        @RequestParam("imageRight") MultipartFile imageRight,
                        BindingResult bindingResult,
-                       Model model)
-    {
+                       Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("carUpdateDetailDTO", carUpdateDetailDTO);
             return "car/edit";
         }
 
         var oldcar = carService.findById(id);
-        if ( imageFront.getOriginalFilename().isEmpty()
+        if (imageFront.getOriginalFilename().isEmpty()
                 || imageBack.getOriginalFilename().isEmpty() || imageLeft.getOriginalFilename().isEmpty()
                 || imageRight.getOriginalFilename().isEmpty()) {
             carUpdateDetailDTO.setImageFront(oldcar.getImageFront());
             carUpdateDetailDTO.setImageBack(oldcar.getImageBack());
             carUpdateDetailDTO.setImageLeft(oldcar.getImageLeft());
             carUpdateDetailDTO.setImageRight(oldcar.getImageRight());
-        }else{
+        } else {
             try {
                 byte[] bytes = imageFront.getBytes();
                 // Create folder if not exist following format:
@@ -474,15 +469,34 @@ public class CarController {
                        @ModelAttribute @Valid CarUpdatePricingDTO carUpdatePricingDTO,
                        RedirectAttributes redirectAttributes,
                        BindingResult bindingResult,
-                       Model model)
-    {
-        System.out.println(carUpdatePricingDTO);
+                       Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("carUpdatePricingDTO", carUpdatePricingDTO);
             return "car/edit-car";
         }
 
         var result = carService.update(id, carUpdatePricingDTO);
+        if (result == null) {
+            var errorMessage = new Message("error", "Failed to update car");
+            model.addAttribute("message", errorMessage);
+            return "car/edit-car";
+        }
+        var successMessage = new Message("success", "Car updated successfully");
+        redirectAttributes.addFlashAttribute("message", successMessage);
+        return "owner/owner";
+    }
+
+    @PostMapping("/edit-status/{id}")
+    public String edit(@PathVariable UUID id,
+                       @ModelAttribute @Valid CarUpdateStatusDTO carUpdateStatusDTO,
+                       RedirectAttributes redirectAttributes,
+                       BindingResult bindingResult,
+                       Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("carUpdateStatusDTO", carUpdateStatusDTO);
+            return "car/edit-car";
+        }
+        var result = carService.update(id, carUpdateStatusDTO);
         if (result == null) {
             var errorMessage = new Message("error", "Failed to update car");
             model.addAttribute("message", errorMessage);
