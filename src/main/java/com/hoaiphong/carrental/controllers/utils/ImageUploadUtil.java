@@ -1,11 +1,13 @@
 package com.hoaiphong.carrental.controllers.utils;
 
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.validation.BindingResult;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
@@ -13,7 +15,7 @@ import java.time.LocalDateTime;
 public class ImageUploadUtil {
 
     public String uploadImage(MultipartFile imageFile, String oldImagePath, Model model, BindingResult bindingResult) {
-        if (imageFile.getOriginalFilename().isEmpty()) {
+        if (imageFile == null || imageFile.getOriginalFilename().isEmpty()) {
             // Nếu không có tệp mới, trả về đường dẫn ảnh cũ
             return oldImagePath;
         } else {
