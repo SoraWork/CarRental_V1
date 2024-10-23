@@ -21,10 +21,5 @@ public class HomeController {
         return "owner/owner";
     }
 
-   
-        @GetMapping("addCar")
-        public String addCar()  {
-            return "owner/addCar/addCar";
-        }
 
 }

@@ -2,10 +2,9 @@ package com.hoaiphong.carrental.repositories;
 
 import com.hoaiphong.carrental.entities.Car;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.UUID;
 
-@Repository
-public interface CarRepository extends JpaRepository<Car, UUID> {
+public interface CarRepository extends JpaRepository<Car, UUID>, JpaSpecificationExecutor<Car> {
 }

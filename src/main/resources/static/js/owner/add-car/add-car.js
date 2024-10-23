@@ -1,12 +1,12 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Lấy các nút
-    const cancelButtons = document.querySelectorAll('#cancelBtn'); // Lấy tất cả các nút Cancel
-    const nextButtons = document.querySelectorAll('#nextBtn'); // Lấy tất cả các nút Next
+    const cancelButtons = document.querySelectorAll('.cancelBtn'); // Lấy tất cả các nút Cancel
+    const nextButtons = document.querySelectorAll('.nextBtn'); // Lấy tất cả các nút Next
     const messageDiv = document.getElementById('message');
 
     // Nút Cancel quay về bước đầu tiên
     cancelButtons.forEach((button) => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             // Ẩn tất cả các bước
             const allSteps = document.querySelectorAll('.tab-pane');
             allSteps.forEach(step => {
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Nút Next chuyển đến bước tiếp theo
     nextButtons.forEach((button) => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             const currentStep = document.querySelector('.tab-pane.active');
             const nextStep = currentStep.nextElementSibling; // Lấy bước tiếp theo
 
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateNavLinks(currentStepId, nextStepId) {
         const currentNavLink = document.querySelector(`a[href="#${currentStepId}"]`);
         const nextNavLink = document.querySelector(`a[href="#${nextStepId}"]`);
-        
+
         // Đánh dấu bước hiện tại là đã hoàn thành
         if (currentNavLink) {
             currentNavLink.classList.remove('active'); // Xóa active khỏi bước hiện tại
@@ -91,4 +91,79 @@ document.addEventListener('DOMContentLoaded', function() {
             firstNavLink.classList.add('active');
         }
     }
+
+
+    function triggerFileInput(inputId) {
+        document.getElementById(inputId).click();
+    }
+
+    function showPreview(inputId, previewId) {
+        const input = document.getElementById(inputId);
+        const preview = document.createElement("p");  // Tạo thẻ <p> để hiển thị kết quả
+        const file = input.files[0]; // Lấy file đã chọn
+
+        if (file) {
+            const previewContainer = document.getElementById(previewId);
+            previewContainer.innerHTML = ''; // Xóa nội dung cũ
+
+            if (file.type.startsWith("image/")) {
+                // Nếu file là ảnh, tạo thẻ img để hiển thị ảnh
+                const img = document.createElement("img");
+                img.src = URL.createObjectURL(file);
+                img.style.maxWidth = "100%"; // Giới hạn chiều rộng của ảnh
+                previewContainer.appendChild(img);
+            } else {
+                // Nếu không phải là ảnh, hiển thị tên file
+                preview.textContent = `Selected file: ${file.name}`;
+                previewContainer.appendChild(preview);
+            }
+        }
+    }
+
+// Gán sự kiện click để kích hoạt chọn file
+    document.getElementById("container-registration").addEventListener("click", function () {
+        triggerFileInput( "registrationPaperFile");
+    });
+    document.getElementById("container-inspection").addEventListener("click", function () {
+        triggerFileInput("inspection");
+    });
+    document.getElementById("container-insurance").addEventListener("click", function () {
+        triggerFileInput("insurance");
+    });
+    document.getElementById("front-image-container").addEventListener("click", function () {
+        triggerFileInput("file-upload-front")
+    })
+    document.getElementById("back-image-container").addEventListener("click", function () {
+        triggerFileInput("file-upload-back")
+    })
+    document.getElementById("left-image-container").addEventListener("click", function () {
+        triggerFileInput("file-upload-left")
+    })
+    document.getElementById("right-image-container").addEventListener("click", function () {
+        triggerFileInput("file-upload-right")
+    })
+// Gán sự kiện change cho input file
+//     document.getElementById( "registrationPaperFile").addEventListener("change", function () {
+//         showPreview( "registrationPaperFile", "container-registration");
+//     });
+//     document.getElementById("inspection").addEventListener("change", function () {
+//         showPreview("inspection", "container-inspection");
+//     });
+//     document.getElementById("insurance").addEventListener("change", function () {
+//         showPreview("insurance", "container-insurance");
+//     });
+//
+//     document.getElementById("file-upload-front").addEventListener("change", function () {
+//         showPreview("file-upload-front", "front-image-container");
+//     });
+//     document.getElementById("file-upload-back").addEventListener("change", function () {
+//         showPreview("file-upload-back", "back-image-container");
+//     });
+//     document.getElementById("file-upload-left").addEventListener("change", function () {
+//         showPreview("file-upload-left", "left-image-container");
+//     });
+//     document.getElementById("file-upload-right").addEventListener("change", function () {
+//         showPreview("file-upload-right", "right-image-container");
+//     });
+
 });
