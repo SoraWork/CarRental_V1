@@ -145,7 +145,7 @@ public class CarController {
                         + originalFileName.substring(originalFileName.lastIndexOf("."));
                 Path path = Paths.get(folder.toString(), fileName);
                 Files.write(path, bytes);
-                carCreateDTO.setRegistrationPaper(folder.toString().replace("src\\main\\resources\\static", "") + "/" + fileName);
+                carCreateDTO.setInsurance(folder.toString().replace("src\\main\\resources\\static", "") + "/" + fileName);
             } catch (Exception e) {
                 e.printStackTrace();
                 Message errorMessage = new Message("error", "Failed to upload file");

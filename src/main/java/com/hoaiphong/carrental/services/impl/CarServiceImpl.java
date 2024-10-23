@@ -281,7 +281,7 @@ public class CarServiceImpl implements CarService {
         car.setNoFoodInCar(carCreateDTO.isNoFoodInCar());
         car.setOther(carCreateDTO.isOther());
         car.setOtherMessage(carCreateDTO.getOtherMessage());
-
+        car.setStatus("available");
         car.setUser(carCreateDTO.getUser());
 
         carRepository.save(car);
