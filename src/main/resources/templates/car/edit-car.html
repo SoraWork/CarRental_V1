@@ -91,16 +91,18 @@
 
                     <div class="col d-flex justify-content-between mt-2">
                         <form class="w-100 d-flex justify-content-between" method="post"
-                              th:action="@{/car/edit-status/{id} (id=${carUpdateStatusDTO.id})}" th:object="${carUpdateStatusDTO}">
+                              th:action="@{/car/edit-status/{id} (id=${carUpdateStatusDTO.id})}"
+                              th:object="${carUpdateStatusDTO}">
                             <input th:field="*{id}" type="hidden"/> <!-- Thêm trường ID ẩn -->
                             <div class="w-75">
                                 <h1 th:if="${carDTO != null}" th:text="${carDTO.brand + ' ' + carDTO.model}"></h1>
                                 <h1 th:unless="${carDTO != null}">No car information available</h1>
 
-                               <div class="d-flex alight-items-center gap-2">
-                                   <strong class="fs-3">No. of rides:</strong>
-                                   <p class="fs-3" th:text="${carDTO.numOfSeats != null ? carDTO.numOfSeats : 'Not available'}"></p>
-                               </div>
+                                <div class="d-flex alight-items-center gap-2">
+                                    <strong class="fs-3">No. of rides:</strong>
+                                    <p class="fs-3"
+                                       th:text="${carDTO.numOfSeats != null ? carDTO.numOfSeats : 'Not available'}"></p>
+                                </div>
                                 <div class="d-flex alight-items-center gap-2">
                                     <strong class="fs-3">Price:</strong>
                                     <p class="fs-3" th:if="${carDTO != null && carDTO.basePrice != null}"
@@ -116,10 +118,19 @@
                                     </p>
                                 </div>
 
-                                <select class="fs-3 px-2" id="status" name="status" title="status" th:classappend="${carUpdateStatusDTO.status == 'available' ? 'text-success' : (carUpdateStatusDTO.status == 'booked' ? 'text-primary' : (carUpdateStatusDTO.status == 'stopped' ? 'text-danger' : ''))}">
-                                    <option class="text-success" th:selected="${carUpdateStatusDTO.status == 'available'}" value="available">Available</option>
-                                    <option class="text-primary" th:selected="${carUpdateStatusDTO.status == 'booked'}" value="booked">Booked</option>
-                                    <option class="text-danger" th:selected="${carUpdateStatusDTO.status == 'stopped'}" value="stopped">Stopped</option>
+                                <select class="fs-3 px-2" id="status" name="status"
+                                        th:classappend="${carUpdateStatusDTO.status == 'available' ? 'text-success' : (carUpdateStatusDTO.status == 'booked' ? 'text-primary' : (carUpdateStatusDTO.status == 'stopped' ? 'text-danger' : ''))}"
+                                        title="status">
+                                    <option class="text-success"
+                                            th:selected="${carUpdateStatusDTO.status == 'available'}" value="available">
+                                        Available
+                                    </option>
+                                    <option class="text-primary" th:selected="${carUpdateStatusDTO.status == 'booked'}"
+                                            value="booked">Booked
+                                    </option>
+                                    <option class="text-danger" th:selected="${carUpdateStatusDTO.status == 'stopped'}"
+                                            value="stopped">Stopped
+                                    </option>
                                 </select>
 
                             </div>
@@ -259,7 +270,7 @@
                             <form class="detail-123" enctype="multipart/form-data"
                                   method="post" th:action="@{/car/edit-detail/{id}(id=${carUpdateDetailDTO.id}) }"
                                   th:object="${carUpdateDetailDTO}">
-                                <input th:field="*{id}" type="hidden"/> <!-- Thêm trường ID ẩn -->
+                                <input th:field="*{id}" type="hidden"/>
 
                                 <div class="mileage-and-fuel-123">
                                     <div class="d-flex flex-column fw-bold col">
@@ -355,83 +366,104 @@
                                     <div th:with="car=${carUpdateDetailDTO}">
                                         <div class="image-sad1" th:if="${car != null}">
                                             <div class="img-container-123">
-                                                <div class="input-file">
-                                                    <label class="block text-sm font-medium text-gray-700 mb-2"
-                                                           for="imageBack">Image</label>
-                                                    <input class="form-control w-full p-2 border border-slate-300 rounded-md"
-                                                           id="imageFront" min="1"
-                                                           th:field="*{imageFront}"
-                                                           type="file">
+                                                <!-- Hiển thị nếu có car.imageFront -->
+                                                <div class="image-container" th:if="${car.imageFront != null}">
+                                                    <label for="image-front">Front</label>
+                                                    <img alt="image-front"
+                                                         id="image-front"
+                                                         th:src="${car.imageFront}"/>
+                                                </div>
+
+                                                <!-- Hiển thị nếu không có car.imageFront -->
+                                                <div class="file-upload border rounded p-3 text-center"
+                                                     th:if="${car.imageFront == null}">
+                                                    <i class="fa fa-upload fa-2x"></i>
+                                                    <p>Drag and drop <br/> OR</p>
+                                                    <label for="file-upload-front"> Choose file</label>
+                                                    <input
+                                                            id="file-upload-front"
+                                                            name="imageFrontFile"
+                                                            type="file"
+                                                    />
                                                     <span class="text-red-500" th:errors="*{imageFront}"
                                                           th:if="${#fields.hasErrors('imageFront')}"></span>
                                                 </div>
 
-                                                <div class="file-preview">
-                                                    <label class="block text-sm font-medium text-gray-700 mb-2"
-                                                           for="imagePreview4">Preview</label>
-                                                    <img alt="imagePreview4"
-                                                         class="w-full object-cover rounded-md"
-                                                         id="imagePreview4" th:src="${car.imageFront}"/>
+                                                <div class="image-container" id="front-image-container"
+                                                     style="display: none;">
+                                                    <label for="image-preview-front">Front</label>
+                                                    <img alt="image-preview-front"
+                                                         id="image-preview-front"
+                                                         src=""/>
                                                 </div>
                                             </div>
+
+                                            <!-- Back Image Container -->
                                             <div class="img-container-123">
-                                                <div class="input-file">
-                                                    <label class="block text-sm font-medium text-gray-700 mb-2"
-                                                           for="imageBack">Image</label>
-                                                    <input class="form-control w-full p-2 border border-slate-300 rounded-md"
-                                                           id="imageBack" min="1"
-                                                           th:field="*{imageBack}"
-                                                           type="file">
-                                                    <span class="text-red-500" th:errors="*{imageBack}"
-                                                          th:if="${#fields.hasErrors('imageBack')}"></span>
+                                                <!-- Hiển thị nếu có car.imageBack -->
+                                                <div class="image-container" th:if="${car.imageBack != null}">
+                                                    <label for="image-back">Back</label>
+                                                    <img alt="image-back" id="image-back" th:src="${car.imageBack}"/>
                                                 </div>
 
-                                                <div class="file-preview">
-                                                    <label class="block text-sm font-medium text-gray-700 mb-2"
-                                                           for="imagePreview3">Preview</label>
-                                                    <img alt="imagePreview3"
-                                                         class="w-full object-cover rounded-md"
-                                                         id="imagePreview3" th:src="${car.imageBack}"/>
+                                                <!-- Hiển thị nếu không có car.imageBack -->
+                                                <div class="file-upload border rounded p-3 text-center" th:if="${car.imageBack == null}">
+                                                    <i class="fa fa-upload fa-2x"></i>
+                                                    <p>Drag and drop <br/> OR</p>
+                                                    <label for="file-upload-back"> Choose file</label>
+                                                    <input id="file-upload-back" name="imageBackFile" type="file"/>
+                                                    <span class="text-red-500" th:errors="*{imageBack}" th:if="${#fields.hasErrors('imageBack')}"></span>
+                                                </div>
+
+                                                <div class="image-container" id="back-image-container" style="display: none;">
+                                                    <label for="image-preview-back">Back </label>
+                                                    <img alt="image-preview-back" id="image-preview-back" src=""/>
                                                 </div>
                                             </div>
+
+                                            <!-- Left Image Container -->
                                             <div class="img-container-123">
-                                                <div class="input-file">
-                                                    <label class="block text-sm font-medium text-gray-700 mb-2"
-                                                           for="imageLeft">Image</label>
-                                                    <input class="form-control w-full p-2 border border-slate-300 rounded-md"
-                                                           id="imageLeft" min="1"
-                                                           th:field="*{imageLeft}"
-                                                           type="file">
-                                                    <span class="text-red-500" th:errors="*{imageLeft}"
-                                                          th:if="${#fields.hasErrors('imageLeft')}"></span>
+                                                <!-- Hiển thị nếu có car.imageLeft -->
+                                                <div class="image-container" th:if="${car.imageLeft != null}">
+                                                    <label for="image-left">Left</label>
+                                                    <img alt="image-left" id="image-left" th:src="${car.imageLeft}"/>
                                                 </div>
 
-                                                <div class="file-preview">
-                                                    <label class="block text-sm font-medium text-gray-700 mb-2"
-                                                           for="imagePreview2">Preview</label>
-                                                    <img alt="imagePreview2"
-                                                         class="w-full object-cover rounded-md"
-                                                         id="imagePreview2" th:src="${car.imageLeft}"/>
+                                                <!-- Hiển thị nếu không có car.imageLeft -->
+                                                <div class="file-upload border rounded p-3 text-center" th:if="${car.imageLeft == null}">
+                                                    <i class="fa fa-upload fa-2x"></i>
+                                                    <p>Drag and drop <br/> OR</p>
+                                                    <label for="file-upload-left"> Choose file</label>
+                                                    <input id="file-upload-left" name="imageLeftFile" type="file"/>
+                                                    <span class="text-red-500" th:errors="*{imageLeft}" th:if="${#fields.hasErrors('imageLeft')}"></span>
+                                                </div>
+
+                                                <div class="image-container" id="left-image-container" style="display: none;">
+                                                    <label for="image-preview-left">Left </label>
+                                                    <img alt="image-preview-left" id="image-preview-left" src=""/>
                                                 </div>
                                             </div>
+
+                                            <!-- Right Image Container -->
                                             <div class="img-container-123">
-                                                <div class="input-file">
-                                                    <label class="block text-sm font-medium text-gray-700 mb-2"
-                                                           for="imageRight">Image</label>
-                                                    <input class="form-control w-full p-2 border border-slate-300 rounded-md"
-                                                           id="imageRight" min="1"
-                                                           th:field="*{imageRight}"
-                                                           type="file">
-                                                    <span class="text-red-500" th:errors="*{imageRight}"
-                                                          th:if="${#fields.hasErrors('imageRight')}"></span>
+                                                <!-- Hiển thị nếu có car.imageRight -->
+                                                <div class="image-container" th:if="${car.imageRight != null}">
+                                                    <label for="image-right">Right</label>
+                                                    <img alt="image-right" id="image-right" th:src="${car.imageRight}"/>
                                                 </div>
 
-                                                <div class="file-preview">
-                                                    <label class="block text-sm font-medium text-gray-700 mb-2"
-                                                           for="imagePreview2">Preview</label>
-                                                    <img alt="imagePreview"
-                                                         class="w-full object-cover rounded-md"
-                                                         id="imagePreview1" th:src="${car.imageRight}"/>
+                                                <!-- Hiển thị nếu không có car.imageRight -->
+                                                <div class="file-upload border rounded p-3 text-center" th:if="${car.imageRight == null}">
+                                                    <i class="fa fa-upload fa-2x"></i>
+                                                    <p>Drag and drop <br/> OR</p>
+                                                    <label for="file-upload-right"> Choose file</label>
+                                                    <input id="file-upload-right" name="imageRightFile" type="file"/>
+                                                    <span class="text-red-500" th:errors="*{imageRight}" th:if="${#fields.hasErrors('imageRight')}"></span>
+                                                </div>
+
+                                                <div class="image-container" id="right-image-container" style="display: none;">
+                                                    <label for="image-preview-right">Right </label>
+                                                    <img alt="image-preview-right" id="image-preview-right" src=""/>
                                                 </div>
                                             </div>
                                         </div>
