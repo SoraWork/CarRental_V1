@@ -410,5 +410,29 @@ public class CarController {
         redirectAttributes.addFlashAttribute("message", successMessage);
         return "owner/owner";
     }
+
+    @GetMapping("/list")
+    public String list(Model model) {
+        var cars = carService.findAll();
+        model.addAttribute("cars", cars);
+        return "car/list";
+    }
+
+    @GetMapping("editstatus/{id}")
+    public String editstatus(@PathVariable UUID id, Model model) {
+        var car = carService.findById(id);
+        model.addAttribute("car", car);
+        return "car/detail";
+    }
+
+    @PostMapping("editstatus/{id}")
+    public String editstatus(@PathVariable UUID id,
+    RedirectAttributes redirectAttributes,
+    BindingResult bindingResult, Model model) {
+        var car = carService.findById(id);
+        model.addAttribute("car", car);
+        return "car/detail";
+    }
+
 }
 

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{shared/layouts/layout}"
+>
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Home</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}"/>
+    <script type="module" th:src="@{/js/home/home.js}"></script>
+
+</head>
+
+<body>
+<section layout:fragment="content" class="container my-5">
+    <h1>Car List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Brand</th>
+                <th>Model</th>
+                <th>Price</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Vòng lặp qua danh sách cars -->
+            <tr th:each="car : ${cars}">
+                <td th:text="${car.id}"></td>
+                <td th:text="${car.brand}"></td>
+                <td th:text="${car.model}"></td>
+                <td th:text="${car.basePrice}"></td>
+                <td th:text="${car.address}"></td>
+                <td th:text="${car.status}"></td>
+                <td>
+                    <div class="action flex justify-center items-center gap-3">
+                        <a 
+                            class="btn btn-sm btn-primary">
+                            ViewDetail
+                        </a>
+                        <a 
+                         class="btn btn-sm btn-danger">
+                           ConfirmDeposit
+                        </a>
+                        <a
+                            class="btn btn-sm btn-danger">
+                           ConfirmPayment
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+</body>
+</html>
