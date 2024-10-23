@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import com.hoaiphong.carrental.dtos.user.UserDTOBase;
 import com.hoaiphong.carrental.dtos.user.UserUpdateDTO;
 import com.hoaiphong.carrental.dtos.user.UserUpdatePasswordDTO;
+import com.hoaiphong.carrental.dtos.user.UserUpdateWalletDTO;
 import com.hoaiphong.carrental.entities.User;
 
 public interface UserService {
@@ -28,9 +29,15 @@ public interface UserService {
 
     UserUpdateDTO update(UserUpdateDTO userUpdateDTO, String email);
 
+    UserDTOBase update(UserUpdateWalletDTO userUpdateWalletDTO, String email);
+
     UserDTOBase update(UserUpdatePasswordDTO userUpdatePasswordDTO, String email);
 
     String sendEmail(User user);
 
     boolean hasExipred(LocalDateTime expiryDateTime);
+
+    User findByUsername(String currentUsername);
+
+    void update(User currentUser, String currentUsername);
 }

@@ -54,7 +54,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
         user.setAddress(userDTOBase.getAddress());
         user.setEmail(userDTOBase.getEmail());
         user.setDrivingLicense(userDTOBase.getDrivingLicense());
-        user.setWallet(userDTOBase.getWallet());
+        user.setWallet(0.0);
         user.setUsername(userDTOBase.getUsername());
         user.setEmail(userDTOBase.getEmail());
         user.setPassword(passwordEncoder.encode(userDTOBase.getPassword()));

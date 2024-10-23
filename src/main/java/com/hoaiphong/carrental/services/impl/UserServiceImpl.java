@@ -19,6 +19,7 @@ import com.hoaiphong.carrental.dtos.user.RoleDTO;
 import com.hoaiphong.carrental.dtos.user.UserDTOBase;
 import com.hoaiphong.carrental.dtos.user.UserUpdateDTO;
 import com.hoaiphong.carrental.dtos.user.UserUpdatePasswordDTO;
+import com.hoaiphong.carrental.dtos.user.UserUpdateWalletDTO;
 import com.hoaiphong.carrental.entities.PasswordResetToken;
 import com.hoaiphong.carrental.entities.Role;
 import com.hoaiphong.carrental.entities.User;
@@ -479,6 +480,41 @@ public class UserServiceImpl implements UserService {
     public boolean hasExipred(LocalDateTime expiryDateTime) {
         LocalDateTime currentDateTime = LocalDateTime.now();
 		return expiryDateTime.isAfter(currentDateTime);
+    }
+
+    @Override
+    public UserDTOBase update(UserUpdateWalletDTO userUpdateWalletDTO, String email) {
+        var existingMember = userRepository.findByEmail(email);
+        if (existingMember == null) {
+            throw new IllegalArgumentException("User with email " + email + " does not exist");
+        }
+
+        // Update fields with data from DTO
+        existingMember.setWallet(userUpdateWalletDTO.getWallet());
+        // Save the updated member
+        var updateMember = userRepository.save(existingMember);
+
+        // Convert updated entity to DTO and return
+        var updateUserDTO = new UserDTOBase();
+        updateUserDTO.setWallet(updateMember.getWallet());
+        // updateUserDTO.setDrivingLicense(updateMember.getDrivingLicense());
+
+        return updateUserDTO;
+    }
+
+    @Override
+    public User findByUsername(String currentUsername) {
+        return userRepository.findByEmail(currentUsername);
+    }
+
+    @Override
+    public void update(User currentUser, String currentUsername) {
+        var user = userRepository.findByEmail(currentUsername);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+        user.setWallet(currentUser.getWallet());
+        userRepository.save(user);
     }
 
 }
