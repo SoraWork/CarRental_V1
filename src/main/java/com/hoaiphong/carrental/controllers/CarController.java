@@ -418,20 +418,27 @@ public class CarController {
         return "car/list";
     }
 
-    @GetMapping("editstatus/{id}")
-    public String editstatus(@PathVariable UUID id, Model model) {
-        var car = carService.findById(id);
-        model.addAttribute("car", car);
-        return "car/detail";
-    }
-
-    @PostMapping("editstatus/{id}")
-    public String editstatus(@PathVariable UUID id,
-    RedirectAttributes redirectAttributes,
-    BindingResult bindingResult, Model model) {
-        var car = carService.findById(id);
-        model.addAttribute("car", car);
-        return "car/detail";
+    @PostMapping("/listconfirm")
+    public String confirm(@ModelAttribute CarUpdateStatusDTO carUpdateStatusDTO, RedirectAttributes redirectAttributes) {
+        UUID carId;
+        
+        try {
+            carId = UUID.fromString(carUpdateStatusDTO.getId().toString());
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("message", new Message("error", "Invalid car ID format."));
+            return "redirect:/car/list";  // Redirect to the GET /list if UUID format is invalid
+        }
+        
+        // Tiếp tục với logic cập nhật nếu ID hợp lệ
+        var result = carService.update(carId, carUpdateStatusDTO);
+        
+        if (result == null) {
+            redirectAttributes.addFlashAttribute("message", new Message("error", "Failed to update car"));
+            return "redirect:/car/list";  // Redirect to the GET /list
+        }
+        
+        redirectAttributes.addFlashAttribute("message", new Message("success", "Car updated successfully"));
+        return "redirect:/car/list";  // Redirect to the GET /list
     }
 
 }
