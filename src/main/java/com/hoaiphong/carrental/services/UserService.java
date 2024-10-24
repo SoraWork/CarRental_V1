@@ -12,7 +12,7 @@ import com.hoaiphong.carrental.dtos.user.UserUpdatePasswordDTO;
 import com.hoaiphong.carrental.dtos.user.UserUpdateWalletDTO;
 import com.hoaiphong.carrental.entities.User;
 
-public interface UserRepository {
+public interface UserService {
     List<UserDTOBase> findAll();
 
     Page<UserDTOBase> findAll(String keyword, Pageable pageable);
