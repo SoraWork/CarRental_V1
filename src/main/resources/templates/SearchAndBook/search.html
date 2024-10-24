@@ -419,6 +419,10 @@
                     alert("Please enter all date and time fields.");
                     return;
                 }
+                if (startDate > endDate) {
+                    alert("Start date must be before end date.");
+                    return;
+                }
 
                 // Hợp nhất start date và start time thành định dạng ISO 8601
                 const startDateTime = `${startDate}T${startTime}`;

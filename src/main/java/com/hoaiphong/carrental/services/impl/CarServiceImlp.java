@@ -29,13 +29,15 @@ public class CarServiceImlp implements CarService {
     public Page<Car> search(String name, Pageable pageable) {
         Specification<Car> spec = (root, query, criteriaBuilder) -> {
             if (name == null || name.isEmpty()) {
-                return criteriaBuilder.conjunction(); // Trả về tất cả kết quả nếu name rỗng
+                // return criteriaBuilder.conjunction();
+                return null; // Trả về tất cả kết quả nếu name rỗng
             }
 
             // Sử dụng criteriaBuilder để tạo điều kiện tìm kiếm theo name hoặc description
             return criteriaBuilder.or(
                     criteriaBuilder.like(root.get("name"), "%" + name + "%"),
-                    criteriaBuilder.like(root.get("description"), "%" + name + "%")
+                    criteriaBuilder.like(root.get("description"), "%" + name + "%"),
+                    criteriaBuilder.like(root.get("address"), "%" + name + "%")
             );
         };
 

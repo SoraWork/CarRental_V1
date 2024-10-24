@@ -11,6 +11,6 @@ import com.hoaiphong.carrental.entities.Car;
 public interface CarRepository extends JpaRepository<Car, UUID>,
  JpaSpecificationExecutor<Car> {
     Optional findById(java.util.UUID id);
-
+     
     
 }

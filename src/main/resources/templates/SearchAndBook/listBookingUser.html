@@ -12,6 +12,8 @@
     <script type="module" th:src="@{/js/home/home.js}"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
     <style>
         .custom-padding {
@@ -27,7 +29,7 @@
         }
 
         .full-height {
-            height: 500px;
+            height: 700px;
             /* Chiều cao cố định */
         }
 
@@ -164,6 +166,7 @@
                                         <div class="container w-100 h-100" style="margin-top: 0px">
                                             <table class="table w-100 h-100 text-2xl">
                                                 <thead>
+
                                                     <tr>
                                                         <th colspan="2" scope="col"
                                                             class="text-center align-middle text-4xl text-black">
@@ -171,11 +174,7 @@
                                                                 2017</span>
                                                         </th>
                                                         <th class="text-center font-bold bg-blue-600 text-white">
-                                                            <button th:if="${carBooking.status == 'progress'}"
-                                                                class="bg-blue-500 text-white font-bold py-2 px-5 rounded-lg w-full">
-                                                                Return Off
-                                                            </button>
-                                                            <a id="rentNowLink" href="#" class="hidden"></a>
+
                                                         </th>
                                                     </tr>
                                                 </thead>
@@ -188,7 +187,7 @@
                                                         <td class="font-bold text-left py-1">
                                                             <div class="flex flex-col items-center">
                                                                 <span class=" text-1xl">
-                                                                    <span
+                                                                    <span class="startDate"
                                                                         th:text="${#temporals.format(carBooking.booking.startDate, 'dd/MM/yyyy')}">13/02/2022</span>
                                                                     -
                                                                     <span
@@ -220,7 +219,7 @@
                                                         <td class="font-bold text-left py-1">
                                                             <div class="flex flex-col items-center">
                                                                 <span class=" text-1xl">
-                                                                    <span
+                                                                    <span class="endDate"
                                                                         th:text="${#temporals.format(carBooking.booking.endDate, 'dd/MM/yyyy')}">13/02/2022</span>
                                                                     -
                                                                     <span
@@ -234,14 +233,16 @@
 
                                                             <a th:href="@{/detail/{carId}(carId=${carBooking.Car.id})}"
                                                                 class="d-block">
-                                                                <button th:if="${carBooking.status == 'in-progress'}"
+                                                                <button
+                                                                    th:if="${carBooking.status == 'deposit-pending'}"
                                                                     class="bg-blue-500 text-white font-bold py-2 px-5 rounded-lg w-full">
-                                                                    Return Off
+                                                                    View Detail
                                                                 </button>
-                                                                <button th:if="${carBooking.status == 'Confirm'}"
-                                                                    class="bg-gray-800 text-black font-bold py-2 px-5 rounded-lg w-full">
-                                                                    Confirm Pick-up
-                                                                </button>
+                                                            </a>
+                                                            <button th:if="${carBooking.status == 'Confirm'}"
+                                                                class="bg-gray-800 text-black font-bold py-2 px-5 rounded-lg w-full">
+                                                                Confirm Pick-up
+                                                            </button>
                                                         </td>
 
                                                     </tr>
@@ -251,19 +252,41 @@
                                                         <td class="font-bold text-left"
                                                             th:text="${carBooking.Car.numOfSeats}">0
                                                         </td>
+                                                        <td class="carId123 hidden" th:text="${carBooking.Car.id}"></td>
+                                                        <td class="bookingId123 hidden"
+                                                            th:text="${carBooking.Booking.id}"></td>
                                                         <td>
-                                                        
-                                                        <button th:if="${carBooking.status == 'Confirm'}"
-                                                            class="bg-red-500 text-white font-bold py-2 px-5 rounded-lg w-full">
-                                                            Cancel Booking
-                                                        </button>
+
+                                                            <button th:if="${carBooking.status == 'Confirm'}"
+                                                                class="bg-red-500 text-white font-bold py-2 px-5 rounded-lg w-full">
+                                                                Cancel Booking
+                                                            </button>
+
+                                                            <button th:if="${carBooking.status == 'in-progress'}"
+                                                                id="yesButton"
+                                                                class="bg-blue-500 text-white font-bold yesButton yesButtonClass  px-5 py-2 rounded-lg w-full"
+                                                                data-toggle="modal" data-target="#returnCarModal">
+                                                                Return Off
+                                                            </button>
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td class="font-bold text-left">Price</td>
-                                                        <td class="font-bold text-left"
+                                                        <td class="font-bold text-left">Base Price</td>
+                                                        <td class="font-bold text-left basePrice  "
                                                             th:text="${carBooking.Car.basePrice}">
                                                             900k/day
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="font-bold text-left">Deposit</td>
+                                                        <td class="font-bold text-left deposit"
+                                                            th:text="${carBooking.Car.deposit}">
+
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="font-bold text-left">Total Price</td>
+                                                        <td class="font-bold text-left totalPrice ">
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -273,6 +296,8 @@
                                                             Giay,
                                                             Ha
                                                             Noi</td>
+                                                        <td th:text="${carBooking.Car.getId()}"></td>
+                                                        <td th:text="${carBooking.Booking.getId()}"></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="font-bold  text-left">Status</td>
@@ -347,46 +372,249 @@
             </div>
 
         </div>
+        <!-- Modal cho deposit lớn hơn total -->
+        <div class="modal fade" id="depositGreaterModal" tabindex="-1" role="dialog"
+            aria-labelledby="depositGreaterModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="depositGreaterModalLabel">Deposit Greater</h5>
+                        <button onclick="closeModal('#depositLessModal')" type="button" class="close"
+                            data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Your deposit is greater than the total amount.</p>
+                        <p>The remaining amount will be credited back to your wallet.</p>
+                        <p id="remainingAmountGreater"></p>
+                    </div>
+                    <div class="flex justify-between">
+                        <div class="modal-footer">
+                            <button type="button" id="confirmPaymentDepositGreaterTotal123" class="btn btn-secondary" data-dismiss="modal">Yes</button>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button"  onclick="closeModal('#depositGreaterModal')"
+                                class="btn btn-secondary " data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal cho deposit nhỏ hơn total -->
+        <div class="modal fade" id="depositLessModal" tabindex="-1" role="dialog"
+            aria-labelledby="depositLessModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="depositLessModalLabel">Deposit Less</h5>
+                        <button type="button" class="close" onclick="closeModal('#depositLessModal')"
+                            aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Your deposit is less than the total amount.</p>
+                        <p>Please pay the remaining amount to complete the return.</p>
+                        <p id="remainingAmountLess"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="confirmPaymentDepositLessTotal123" type="button" class="btn btn-secondary"
+                            data-dismiss="modal">Confirm</button>
+                        <button type="button" onclick="closeModal('#depositLessModal')" class="btn btn-secondary"
+                            data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- pass date and time to url of button rentnow-->
         <script>
-            function handleRentNow(buttonElement) {
-                // Lấy giá trị carId từ thẻ button (hoặc bạn có thể lấy từ bất kỳ thẻ nào khác)
-                const carId = buttonElement.getAttribute('data-car-id');
+            let carId = null;  // Biến toàn cục
+            let bookingId = null;  // Biến toàn cục
 
-                // Lấy giá trị từ input date và time
-                const startDate = document.getElementById('startDate').value;
-                const startTime = document.getElementById('startTime').value;
-                const endDate = document.getElementById('endDate').value;
-                const endTime = document.getElementById('endTime').value;
+            document.querySelectorAll('.yesButton').forEach(button => {
+                button.onclick = function () {
+                    // Lấy giá trị deposit và total từ thuộc tính data của nút được nhấn
+                    const depositText = parseFloat(this.getAttribute("data-deposit")); // Lấy giá trị deposit
+                    const totalText = parseFloat(this.getAttribute("data-total"));
+                    carId = this.getAttribute("data-car-id");  // Gán giá trị cho biến toàn cục
+                    bookingId = this.getAttribute("data-booking-id");  // Gán giá trị cho biến toàn cục
 
-                // Kiểm tra xem tất cả các giá trị đã được nhập đầy đủ
-                if (!startDate || !startTime || !endDate || !endTime) {
-                    alert("Please enter all date and time fields.");
-                    return;
-                }
+                    // Lấy giá trị total
+                    console.log("Deposit Text:", depositText);
+                    console.log("Total Text:", totalText);
+                    console.log("Selected carId:", carId, "Selected bookingId:", bookingId);  // Log cho kiểm tra
 
-                // Hợp nhất start date và start time thành định dạng ISO 8601
-                const startDateTime = `${startDate}T${startTime}`;
-                const endDateTime = `${endDate}T${endTime}`;
+                    const deposit = parseFloat(depositText); // Chuyển đổi thành số
+                    const total = parseFloat(totalText);
+                    if (deposit > total) {
+                        $('#returnCarModal').modal('hide'); // Ẩn modal ban đầu
+                        $('#depositGreaterModal').modal('show'); // Hiện modal cho deposit lớn hơn total
+                        const remainingAmount = deposit - total;
+                        document.getElementById('remainingAmountGreater').innerText = `You have ${remainingAmount.toLocaleString('vi-VN')} VND remaining.`;
+                    } else {
+                        $('#returnCarModal').modal('hide'); // Ẩn modal ban đầu
+                        $('#depositLessModal').modal('show'); // Hiện modal cho deposit nhỏ hơn total
+                        const remainingAmount = total - deposit;
+                        document.getElementById('remainingAmountLess').innerText = `You have ${remainingAmount.toLocaleString('vi-VN')} VND remaining.`;
+                    }
+                };
+            });
 
-                // Lấy thẻ a và gán giá trị cho href, truyền vào carId
-                const rentNowLink = document.getElementById('rentNowLink');
+            $(document).ready(function () {
+                $('#confirmPaymentDepositLessTotal123').click(function () {
+                    console.log('Yes button clicked');
+                    console.log('Selected carId:', carId, 'Selected bookingId:', bookingId);
 
-                if (rentNowLink) {
-                    // Cập nhật đường link với carId và các tham số ngày giờ
-                    rentNowLink.href = `/bookingInformation/${carId}?startDateTime=${encodeURIComponent(startDateTime)}&endDateTime=${encodeURIComponent(endDateTime)}`;
-                    // Thực hiện click vào link để chuyển hướng
-                    rentNowLink.click();
-                } else {
-                    console.error("Link element not found!");
-                }
+                    // Kiểm tra giá trị carId và bookingId trước khi gửi AJAX
+                    if (!carId || !bookingId) {
+                        alert("Car ID or Booking ID is missing!");
+                        return; // Dừng hàm nếu không có ID
+                    }
+
+                    $.ajax({
+                        url: '/processPayment',
+                        type: 'POST',
+                        data: {
+                            carId: carId,
+                            bookingId: bookingId
+                        },
+                        success: function (response) {
+                            if (response === 'success') {
+                                // Ẩn modal tính toán
+                                $('#depositLessModal').modal('hide');
+                                // Hiển thị modal đánh giá
+                                $('#ratingModal').modal('show');
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("AJAX Error: ", error); 
+                            alert("An error occurred: " + error); 
+                        }
+                    }); // Kết thúc phần gọi AJAX
+                }); // Kết thúc hàm click
+
+                $('#confirmPaymentDepositGreaterTotal123').click(function () {
+                    console.log('Yes button clicked');
+                    console.log('Selected carId:', carId, 'Selected bookingId:', bookingId);
+
+                    // Kiểm tra giá trị carId và bookingId trước khi gửi AJAX
+                    if (!carId || !bookingId) {
+                        alert("Car ID or Booking ID is missing!");
+                        return; // Dừng hàm nếu không có ID
+                    }
+
+                    $.ajax({
+                        url: '/processPayment',
+                        type: 'POST',
+                        data: {
+                            carId: carId,
+                            bookingId: bookingId
+                        },
+                        success: function (response) {
+                            if (response === 'success') {
+                                // Ẩn modal tính toán
+                                $('#depositLessModal').modal('hide');
+                                // Hiển thị modal đánh giá
+                                $('#ratingModal').modal('show');
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("AJAX Error: ", error); 
+                            alert("An error occurred: " + error); 
+                        }
+                    }); // Kết thúc phần gọi AJAX
+                }); // Kết thúc hàm click
+
+
+            });
+
+
+            function closeModal(modalId) {
+                $(modalId).modal('hide');
             }
-
         </script>
 
+
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script>
+
+        </script>
+        <script>
+            // Hàm tính số ngày giữa hai ngày cho từng phần tử
+            function calculateTotalPrice() {
+
+// Lấy tất cả các phần tử startDate, endDate, basePrice
+const startDates = document.querySelectorAll(".startDate");
+const endDates = document.querySelectorAll(".endDate");
+const basePrices = document.querySelectorAll(".basePrice");
+const totalPrices = document.querySelectorAll(".totalPrice");
+const deposits = document.querySelectorAll(".deposit");
+const carId = document.querySelectorAll(".carId123");
+const bookingId = document.querySelectorAll(".bookingId123");
+const yesButton = document.querySelectorAll(".yesButtonClass");
+
+// Lặp qua tất cả các phần tử đã lấy
+startDates.forEach((startDateElement, index) => {
+    const startDateText = startDateElement.innerText.trim();
+    const endDateText = endDates[index].innerText.trim();
+    const basePriceText = basePrices[index].innerText.trim();
+
+    // Chuyển đổi định dạng "dd/mm/yyyy" sang Date
+    const startDateParts = startDateText.split("/");
+    const endDateParts = endDateText.split("/");
+
+    const startDate = new Date(startDateParts[2], startDateParts[1] - 1, startDateParts[0]);
+    const endDate = new Date(endDateParts[2], endDateParts[1] - 1, endDateParts[0]);
+
+    const basePrice = parseFloat(basePriceText);
+    const deposit = parseFloat(deposits[index].innerText.trim());
+
+    if (isNaN(basePrice)) {
+        console.error("Base Price is not a valid number for item " + index);
+        totalPrices[index].innerText = "Invalid Base Price";
+        return;
+    }
+
+    // Kiểm tra xem ngày có hợp lệ không
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+        console.error("Invalid date format for item " + index);
+        totalPrices[index].innerText = "Invalid Date Format";
+        return;
+    }
+
+    // Tính khoảng thời gian giữa hai ngày
+    const timeDifference = endDate.getTime() - startDate.getTime();
+    const daysBetween = timeDifference / (1000 * 3600 * 24);
+
+    if (daysBetween <= 0) {
+        console.error("End date must be after start date for item " + index);
+        totalPrices[index].innerText = "Invalid Date Range";
+        return;
+    }
+
+    // Tính tổng giá
+    const totalPrice = daysBetween * basePrice;
+    totalPrices[index].innerText = totalPrice.toLocaleString('vi-VN') + " VND"; // Hiển thị với định dạng VN
+
+    // Thiết lập các thuộc tính dữ liệu cho nút yesButton
+    yesButton[index].setAttribute("data-total", totalPrice);
+    yesButton[index].setAttribute("data-deposit", deposit);
+    yesButton[index].setAttribute("data-car-id", carId[index].innerText.trim());
+    yesButton[index].setAttribute("data-booking-id", bookingId[index].innerText.trim());
+});
+}
+     window.onload = function () {
+                calculateTotalPrice();
+            };
+
+        </script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- pass date and time to url of button rentnow-->
 
     </section>
 </body>

@@ -3,6 +3,7 @@ package com.hoaiphong.carrental.controllers;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hoaiphong.carrental.entities.Booking;
 import com.hoaiphong.carrental.entities.Car;
@@ -55,7 +57,8 @@ public class SearchController {
             @RequestParam(defaultValue = "2") int size,
             @RequestParam(required = false) String pickupLocation) {
 
-        Sort.Direction direction = Sort.Direction.fromString(order); // Convert string to Direction
+
+                Sort.Direction direction = Sort.Direction.fromString(order); // Convert string to Direction
         var pageable = PageRequest.of(page, size, Sort.by(direction, sort));
 
         // Khai báo biến carBookingsFind ở bên ngoài if/else
@@ -156,10 +159,11 @@ public class SearchController {
         CarBookingId carBookingId = new CarBookingId();
         carBookingId.setCarId(carId);
         carBookingId.setBookingId(booking.getId());
+
         carBooking.setCarBookingId(carBookingId);
         carBooking.setCar(car); // Set đối tượng car nếu cần thiết
         carBooking.setBooking(booking); // Set đối tượng booking nếu cần thiết
-        carBooking.setStatus("in-progress");
+        carBooking.setStatus("deposit-pending");
         carBookingService.save(carBooking);
         model.addAttribute("wallet", user.getWallet());
         model.addAttribute("totalPrice", totalPrice);
@@ -200,7 +204,7 @@ public class SearchController {
             // Kiểm tra số dư ví
             if (walletBalance < totalPrice) {
                 model.addAttribute("errorMessage", "Insufficient wallet balance.");
-                carBooking.setStatus("pending deposit");
+                carBooking.setStatus("pending-deposit");
                 return "SearchAndBook/bookingPayment"; // Quay lại trang thanh toán với thông báo lỗi
             }
             // Trừ số tiền từ ví
@@ -211,7 +215,7 @@ public class SearchController {
         // Lưu phương thức thanh toán vào carBooking
         carBooking.setPaymentMethod(paymentMethod);
         carBooking.setTotalPrice(totalPrice); // Nếu bạn có thuộc tính totalPrice trong CarBooking
-        carBooking.setStatus("Confirm");// Lưu carBooking vào cơ sở dữ liệu
+        carBooking.setStatus("in-progress");// Lưu carBooking vào cơ sở dữ liệu
         carBookingService.save(carBooking);
         // Nếu tất cả điều kiện thỏa mãn
         model.addAttribute("daysBetween", daysBetween);
@@ -272,6 +276,7 @@ public class SearchController {
 
     @GetMapping("listBookingUser")
     public String listBookingUser(Model model,
+    
             @RequestParam(defaultValue = "0") int page, // Page Index - Trang thứ bao nhiêu
             @RequestParam(defaultValue = "2") int size,
             @AuthenticationPrincipal UserDetails userDetails) {
@@ -289,4 +294,35 @@ public class SearchController {
         return "SearchAndBook/listBookingUser";
 
     }
+    
+    @PostMapping("/processPayment")
+    @ResponseBody
+    public String processPayment(@RequestParam("carId") UUID carId, 
+    @RequestParam("bookingId") UUID bookingId,
+    @AuthenticationPrincipal UserDetails userDetails) 
+    {
+        User user = userService.findByEmail(userDetails.getUsername());
+
+        CarBooking carBooking = carBookingService.findByCarIdAndBookingId(carId, bookingId);
+        Booking booking = bookingService.findById(bookingId);
+        Car car = carService.findById(carId);
+
+       long daysBetween = ChronoUnit.DAYS.between(booking.getStartDate(), booking.getEndDate());
+       double totalPrice = car.getBasePrice() * daysBetween;
+       double deposit = car.getDeposit();
+        double balance;
+       if (totalPrice > deposit) {
+        balance = user.getWallet()- totalPrice - deposit;
+       user.setWallet(balance);
+       userService.save(user);
+       } else {
+           balance = user.getWallet() +( deposit-totalPrice);
+           user.setWallet(balance);
+           userService.save(user);
+       }
+       carBooking.setStatus("Completed");
+       carBookingService.save(carBooking);
+        return "success";
+    }
+
 }

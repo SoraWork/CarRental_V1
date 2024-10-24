@@ -1,5 +1,7 @@
 package com.hoaiphong.carrental.services.impl;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
 import com.hoaiphong.carrental.entities.Booking;
@@ -18,6 +20,11 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public void save(Booking booking) {
         carRepository.save(booking);
+    }
+
+    @Override
+    public Booking findById(UUID id) {
+        return carRepository.findById(id).orElse(null);
     }
 
 }

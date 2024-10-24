@@ -2,6 +2,7 @@
 package com.hoaiphong.carrental.repositories;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -22,4 +23,7 @@ public interface CarBookingRepository extends JpaRepository<CarBooking, CarBooki
         CarBooking findByCar_Id(UUID carId);
         Page<CarBooking> findByBooking_User_Id(UUID userId, Pageable pageable);
 
+        
+        CarBooking findByCar_IdAndBooking_Id(UUID carId, UUID bookingId);
+        Optional findById(CarBookingId carBooking);
  }

@@ -173,10 +173,10 @@
                             <td class="py-1">
 
                               <a th:href="@{/detail/{carId}(carId=${carBooking.Car.id})}" class="d-block">
-                                <button th:if="${carBooking.status == 'in-progress'}"
+                                <button th:if="${carBooking.status == 'deposit-pending'}"
                                   class="bg-blue-500 text-white font-bold py-2 px-5 rounded-lg w-full">
                                   Return Off
-                                </button>
+                                </button></a>
                                 <button th:if="${carBooking.status == 'Confirm'}"
                                   class="bg-gray-800 text-black font-bold py-2 px-5 rounded-lg w-full">
                                   Confirm Pick-up
@@ -191,7 +191,7 @@
                             </td>
                             <td>
 
-                              <button th:if="${carBooking.status == 'Confirm'}"
+                              <button th:if="${carBooking.status == 'in-progress'}"
                                 class="bg-red-500 text-white font-bold py-2 px-5 rounded-lg w-full">
                                 Discard
                               </button>
@@ -213,15 +213,15 @@
                           <tr>
                             <td class="font-bold  text-left">Status</td>
                             <td class=" text-left">
-                              <span th:if="${carBooking.status == 'Confirm'}" class="text-green-500 text-left"
+                              <span th:if="${carBooking.status == 'in-progress'}" class="text-green-500 text-left"
                                 th:text="${carBooking.status}">
                                 Confirm
                               </span>
-                              <span th:if="${carBooking.status == 'in-progress'}" class="text-left text-red-500"
+                              <span th:if="${carBooking.status == 'deposit-pending'}" class="text-left text-red-500"
                                 th:text="${carBooking.status}">
                                 In Progress
                               </span>
-                              <span th:if="${carBooking.status != 'Confirm' and carBooking.status != 'in-progress'}"
+                              <span th:if="${carBooking.status != 'in-progress' and carBooking.status != 'deposit-pending'}"
                                 class="text-blue-500" th:text="${carBooking.status}">
                                 Available
                               </span>

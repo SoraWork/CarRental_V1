@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.hoaiphong.carrental.entities.CarBooking;
+import com.hoaiphong.carrental.entities.CarBookingId;
 import com.hoaiphong.carrental.repositories.CarBookingRepository;
 import com.hoaiphong.carrental.services.CarBookingService;
 
@@ -76,8 +77,20 @@ public class CarBookingServiceimpl implements CarBookingService {
     public Page<CarBooking> findByAll(UUID userId, Pageable pageable) {
 return carBookingRepository.findByBooking_User_Id(userId, pageable);  }
 
+    @Override
+    public CarBooking findByCarIdAndBookingId(UUID carId, UUID bookingId) {
+        return carBookingRepository.findByCar_IdAndBooking_Id(carId, bookingId);
+    }
+
+    @Override
+    public CarBooking findById(CarBookingId carBooking) {
+        return (CarBooking) carBookingRepository.findById(carBooking).orElse(null);
+    }
+
+   
+    }
     
 
 
 
-}
+

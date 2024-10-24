@@ -40,8 +40,9 @@ public class SecurityConfiguration {
 
                         .requestMatchers("/about").permitAll()
                         .requestMatchers("/error/**").permitAll()
-                        
+                        .requestMatchers("/processPayment/**").permitAll()
 
+                        
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin

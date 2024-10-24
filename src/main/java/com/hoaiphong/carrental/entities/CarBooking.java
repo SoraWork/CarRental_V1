@@ -15,7 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -105,6 +104,11 @@ public class CarBooking {
     @OneToOne
     @JoinColumn(name = "id")
     private FeedBack feedBack;
+
+    public CarBooking orElseThrow(Object object) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'orElseThrow'");
+    }
 
 
 
