@@ -6,6 +6,7 @@ import com.hoaiphong.carrental.dtos.car.CarUpdateDetailDTO;
 import com.hoaiphong.carrental.dtos.car.CarUpdatePricingDTO;
 import com.hoaiphong.carrental.dtos.car.CarUpdateStatusDTO;
 import com.hoaiphong.carrental.dtos.messages.Message;
+import com.hoaiphong.carrental.repositories.UserRepository;
 import com.hoaiphong.carrental.services.CarService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -27,10 +28,12 @@ import java.util.UUID;
 public class CarController {
     private final CarService carService;
     private final ImageUploadUtil imageUploadUtil;
+    private final UserRepository userRepository;
 
-    public CarController(CarService carService, ImageUploadUtil imageUploadUtil) {
+    public CarController(CarService carService, ImageUploadUtil imageUploadUtil, UserRepository userRepository) {
         this.imageUploadUtil = imageUploadUtil;
         this.carService = carService;
+        this.userRepository = userRepository;
     }
 
     @RequestMapping
@@ -48,6 +51,7 @@ public class CarController {
     @PostMapping("/create")
     public String create(@Valid @ModelAttribute CarCreateDTO carCreateDTO,
                          BindingResult bindingResult,
+                         String email,
                          @RequestParam("registrationPaperFile") MultipartFile registrationPaperFile,
                          @RequestParam("certificateOfInspectionFile") MultipartFile certificateOfInspectionFile,
                          @RequestParam("insuranceFile") MultipartFile insuranceFile,
@@ -57,9 +61,10 @@ public class CarController {
                          @RequestParam("imageRightFile") MultipartFile imageRightFile,
                          RedirectAttributes redirectAttributes,
                          Model model) {
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("carCreateDTO", carCreateDTO);
-            return "loiDTO";
+            return "car/add-car/add-car";
         }
 
         if (registrationPaperFile != null && !registrationPaperFile.isEmpty()) {
@@ -90,7 +95,7 @@ public class CarController {
                 model.addAttribute("cars", cars);
 
                 bindingResult.rejectValue("image", "image", "Failed to upload image");
-                return "loi-registrationPaperFile";
+                return "car/add-car/add-car";
             }
         }
 
@@ -122,7 +127,7 @@ public class CarController {
                 model.addAttribute("cars", cars);
 
                 bindingResult.rejectValue("image", "image", "Failed to upload image");
-                return "loi-certificateOfInspectionFile";
+                return "car/add-car/add-car";
             }
         }
 
@@ -154,7 +159,7 @@ public class CarController {
                 model.addAttribute("cars", cars);
 
                 bindingResult.rejectValue("image", "image", "Failed to upload image");
-                return "loi-insuranceFile";
+                return "car/add-car/add-car";
             }
         }
 
@@ -186,7 +191,7 @@ public class CarController {
                 model.addAttribute("cars", cars);
 
                 bindingResult.rejectValue("image", "image", "Failed to upload image");
-                return "loi-imageFrontFile";
+                return "car/add-car/add-car";
             }
         }
 
@@ -218,7 +223,7 @@ public class CarController {
                 model.addAttribute("cars", cars);
 
                 bindingResult.rejectValue("image", "image", "Failed to upload image");
-                return "loi-imageBackFile";
+                return "car/add-car/add-car";
             }
         }
 
@@ -250,7 +255,7 @@ public class CarController {
                 model.addAttribute("cars", cars);
 
                 bindingResult.rejectValue("image", "image", "Failed to upload image");
-                return "loi-imageLeftFile";
+                return "car/add-car/add-car";
             }
         }
 
@@ -282,15 +287,17 @@ public class CarController {
                 model.addAttribute("cars", cars);
 
                 bindingResult.rejectValue("image", "image", "Failed to upload image");
-                return "loi-imageRightFile";
+                return "car/add-car/add-car";
             }
         }
+        var user = userRepository.findByEmail(email);
+        carCreateDTO.setUser(user);
         var result = carService.create(carCreateDTO);
 
         if (result == null) {
             var errorMessage = new Message("error", "Failed to create car");
             model.addAttribute("message", errorMessage);
-            return "loi-result";
+            return "car/add-car/add-car";
         }
         var successMessage = new Message("success", "Category created successfully");
         redirectAttributes.addFlashAttribute("message", successMessage);

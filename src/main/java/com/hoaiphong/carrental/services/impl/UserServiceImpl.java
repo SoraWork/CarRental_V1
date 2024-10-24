@@ -1,10 +1,12 @@
 package com.hoaiphong.carrental.services.impl;
 
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
+import com.hoaiphong.carrental.dtos.user.RoleDTO;
+import com.hoaiphong.carrental.dtos.user.UserDTOBase;
+import com.hoaiphong.carrental.entities.Role;
+import com.hoaiphong.carrental.entities.User;
+import com.hoaiphong.carrental.repositories.RoleRepository;
+import com.hoaiphong.carrental.services.UserRepository;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -12,24 +14,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.hoaiphong.carrental.dtos.user.RoleDTO;
-import com.hoaiphong.carrental.dtos.user.UserDTOBase;
-import com.hoaiphong.carrental.entities.Role;
-import com.hoaiphong.carrental.entities.User;
-import com.hoaiphong.carrental.repositories.RoleRepository;
-import com.hoaiphong.carrental.repositories.UserRepository;
-import com.hoaiphong.carrental.services.UserService;
-
-import jakarta.persistence.criteria.Predicate;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
+public class UserServiceImpl implements UserRepository {
+    private final com.hoaiphong.carrental.repositories.UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository,
+    public UserServiceImpl(com.hoaiphong.carrental.repositories.UserRepository userRepository, RoleRepository roleRepository,
                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -168,6 +165,38 @@ public class UserServiceImpl implements UserService {
         userDTOBase.setRoleName(roleDTOs.stream().map(RoleDTO::getName).collect(Collectors.toSet()));
 
         // Return DTO
+        return userDTOBase;
+    }
+
+    @Override
+    public UserDTOBase findByEmail(String email) {
+        var user = userRepository.findByEmail(email);
+        if (user == null) {
+            return null;
+        }
+        var userDTOBase = new UserDTOBase();
+        userDTOBase.setId(user.getId());
+        userDTOBase.setId(user.getId());
+        userDTOBase.setName(user.getName());
+        userDTOBase.setDateOfBirth(user.getDateOfBirth());
+        userDTOBase.setNationalId(user.getNationalId());
+        userDTOBase.setPhone(user.getPhone());
+        userDTOBase.setAddress(user.getAddress());
+        userDTOBase.setEmail(user.getEmail());
+        userDTOBase.setDrivingLicense(user.getDrivingLicense());
+        userDTOBase.setWallet(user.getWallet());
+        userDTOBase.setUsername(user.getUsername());
+        userDTOBase.setEmail(user.getEmail());
+        // Convert roles to roles
+        Set<RoleDTO> roleDTOs = user.getRoles().stream().map(role -> {
+            var roleDTO = new RoleDTO();
+            roleDTO.setId(role.getId());
+            roleDTO.setName(role.getName());
+            return roleDTO;
+        }).collect(Collectors.toSet());
+
+        userDTOBase.setRoles(roleDTOs);
+        userDTOBase.setRoleName(roleDTOs.stream().map(RoleDTO::getName).collect(Collectors.toSet()));
         return userDTOBase;
     }
 
