@@ -112,7 +112,7 @@
                 <div class="col-md-4 d-flex align-items-center">
                     <div class="action-buttons w-100">
                         <!-- Luôn hiển thị nút View details -->
-                        <a class="btn btn-primary mb-2 w-100" href="#">View details</a>
+                        <a class="btn btn-primary mb-2 w-100" th:href="@{/car/edit/{id}(id=${car.id})}">View details</a>
                         
                         <!-- Nút Confirm deposit chỉ hiển thị nếu status không phải là BOOKED -->
                         <button class="btn btn-primary mb-2 w-100" 
