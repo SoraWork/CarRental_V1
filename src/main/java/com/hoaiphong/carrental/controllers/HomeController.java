@@ -43,6 +43,10 @@ public class HomeController {
     public String index( ) {
         return "home/index";
     }
+    @GetMapping("about")
+    public String aboutus(){
+        return "home/about";
+    }
 
     @GetMapping("customer")
     public String customer() {

@@ -34,7 +34,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/about").permitAll()
                         .requestMatchers("/error/**").permitAll()
-                        .requestMatchers("/car/**").permitAll()
+                        .requestMatchers("/car/**").hasAuthority("ROLE_OWNER")
                         .requestMatchers("/customer/**").hasAuthority("ROLE_CUSTOMER") // Chỉ cho phép CUSTOMER truy cập vào các URL bắt đầu bằng /customer/**
                         .requestMatchers("/owner/**").hasAuthority("ROLE_OWNER") // Chỉ cho phép OWNER truy cập vào các URL bắt đầu bằng /owner/**
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
@@ -52,7 +52,7 @@ public class SecurityConfiguration {
 
     public AccessDeniedHandler accessDeniedHandler() {
         AccessDeniedHandlerImpl accessDeniedHandler = new AccessDeniedHandlerImpl();
-        accessDeniedHandler.setErrorPage("/error/access-denied");
+        accessDeniedHandler.setErrorPage("/auth/access-denied");
         return accessDeniedHandler;
     }
 }

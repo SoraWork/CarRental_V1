@@ -12,6 +12,9 @@
 <body>
     <section layout:fragment="content" class="container my-5" style="max-width: 1800px; margin: 20px auto;">
     <h1>Car List</h1>
+    <a href="/car/create" class="btn btn-primary my-3 py-2 w-15 border border-dark rounded">
+       Add Car
+    </a>
     <!-- Vòng lặp qua danh sách cars -->
     <div th:each="car, iterStat : ${cars}" class="car-card d-flex flex-row border mb-3 p-3">
         <!-- Carousel cho các ảnh của xe -->

@@ -103,4 +103,9 @@ public class AuthController {
 		return "redirect:/auth/login";
     }
 
+    @GetMapping("/auth/access-denied")
+    public String accessDenied() {
+        return "auth/access-denied";
+    }
+
 }
