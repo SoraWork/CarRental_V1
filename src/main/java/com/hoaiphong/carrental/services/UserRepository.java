@@ -12,13 +12,14 @@ import com.hoaiphong.carrental.dtos.user.UserUpdatePasswordDTO;
 import com.hoaiphong.carrental.dtos.user.UserUpdateWalletDTO;
 import com.hoaiphong.carrental.entities.User;
 
-public interface UserService {
+public interface UserRepository {
     List<UserDTOBase> findAll();
 
     Page<UserDTOBase> findAll(String keyword, Pageable pageable);
 
     UserDTOBase findById(UUID id);
 
+    UserDTOBase findByEmail(String email);
     UserDTOBase create(UserDTOBase userDTOBase);
 
     UserDTOBase update(UUID id, UserDTOBase userDTOBase);

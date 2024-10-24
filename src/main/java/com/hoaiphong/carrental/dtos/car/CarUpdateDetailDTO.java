@@ -22,20 +22,20 @@ import lombok.Setter;
 public class CarUpdateDetailDTO {
     private UUID id;
 
-//page2
+    //page2
     @NotNull(message = "Mileage is required")
     private int mileage;
 
     @NotNull(message = "Fuel consumption is required")
     private int fuelConsumption;
 
-        //address
-        @NotNull(message = "Address is required")
-        @Length(min = 5, max = 100, message = "Address must be between 5 and 100 characters")
-        private String address;
-    
-        @Length(max = 500, message = "Description must be less than 500 characters")
-        private String description;
+    //address
+    @NotNull(message = "Address is required")
+    @Length(min = 5, max = 100, message = "Address must be between 5 and 100 characters")
+    private String address;
+
+    @Length(max = 500, message = "Description must be less than 500 characters")
+    private String description;
 
     //addditional function
     private boolean functionsBluetooth;
@@ -54,15 +54,15 @@ public class CarUpdateDetailDTO {
 
     private boolean functionsUSB;
 
-        //image
-        private String imageFront;
+    //image
+    private String imageFront;
 
-        private String imageBack;
-    
-        private String imageLeft;
-    
-        private String imageRight;
-        
+    private String imageBack;
+
+    private String imageLeft;
+
+    private String imageRight;
+
     private User user;
 
     private Set<CarBooking> carBookings;

@@ -19,7 +19,7 @@ import java.util.UUID;
 public class CarCreateDTO {
     private UUID id;
 
-//page1
+    //page1
     @NotNull(message = "License plate is required")
     @Length(min = 2, max = 50, message = "License plate must be between 2 and 50 characters")
     private String licensePlate;
@@ -48,30 +48,30 @@ public class CarCreateDTO {
     @NotNull(message = "Fuel type is required")
     private boolean fuelType;
 
-        //Document
-        @NotNull(message = "Registration paper is required")
-        private String registrationPaper;
-    
-        @NotNull(message = "Certificate of inspection is required")
-        private String certificateOfInspection;
-    
-        private String insurance;
+    //Document
+//    @NotNull(message = "Registration paper is required")
+    private String registrationPaper;
+
+//    @NotNull(message = "Certificate of inspection is required")
+    private String certificateOfInspection;
+
+    private String insurance;
 
 
-//page2
+    //page2
     @NotNull(message = "Mileage is required")
     private int mileage;
 
     @NotNull(message = "Fuel consumption is required")
     private int fuelConsumption;
 
-        //address
-        @NotNull(message = "Address is required")
-        @Length(min = 5, max = 100, message = "Address must be between 5 and 100 characters")
-        private String address;
-    
-        @Length(max = 500, message = "Description must be less than 500 characters")
-        private String description;
+    //address
+    @NotNull(message = "Address is required")
+    @Length(min = 5, max = 100, message = "Address must be between 5 and 100 characters")
+    private String address;
+
+    @Length(max = 500, message = "Description must be less than 500 characters")
+    private String description;
 
     //addditional function
     private boolean functionsBluetooth;
@@ -90,14 +90,14 @@ public class CarCreateDTO {
 
     private boolean functionsUSB;
 
-        //image
-        private String imageFront;
+    //image
+    private String imageFront;
 
-        private String imageBack;
-    
-        private String imageLeft;
-    
-        private String imageRight;
+    private String imageBack;
+
+    private String imageLeft;
+
+    private String imageRight;
 //page3
 
     @NotNull(message = "Base price is required")
@@ -115,6 +115,8 @@ public class CarCreateDTO {
     private boolean noFoodInCar;
 
     private boolean other;
+
+    private String status;
 
     private String otherMessage;
 
