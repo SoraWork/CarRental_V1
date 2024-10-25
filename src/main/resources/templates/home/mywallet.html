@@ -53,12 +53,41 @@
     </div>
     <div class="container mt-4">
         <h1>My Wallet</h1>
-        <p class="balance">Your current balance: <strong id="currentBalance">20,000,000 VND</strong></p>
+        <p class="balance">Your current balance: <strong id="currentBalance"><span th:text="${currentUserWallet != null ? currentUserWallet : 0}"></span></strong></p>
     
-        <div class="actions mb-3">
-            <button id="topUpBtn" class="btn btn-success">Top-up</button>
-            <button id="withdrawBtn" class="btn btn-danger">Withdraw</button>
-        </div>
+        <form th:action="@{/mywallet}" th:object="${transactionUpdateWalletDTO}" method="post" class="mt-4 border rounded p-4">
+            <h3 class="mb-4 text-center">Wallet Transaction</h3> <!-- Thêm tiêu đề -->
+            <div class="container">
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="amount" class="form-label">Amount</label>
+                        <div th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}" class="text-danger mb-2"></div>
+                        <input id="amount" type="text" th:field="*{amount}" class="form-control" placeholder="Enter the amount" maxlength="50">
+                    </div>
+                </div>
+        
+                <div class="row mb-3">
+                    <div class="col">
+                        <label for="type" class="form-label">Type</label>
+                        <div th:if="${#fields.hasErrors('type')}" th:errors="*{type}" class="text-danger mb-2"></div>
+                        <select id="type" th:field="*{type}" class="form-select">
+                            <option value="" disabled selected>Select type</option>
+                            <option value="top-up">Top-up</option>
+                            <option value="withdraw">Withdraw</option>
+                        </select>
+                    </div>
+                </div>
+        
+                <div class="row">
+                    <div class="col d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="reset" class="btn btn-secondary">Reset</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        
+        
     
         <h2>Transactions</h2>
         <form class="mb-3">
@@ -93,129 +122,25 @@
                 </tr>
             </thead>
             <tbody id="transactionTable">
-                <!-- Transactions will be appended here -->
+                <tr th:each="transaction, stat : ${transactions}">
+                    <td th:text="${stat.index + 1}"></td>
+                    <td th:text="${transaction.amount}"></td>
+                    <td th:text="${transaction.type}"></td>
+                    <td th:text="${#temporals.format(transaction.dateTime, 'MM/dd/yyyy')}">12/12/2022 12:00</td>
+                    <td th:text="${transaction.bookingNo}"></td>
+                    <td th:text="${transaction.carName}"></td>
+                </tr>
+
             </tbody>
         </table>
     
-        <div class="pagination">
-            <p>Page: << 1, 2, 3, 4 .... >></p>
-        </div>
+        
     </div>
     
-    <!-- Top-up Dialog -->
-    <div class="overlay" id="topUpOverlay"></div>
-    <div class="dialog" id="topUpDialog">
-        <h3>Top-up</h3>
-        <p>Please select the amount to top-up to your wallet</p>
-        <select id="topUpAmount" class="form-select mb-2">
-            <option value="2000000">2,000,000</option>
-            <option value="5000000">5,000,000</option>
-            <option value="10000000">10,000,000</option>
-        </select>
-        <button id="confirmTopUp" class="btn btn-primary">OK</button>
-        <button id="cancelTopUp" class="btn btn-secondary">Cancel</button>
-    </div>
-    
-    <!-- Withdraw Dialog -->
-    <div class="overlay" id="withdrawOverlay"></div>
-    <div class="dialog" id="withdrawDialog">
-        <h3>Withdraw</h3>
-        <p>Your current balance is <span id="withdrawBalance">1,500,000</span>. Please select the amount to withdraw from your wallet</p>
-        <select id="withdrawAmount" class="form-select mb-2">
-            <option value="2000000">2,000,000</option>
-            <option value="5000000">5,000,000</option>
-            <option value="10000000">10,000,000</option>
-            <option value="all">All balance</option>
-        </select>
-        <button id="confirmWithdraw" class="btn btn-primary">OK</button>
-        <button id="cancelWithdraw" class="btn btn-secondary">Cancel</button>
-    </div>
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script>
-        let currentBalance = 20000000; // Initial balance
-    
-        function updateBalanceDisplay() {
-            document.getElementById("currentBalance").textContent = currentBalance.toLocaleString('vi-VN') + " VND";
-            document.getElementById("withdrawBalance").textContent = currentBalance.toLocaleString('vi-VN') + " VND";
-        }
-    
-        // Top-up event
-        document.getElementById("topUpBtn").addEventListener("click", function() {
-            document.getElementById("topUpOverlay").style.display = "block";
-            document.getElementById("topUpDialog").style.display = "block";
-        });
-    
-        document.getElementById("confirmTopUp").addEventListener("click", function() {
-            const amount = parseInt(document.getElementById("topUpAmount").value);
-            currentBalance += amount;
-            updateBalanceDisplay();
-            addTransaction("+" + amount.toLocaleString('vi-VN') + " VND", "Top-up");
-            closeTopUpDialog();
-        });
-    
-        document.getElementById("cancelTopUp").addEventListener("click", closeTopUpDialog);
-    
-        function closeTopUpDialog() {
-            document.getElementById("topUpOverlay").style.display = "none";
-            document.getElementById("topUpDialog").style.display = "none";
-        }
-    
-        // Withdraw event
-        document.getElementById("withdrawBtn").addEventListener("click", function() {
-            document.getElementById("withdrawOverlay").style.display = "block";
-            document.getElementById("withdrawDialog").style.display = "block";
-        });
-    
-        document.getElementById("confirmWithdraw").addEventListener("click", function() {
-            let amount = document.getElementById("withdrawAmount").value;
-            if (amount === "all") {
-                amount = currentBalance;
-            } else {
-                amount = parseInt(amount);
-            }
-    
-            if (amount <= currentBalance) {
-                currentBalance -= amount;
-                updateBalanceDisplay();
-                addTransaction("-" + amount.toLocaleString('vi-VN') + " VND", "Withdraw");
-                closeWithdrawDialog();
-            } else {
-                alert("Insufficient balance.");
-            }
-        });
-    
-        document.getElementById("cancelWithdraw").addEventListener("click", closeWithdrawDialog);
-    
-        function closeWithdrawDialog() {
-            document.getElementById("withdrawOverlay").style.display = "none";
-            document.getElementById("withdrawDialog").style.display = "none";
-        }
-    
-        // Add a new transaction
-        function addTransaction(amount, type) {
-            const table = document.getElementById("transactionTable");
-            const row = table.insertRow();
-            const noCell = row.insertCell(0);
-            const amountCell = row.insertCell(1);
-            const typeCell = row.insertCell(2);
-            const dateTimeCell = row.insertCell(3);
-            const bookingNoCell = row.insertCell(4);
-            const carNameCell = row.insertCell(5);
-    
-            noCell.textContent = table.rows.length;
-            amountCell.textContent = amount;
-            typeCell.textContent = type;
-            dateTimeCell.textContent = new Date().toLocaleString();
-            bookingNoCell.textContent = "N/A";
-            carNameCell.textContent = "N/A";
-        }
-    
-        // Initialize balance display
-        updateBalanceDisplay();
-    </script>
-    
+   
     
 </div>
     

@@ -19,6 +19,7 @@ import com.hoaiphong.carrental.dtos.user.RoleDTO;
 import com.hoaiphong.carrental.dtos.user.UserDTOBase;
 import com.hoaiphong.carrental.dtos.user.UserUpdateDTO;
 import com.hoaiphong.carrental.dtos.user.UserUpdatePasswordDTO;
+import com.hoaiphong.carrental.dtos.user.UserUpdateWalletDTO;
 import com.hoaiphong.carrental.entities.PasswordResetToken;
 import com.hoaiphong.carrental.entities.Role;
 import com.hoaiphong.carrental.entities.User;
@@ -32,7 +33,7 @@ import jakarta.persistence.criteria.Predicate;
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
+    private final com.hoaiphong.carrental.repositories.UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
@@ -179,6 +180,38 @@ public class UserServiceImpl implements UserService {
         userDTOBase.setRoleName(roleDTOs.stream().map(RoleDTO::getName).collect(Collectors.toSet()));
 
         // Return DTO
+        return userDTOBase;
+    }
+
+    @Override
+    public UserDTOBase findByEmail(String email) {
+        var user = userRepository.findByEmail(email);
+        if (user == null) {
+            return null;
+        }
+        var userDTOBase = new UserDTOBase();
+        userDTOBase.setId(user.getId());
+        userDTOBase.setId(user.getId());
+        userDTOBase.setName(user.getName());
+        userDTOBase.setDateOfBirth(user.getDateOfBirth());
+        userDTOBase.setNationalId(user.getNationalId());
+        userDTOBase.setPhone(user.getPhone());
+        userDTOBase.setAddress(user.getAddress());
+        userDTOBase.setEmail(user.getEmail());
+        userDTOBase.setDrivingLicense(user.getDrivingLicense());
+        userDTOBase.setWallet(user.getWallet());
+        userDTOBase.setUsername(user.getUsername());
+        userDTOBase.setEmail(user.getEmail());
+        // Convert roles to roles
+        Set<RoleDTO> roleDTOs = user.getRoles().stream().map(role -> {
+            var roleDTO = new RoleDTO();
+            roleDTO.setId(role.getId());
+            roleDTO.setName(role.getName());
+            return roleDTO;
+        }).collect(Collectors.toSet());
+
+        userDTOBase.setRoles(roleDTOs);
+        userDTOBase.setRoleName(roleDTOs.stream().map(RoleDTO::getName).collect(Collectors.toSet()));
         return userDTOBase;
     }
 
@@ -479,6 +512,41 @@ public class UserServiceImpl implements UserService {
     public boolean hasExipred(LocalDateTime expiryDateTime) {
         LocalDateTime currentDateTime = LocalDateTime.now();
 		return expiryDateTime.isAfter(currentDateTime);
+    }
+
+    @Override
+    public UserDTOBase update(UserUpdateWalletDTO userUpdateWalletDTO, String email) {
+        var existingMember = userRepository.findByEmail(email);
+        if (existingMember == null) {
+            throw new IllegalArgumentException("User with email " + email + " does not exist");
+        }
+
+        // Update fields with data from DTO
+        existingMember.setWallet(userUpdateWalletDTO.getWallet());
+        // Save the updated member
+        var updateMember = userRepository.save(existingMember);
+
+        // Convert updated entity to DTO and return
+        var updateUserDTO = new UserDTOBase();
+        updateUserDTO.setWallet(updateMember.getWallet());
+        // updateUserDTO.setDrivingLicense(updateMember.getDrivingLicense());
+
+        return updateUserDTO;
+    }
+
+    @Override
+    public User findByUsername(String currentUsername) {
+        return userRepository.findByEmail(currentUsername);
+    }
+
+    @Override
+    public void update(User currentUser, String currentUsername) {
+        var user = userRepository.findByEmail(currentUsername);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+        user.setWallet(currentUser.getWallet());
+        userRepository.save(user);
     }
 
 }

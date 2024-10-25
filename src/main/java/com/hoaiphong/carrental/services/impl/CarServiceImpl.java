@@ -233,58 +233,110 @@ public class CarServiceImpl implements CarService {
         if (carCreateDTO == null) {
             throw new IllegalArgumentException("Car is required");
         }
-
-        // Convert entity to DTO
-        var carDTO = new CarDTO();
-        carDTO.setId(carCreateDTO.getId());
-        carDTO.setLicensePlate(carCreateDTO.getLicensePlate());
-        carDTO.setColor(carCreateDTO.getColor());
-        carDTO.setBrand(carCreateDTO.getBrand());
-        carDTO.setModel(carCreateDTO.getModel());
-        carDTO.setProductionYear(carCreateDTO.getProductionYear());
-        carDTO.setNumOfSeats(carCreateDTO.getNumOfSeats());
-        carDTO.setTransmissionType(carCreateDTO.isTransmissionType());
-        carDTO.setFuelType(carCreateDTO.isFuelType());
+        var car = new Car();
+        car.setId(carCreateDTO.getId());
+        car.setLicensePlate(carCreateDTO.getLicensePlate());
+        car.setColor(carCreateDTO.getColor());
+        car.setBrand(carCreateDTO.getBrand());
+        car.setModel(carCreateDTO.getModel());
+        car.setProductionYear(carCreateDTO.getProductionYear());
+        car.setNumOfSeats(carCreateDTO.getNumOfSeats());
+        car.setTransmissionType(carCreateDTO.isTransmissionType());
+        car.setFuelType(carCreateDTO.isFuelType());
 
         // Document
-        carDTO.setRegistrationPaper(carCreateDTO.getRegistrationPaper());
-        carDTO.setCertificateOfInspection(carCreateDTO.getCertificateOfInspection());
-        carDTO.setInsurance(carCreateDTO.getInsurance());
+        car.setRegistrationPaper(carCreateDTO.getRegistrationPaper());
+        car.setCertificateOfInspection(carCreateDTO.getCertificateOfInspection());
+        car.setInsurance(carCreateDTO.getInsurance());
 
-        carDTO.setMileage(carCreateDTO.getMileage());
-        carDTO.setFuelConsumption(carCreateDTO.getFuelConsumption());
+        car.setMileage(carCreateDTO.getMileage());
+        car.setFuelConsumption(carCreateDTO.getFuelConsumption());
         // Address
-        carDTO.setAddress(carCreateDTO.getAddress());
-        carDTO.setDescription(carCreateDTO.getDescription());
+        car.setAddress(carCreateDTO.getAddress());
+        car.setDescription(carCreateDTO.getDescription());
 
 
         // Additional functions
-        carDTO.setFunctionsBluetooth(carCreateDTO.isFunctionsBluetooth());
-        carDTO.setFunctionsGPS(carCreateDTO.isFunctionsGPS());
-        carDTO.setFunctionsCamera(carCreateDTO.isFunctionsCamera());
-        carDTO.setFunctionsSunRoof(carCreateDTO.isFunctionsSunRoof());
-        carDTO.setFunctionsChildLock(carCreateDTO.isFunctionsChildLock());
-        carDTO.setFunctionsChildSeat(carCreateDTO.isFunctionsChildSeat());
-        carDTO.setFunctionsDvd(carCreateDTO.isFunctionsDvd());
-        carDTO.setFunctionsUSB(carCreateDTO.isFunctionsUSB());
+        car.setFunctionsBluetooth(carCreateDTO.isFunctionsBluetooth());
+        car.setFunctionsGPS(carCreateDTO.isFunctionsGPS());
+        car.setFunctionsCamera(carCreateDTO.isFunctionsCamera());
+        car.setFunctionsSunRoof(carCreateDTO.isFunctionsSunRoof());
+        car.setFunctionsChildLock(carCreateDTO.isFunctionsChildLock());
+        car.setFunctionsChildSeat(carCreateDTO.isFunctionsChildSeat());
+        car.setFunctionsDvd(carCreateDTO.isFunctionsDvd());
+        car.setFunctionsUSB(carCreateDTO.isFunctionsUSB());
 
         // Images
-        carDTO.setImageFront(carCreateDTO.getImageFront());
-        carDTO.setImageBack(carCreateDTO.getImageBack());
-        carDTO.setImageLeft(carCreateDTO.getImageLeft());
-        carDTO.setImageRight(carCreateDTO.getImageRight());
+        car.setImageFront(carCreateDTO.getImageFront());
+        car.setImageBack(carCreateDTO.getImageBack());
+        car.setImageLeft(carCreateDTO.getImageLeft());
+        car.setImageRight(carCreateDTO.getImageRight());
 
-        carDTO.setBasePrice(carCreateDTO.getBasePrice());
-        carDTO.setDeposit(carCreateDTO.getDeposit());
+        car.setBasePrice(carCreateDTO.getBasePrice());
+        car.setDeposit(carCreateDTO.getDeposit());
         // Term of use
-        carDTO.setTermOfUse(carCreateDTO.getTermOfUse());
-        carDTO.setNoSmoking(carCreateDTO.isNoSmoking());
-        carDTO.setNoPet(carCreateDTO.isNoPet());
-        carDTO.setNoFoodInCar(carCreateDTO.isNoFoodInCar());
-        carDTO.setOther(carCreateDTO.isOther());
-        carDTO.setOtherMessage(carCreateDTO.getOtherMessage());
+        car.setTermOfUse(carCreateDTO.getTermOfUse());
+        car.setNoSmoking(carCreateDTO.isNoSmoking());
+        car.setNoPet(carCreateDTO.isNoPet());
+        car.setNoFoodInCar(carCreateDTO.isNoFoodInCar());
+        car.setOther(carCreateDTO.isOther());
+        car.setOtherMessage(carCreateDTO.getOtherMessage());
+        car.setStatus("available");
+        car.setUser(carCreateDTO.getUser());
 
-        carDTO.setUser(carCreateDTO.getUser());
+        carRepository.save(car);
+
+        // Convert entity to DTO
+        var carDTO = new CarDTO();
+        carDTO.setId(car.getId());
+        carDTO.setLicensePlate(car.getLicensePlate());
+        carDTO.setColor(car.getColor());
+        carDTO.setBrand(car.getBrand());
+        carDTO.setModel(car.getModel());
+        carDTO.setProductionYear(car.getProductionYear());
+        carDTO.setNumOfSeats(car.getNumOfSeats());
+        carDTO.setTransmissionType(car.isTransmissionType());
+        carDTO.setFuelType(car.isFuelType());
+
+        // Document
+        carDTO.setRegistrationPaper(car.getRegistrationPaper());
+        carDTO.setCertificateOfInspection(car.getCertificateOfInspection());
+        carDTO.setInsurance(car.getInsurance());
+
+        carDTO.setMileage(car.getMileage());
+        carDTO.setFuelConsumption(car.getFuelConsumption());
+        // Address
+        carDTO.setAddress(car.getAddress());
+        carDTO.setDescription(car.getDescription());
+
+
+        // Additional functions
+        carDTO.setFunctionsBluetooth(car.isFunctionsBluetooth());
+        carDTO.setFunctionsGPS(car.isFunctionsGPS());
+        carDTO.setFunctionsCamera(car.isFunctionsCamera());
+        carDTO.setFunctionsSunRoof(car.isFunctionsSunRoof());
+        carDTO.setFunctionsChildLock(car.isFunctionsChildLock());
+        carDTO.setFunctionsChildSeat(car.isFunctionsChildSeat());
+        carDTO.setFunctionsDvd(car.isFunctionsDvd());
+        carDTO.setFunctionsUSB(car.isFunctionsUSB());
+
+        // Images
+        carDTO.setImageFront(car.getImageFront());
+        carDTO.setImageBack(car.getImageBack());
+        carDTO.setImageLeft(car.getImageLeft());
+        carDTO.setImageRight(car.getImageRight());
+
+        carDTO.setBasePrice(car.getBasePrice());
+        carDTO.setDeposit(car.getDeposit());
+        // Term of use
+        carDTO.setTermOfUse(car.getTermOfUse());
+        carDTO.setNoSmoking(car.isNoSmoking());
+        carDTO.setNoPet(car.isNoPet());
+        carDTO.setNoFoodInCar(car.isNoFoodInCar());
+        carDTO.setOther(car.isOther());
+        carDTO.setOtherMessage(car.getOtherMessage());
+
+        carDTO.setUser(car.getUser());
 
         return carDTO;
     }
@@ -425,5 +477,7 @@ public class CarServiceImpl implements CarService {
 
         return updatedCarDTO;
     }
+
+   
 
 }

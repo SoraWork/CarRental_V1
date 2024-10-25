@@ -1,12 +1,18 @@
 package com.hoaiphong.carrental.controllers;
 
+import com.hoaiphong.carrental.controllers.utils.ImageUploadUtil;
 import com.hoaiphong.carrental.dtos.car.CarCreateDTO;
 import com.hoaiphong.carrental.dtos.car.CarUpdateDetailDTO;
 import com.hoaiphong.carrental.dtos.car.CarUpdatePricingDTO;
 import com.hoaiphong.carrental.dtos.car.CarUpdateStatusDTO;
 import com.hoaiphong.carrental.dtos.messages.Message;
+import com.hoaiphong.carrental.entities.Car;
+import com.hoaiphong.carrental.repositories.UserRepository;
 import com.hoaiphong.carrental.services.CarService;
 import jakarta.validation.Valid;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,15 +25,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
 @RequestMapping("/car")
 public class CarController {
     private final CarService carService;
+    private final ImageUploadUtil imageUploadUtil;
+    private final UserRepository userRepository;
 
-    public CarController(CarService carService) {
+    public CarController(CarService carService, ImageUploadUtil imageUploadUtil, UserRepository userRepository) {
+        this.imageUploadUtil = imageUploadUtil;
         this.carService = carService;
+        this.userRepository = userRepository;
     }
 
     @RequestMapping
@@ -39,29 +50,31 @@ public class CarController {
     public String create(Model model) {
         var carCreateDTO = new CarCreateDTO();
         model.addAttribute("carCreateDTO", carCreateDTO);
-        return "car/create";
+        return "car/add-car/add-car";
     }
 
     @PostMapping("/create")
     public String create(@Valid @ModelAttribute CarCreateDTO carCreateDTO,
                          BindingResult bindingResult,
-                         @RequestParam("registrationPaper") MultipartFile registrationPaper,
-                         @RequestParam("certificateOfInspection") MultipartFile certificateOfInspection,
-                         @RequestParam("insurance") MultipartFile insurance,
-                         @RequestParam("imageFront") MultipartFile imageFront,
-                         @RequestParam("imageBack") MultipartFile imageBack,
-                         @RequestParam("imageLeft") MultipartFile imageLeft,
-                         @RequestParam("imageRight") MultipartFile imageRight,
+                         String email,
+                         @RequestParam("registrationPaperFile") MultipartFile registrationPaperFile,
+                         @RequestParam("certificateOfInspectionFile") MultipartFile certificateOfInspectionFile,
+                         @RequestParam("insuranceFile") MultipartFile insuranceFile,
+                         @RequestParam("imageFrontFile") MultipartFile imageFrontFile,
+                         @RequestParam("imageBackFile") MultipartFile imageBackFile,
+                         @RequestParam("imageLeftFile") MultipartFile imageLeftFile,
+                         @RequestParam("imageRightFile") MultipartFile imageRightFile,
                          RedirectAttributes redirectAttributes,
                          Model model) {
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("carCreateDTO", carCreateDTO);
-            return "car/create";
+            return "car/add-car/add-car";
         }
 
-        if (registrationPaper != null && !registrationPaper.isEmpty()) {
+        if (registrationPaperFile != null && !registrationPaperFile.isEmpty()) {
             try {
-                byte[] bytes = registrationPaper.getBytes();
+                byte[] bytes = registrationPaperFile.getBytes();
                 // Create folder if not exist following format:
                 // src/main/resources/static/documents/year/month/day
                 LocalDateTime date = LocalDateTime.now();
@@ -71,14 +84,14 @@ public class CarController {
                     Files.createDirectories(folder);
                 }
                 // Create file name following format: originalFileName + epochTime + extension
-                String originalFileName = registrationPaper.getOriginalFilename();
+                String originalFileName = registrationPaperFile.getOriginalFilename();
                 // Convert date to string epoch time
                 Long epochTime = Instant.now().getEpochSecond();
                 String fileName = originalFileName.substring(0, originalFileName.lastIndexOf(".")) + "-" + epochTime
                         + originalFileName.substring(originalFileName.lastIndexOf("."));
                 Path path = Paths.get(folder.toString(), fileName);
                 Files.write(path, bytes);
-                carCreateDTO.setRegistrationPaper(folder.toString().replace("src/main/resources/static", "") + "/" + fileName);
+                carCreateDTO.setRegistrationPaper(folder.toString().replace("src\\main\\resources\\static", "") + "/" + fileName);
             } catch (Exception e) {
                 e.printStackTrace();
                 Message errorMessage = new Message("error", "Failed to upload file");
@@ -87,13 +100,13 @@ public class CarController {
                 model.addAttribute("cars", cars);
 
                 bindingResult.rejectValue("image", "image", "Failed to upload image");
-                return "car/create";
+                return "car/add-car/add-car";
             }
         }
 
-        if (certificateOfInspection != null && !certificateOfInspection.isEmpty()) {
+        if (certificateOfInspectionFile != null && !certificateOfInspectionFile.isEmpty()) {
             try {
-                byte[] bytes = certificateOfInspection.getBytes();
+                byte[] bytes = certificateOfInspectionFile.getBytes();
                 // Create folder if not exist following format:
                 // src/main/resources/static/documents/year/month/day
                 LocalDateTime date = LocalDateTime.now();
@@ -103,14 +116,14 @@ public class CarController {
                     Files.createDirectories(folder);
                 }
                 // Create file name following format: originalFileName + epochTime + extension
-                String originalFileName = certificateOfInspection.getOriginalFilename();
+                String originalFileName = certificateOfInspectionFile.getOriginalFilename();
                 // Convert date to string epoch time
                 Long epochTime = Instant.now().getEpochSecond();
                 String fileName = originalFileName.substring(0, originalFileName.lastIndexOf(".")) + "-" + epochTime
                         + originalFileName.substring(originalFileName.lastIndexOf("."));
                 Path path = Paths.get(folder.toString(), fileName);
                 Files.write(path, bytes);
-                carCreateDTO.setCertificateOfInspection(folder.toString().replace("src/main/resources/static", "") + "/" + fileName);
+                carCreateDTO.setCertificateOfInspection(folder.toString().replace("src\\main\\resources\\static", "") + "/" + fileName);
             } catch (Exception e) {
                 e.printStackTrace();
                 Message errorMessage = new Message("error", "Failed to upload file");
@@ -119,13 +132,13 @@ public class CarController {
                 model.addAttribute("cars", cars);
 
                 bindingResult.rejectValue("image", "image", "Failed to upload image");
-                return "car/create";
+                return "car/add-car/add-car";
             }
         }
 
-        if (insurance != null && !insurance.isEmpty()) {
+        if (insuranceFile != null && !insuranceFile.isEmpty()) {
             try {
-                byte[] bytes = insurance.getBytes();
+                byte[] bytes = insuranceFile.getBytes();
                 // Create folder if not exist following format:
                 // src/main/resources/static/documents/year/month/day
                 LocalDateTime date = LocalDateTime.now();
@@ -135,14 +148,14 @@ public class CarController {
                     Files.createDirectories(folder);
                 }
                 // Create file name following format: originalFileName + epochTime + extension
-                String originalFileName = insurance.getOriginalFilename();
+                String originalFileName = insuranceFile.getOriginalFilename();
                 // Convert date to string epoch time
                 Long epochTime = Instant.now().getEpochSecond();
                 String fileName = originalFileName.substring(0, originalFileName.lastIndexOf(".")) + "-" + epochTime
                         + originalFileName.substring(originalFileName.lastIndexOf("."));
                 Path path = Paths.get(folder.toString(), fileName);
                 Files.write(path, bytes);
-                carCreateDTO.setRegistrationPaper(folder.toString().replace("src/main/resources/static", "") + "/" + fileName);
+                carCreateDTO.setInsurance(folder.toString().replace("src\\main\\resources\\static", "") + "/" + fileName);
             } catch (Exception e) {
                 e.printStackTrace();
                 Message errorMessage = new Message("error", "Failed to upload file");
@@ -151,13 +164,13 @@ public class CarController {
                 model.addAttribute("cars", cars);
 
                 bindingResult.rejectValue("image", "image", "Failed to upload image");
-                return "car/create";
+                return "car/add-car/add-car";
             }
         }
 
-        if (imageFront != null && !imageFront.isEmpty()) {
+        if (imageFrontFile != null && !imageFrontFile.isEmpty()) {
             try {
-                byte[] bytes = imageFront.getBytes();
+                byte[] bytes = imageFrontFile.getBytes();
                 // Create folder if not exist following format:
                 // src/main/resources/static/images/recipes/year/month/day
                 LocalDateTime date = LocalDateTime.now();
@@ -167,14 +180,14 @@ public class CarController {
                     Files.createDirectories(folder);
                 }
                 // Create file name following format: originalFileName + epochTime + extension
-                String originalFileName = imageFront.getOriginalFilename();
+                String originalFileName = imageFrontFile.getOriginalFilename();
                 // Convert date to string epoch time
                 Long epochTime = Instant.now().getEpochSecond();
                 String fileName = originalFileName.substring(0, originalFileName.lastIndexOf(".")) + "-" + epochTime
                         + originalFileName.substring(originalFileName.lastIndexOf("."));
                 Path path = Paths.get(folder.toString(), fileName);
                 Files.write(path, bytes);
-                carCreateDTO.setImageFront(folder.toString().replace("src/main/resources/static", "") + "/" + fileName);
+                carCreateDTO.setImageFront(folder.toString().replace("src\\main\\resources\\static", "") + "/" + fileName);
             } catch (Exception e) {
                 e.printStackTrace();
                 Message errorMessage = new Message("error", "Failed to upload image");
@@ -183,13 +196,13 @@ public class CarController {
                 model.addAttribute("cars", cars);
 
                 bindingResult.rejectValue("image", "image", "Failed to upload image");
-                return "car/create";
+                return "car/add-car/add-car";
             }
         }
 
-        if (imageBack != null && !imageBack.isEmpty()) {
+        if (imageBackFile != null && !imageBackFile.isEmpty()) {
             try {
-                byte[] bytes = imageBack.getBytes();
+                byte[] bytes = imageBackFile.getBytes();
                 // Create folder if not exist following format:
                 // src/main/resources/static/images/recipes/year/month/day
                 LocalDateTime date = LocalDateTime.now();
@@ -199,14 +212,14 @@ public class CarController {
                     Files.createDirectories(folder);
                 }
                 // Create file name following format: originalFileName + epochTime + extension
-                String originalFileName = imageBack.getOriginalFilename();
+                String originalFileName = imageBackFile.getOriginalFilename();
                 // Convert date to string epoch time
                 Long epochTime = Instant.now().getEpochSecond();
                 String fileName = originalFileName.substring(0, originalFileName.lastIndexOf(".")) + "-" + epochTime
                         + originalFileName.substring(originalFileName.lastIndexOf("."));
                 Path path = Paths.get(folder.toString(), fileName);
                 Files.write(path, bytes);
-                carCreateDTO.setImageBack(folder.toString().replace("src/main/resources/static", "") + "/" + fileName);
+                carCreateDTO.setImageBack(folder.toString().replace("src\\main\\resources\\static", "") + "/" + fileName);
             } catch (Exception e) {
                 e.printStackTrace();
                 Message errorMessage = new Message("error", "Failed to upload image");
@@ -215,13 +228,13 @@ public class CarController {
                 model.addAttribute("cars", cars);
 
                 bindingResult.rejectValue("image", "image", "Failed to upload image");
-                return "car/create";
+                return "car/add-car/add-car";
             }
         }
 
-        if (imageLeft != null && !imageLeft.isEmpty()) {
+        if (imageLeftFile != null && !imageLeftFile.isEmpty()) {
             try {
-                byte[] bytes = imageLeft.getBytes();
+                byte[] bytes = imageLeftFile.getBytes();
                 // Create folder if not exist following format:
                 // src/main/resources/static/images/recipes/year/month/day
                 LocalDateTime date = LocalDateTime.now();
@@ -231,14 +244,14 @@ public class CarController {
                     Files.createDirectories(folder);
                 }
                 // Create file name following format: originalFileName + epochTime + extension
-                String originalFileName = imageLeft.getOriginalFilename();
+                String originalFileName = imageLeftFile.getOriginalFilename();
                 // Convert date to string epoch time
                 Long epochTime = Instant.now().getEpochSecond();
                 String fileName = originalFileName.substring(0, originalFileName.lastIndexOf(".")) + "-" + epochTime
                         + originalFileName.substring(originalFileName.lastIndexOf("."));
                 Path path = Paths.get(folder.toString(), fileName);
                 Files.write(path, bytes);
-                carCreateDTO.setImageLeft(folder.toString().replace("src/main/resources/static", "") + "/" + fileName);
+                carCreateDTO.setImageLeft(folder.toString().replace("src\\main\\resources\\static", "") + "/" + fileName);
             } catch (Exception e) {
                 e.printStackTrace();
                 Message errorMessage = new Message("error", "Failed to upload image");
@@ -247,13 +260,13 @@ public class CarController {
                 model.addAttribute("cars", cars);
 
                 bindingResult.rejectValue("image", "image", "Failed to upload image");
-                return "car/create";
+                return "car/add-car/add-car";
             }
         }
 
-        if (imageRight != null && !imageRight.isEmpty()) {
+        if (imageRightFile != null && !imageRightFile.isEmpty()) {
             try {
-                byte[] bytes = imageRight.getBytes();
+                byte[] bytes = imageRightFile.getBytes();
                 // Create folder if not exist following format:
                 // src/main/resources/static/images/recipes/year/month/day
                 LocalDateTime date = LocalDateTime.now();
@@ -263,14 +276,14 @@ public class CarController {
                     Files.createDirectories(folder);
                 }
                 // Create file name following format: originalFileName + epochTime + extension
-                String originalFileName = imageRight.getOriginalFilename();
+                String originalFileName = imageRightFile.getOriginalFilename();
                 // Convert date to string epoch time
                 Long epochTime = Instant.now().getEpochSecond();
                 String fileName = originalFileName.substring(0, originalFileName.lastIndexOf(".")) + "-" + epochTime
                         + originalFileName.substring(originalFileName.lastIndexOf("."));
                 Path path = Paths.get(folder.toString(), fileName);
                 Files.write(path, bytes);
-                carCreateDTO.setImageRight(folder.toString().replace("src/main/resources/static", "") + "/" + fileName);
+                carCreateDTO.setImageRight(folder.toString().replace("src\\main\\resources\\static", "") + "/" + fileName);
             } catch (Exception e) {
                 e.printStackTrace();
                 Message errorMessage = new Message("error", "Failed to upload image");
@@ -279,20 +292,21 @@ public class CarController {
                 model.addAttribute("cars", cars);
 
                 bindingResult.rejectValue("image", "image", "Failed to upload image");
-                return "car/create";
+                return "car/add-car/add-car";
             }
         }
-
-
+        var user = userRepository.findByEmail(email);
+        carCreateDTO.setUser(user);
         var result = carService.create(carCreateDTO);
+
         if (result == null) {
             var errorMessage = new Message("error", "Failed to create car");
             model.addAttribute("message", errorMessage);
-            return "car/create";
+            return "car/add-car/add-car";
         }
         var successMessage = new Message("success", "Category created successfully");
         redirectAttributes.addFlashAttribute("message", successMessage);
-        return "redirect:car/mycars";
+        return "owner/owner";
     }
 
     @GetMapping("/edit/{id}")
@@ -313,10 +327,10 @@ public class CarController {
     public String edit(@PathVariable UUID id,
                        @ModelAttribute @Valid CarUpdateDetailDTO carUpdateDetailDTO,
                        RedirectAttributes redirectAttributes,
-                       @RequestParam("imageFront") MultipartFile imageFront,
-                       @RequestParam("imageBack") MultipartFile imageBack,
-                       @RequestParam("imageLeft") MultipartFile imageLeft,
-                       @RequestParam("imageRight") MultipartFile imageRight,
+                       @RequestParam("imageFrontFile") MultipartFile imageFrontFile,
+                       @RequestParam("imageBackFile") MultipartFile imageBackFile,
+                       @RequestParam("imageLeftFile") MultipartFile imageLeftFile,
+                       @RequestParam("imageRightFile") MultipartFile imageRightFile,
                        BindingResult bindingResult,
                        Model model) {
         if (bindingResult.hasErrors()) {
@@ -325,134 +339,35 @@ public class CarController {
         }
 
         var oldcar = carService.findById(id);
-        if (imageFront.getOriginalFilename().isEmpty()
-                || imageBack.getOriginalFilename().isEmpty() || imageLeft.getOriginalFilename().isEmpty()
-                || imageRight.getOriginalFilename().isEmpty()) {
-            carUpdateDetailDTO.setImageFront(oldcar.getImageFront());
-            carUpdateDetailDTO.setImageBack(oldcar.getImageBack());
-            carUpdateDetailDTO.setImageLeft(oldcar.getImageLeft());
-            carUpdateDetailDTO.setImageRight(oldcar.getImageRight());
+        // Upload từng hình ảnh
+        String imageFrontPath = imageUploadUtil.uploadImage(imageFrontFile, oldcar.getImageFront(), model, bindingResult);
+        if (imageFrontPath == null) {
+            return "car/add-car/add-car"; // Upload thất bại
         } else {
-            try {
-                byte[] bytes = imageFront.getBytes();
-                // Create folder if not exist following format:
-                // src/main/resources/static/images/recipes/year/month/day
-                LocalDateTime date = LocalDateTime.now();
-                Path folder = Paths.get("src/main/resources/static/images/cars/" + date.getYear() + "/"
-                        + date.getMonthValue() + "/" + date.getDayOfMonth());
-                if (!Files.exists(folder)) {
-                    Files.createDirectories(folder);
-                }
-                // Create file name following format: originalFileName + epochTime + extension
-                String originalFileName = imageFront.getOriginalFilename();
-                // Convert date to string epoch time
-                Long epochTime = Instant.now().getEpochSecond();
-                String fileName = originalFileName.substring(0, originalFileName.lastIndexOf(".")) + "-" + epochTime
-                        + originalFileName.substring(originalFileName.lastIndexOf("."));
-                Path path = Paths.get(folder.toString(), fileName);
-                Files.write(path, bytes);
-                carUpdateDetailDTO.setImageFront(folder.toString().replace("src/main/resources/static", "") + "/" + fileName);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Message errorMessage = new Message("error", "Failed to upload image");
-                model.addAttribute("message", errorMessage);
-                var cars = carService.findAll();
-                model.addAttribute("cars", cars);
-
-                bindingResult.rejectValue("image", "image", "Failed to upload image");
-                return "car/create";
-            }
-
-            try {
-                byte[] bytes = imageBack.getBytes();
-                // Create folder if not exist following format:
-                // src/main/resources/static/images/recipes/year/month/day
-                LocalDateTime date = LocalDateTime.now();
-                Path folder = Paths.get("src/main/resources/static/images/cars/" + date.getYear() + "/"
-                        + date.getMonthValue() + "/" + date.getDayOfMonth());
-                if (!Files.exists(folder)) {
-                    Files.createDirectories(folder);
-                }
-                // Create file name following format: originalFileName + epochTime + extension
-                String originalFileName = imageBack.getOriginalFilename();
-                // Convert date to string epoch time
-                Long epochTime = Instant.now().getEpochSecond();
-                String fileName = originalFileName.substring(0, originalFileName.lastIndexOf(".")) + "-" + epochTime
-                        + originalFileName.substring(originalFileName.lastIndexOf("."));
-                Path path = Paths.get(folder.toString(), fileName);
-                Files.write(path, bytes);
-                carUpdateDetailDTO.setImageBack(folder.toString().replace("src/main/resources/static", "") + "/" + fileName);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Message errorMessage = new Message("error", "Failed to upload image");
-                model.addAttribute("message", errorMessage);
-                var cars = carService.findAll();
-                model.addAttribute("cars", cars);
-
-                bindingResult.rejectValue("image", "image", "Failed to upload image");
-                return "car/create";
-            }
-            try {
-                byte[] bytes = imageLeft.getBytes();
-                // Create folder if not exist following format:
-                // src/main/resources/static/images/recipes/year/month/day
-                LocalDateTime date = LocalDateTime.now();
-                Path folder = Paths.get("src/main/resources/static/images/cars/" + date.getYear() + "/"
-                        + date.getMonthValue() + "/" + date.getDayOfMonth());
-                if (!Files.exists(folder)) {
-                    Files.createDirectories(folder);
-                }
-                // Create file name following format: originalFileName + epochTime + extension
-                String originalFileName = imageLeft.getOriginalFilename();
-                // Convert date to string epoch time
-                Long epochTime = Instant.now().getEpochSecond();
-                String fileName = originalFileName.substring(0, originalFileName.lastIndexOf(".")) + "-" + epochTime
-                        + originalFileName.substring(originalFileName.lastIndexOf("."));
-                Path path = Paths.get(folder.toString(), fileName);
-                Files.write(path, bytes);
-                carUpdateDetailDTO.setImageLeft(folder.toString().replace("src/main/resources/static", "") + "/" + fileName);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Message errorMessage = new Message("error", "Failed to upload image");
-                model.addAttribute("message", errorMessage);
-                var cars = carService.findAll();
-                model.addAttribute("cars", cars);
-
-                bindingResult.rejectValue("image", "image", "Failed to upload image");
-                return "car/create";
-            }
-
-            try {
-                byte[] bytes = imageRight.getBytes();
-                // Create folder if not exist following format:
-                // src/main/resources/static/images/recipes/year/month/day
-                LocalDateTime date = LocalDateTime.now();
-                Path folder = Paths.get("src/main/resources/static/images/cars/" + date.getYear() + "/"
-                        + date.getMonthValue() + "/" + date.getDayOfMonth());
-                if (!Files.exists(folder)) {
-                    Files.createDirectories(folder);
-                }
-                // Create file name following format: originalFileName + epochTime + extension
-                String originalFileName = imageRight.getOriginalFilename();
-                // Convert date to string epoch time
-                Long epochTime = Instant.now().getEpochSecond();
-                String fileName = originalFileName.substring(0, originalFileName.lastIndexOf(".")) + "-" + epochTime
-                        + originalFileName.substring(originalFileName.lastIndexOf("."));
-                Path path = Paths.get(folder.toString(), fileName);
-                Files.write(path, bytes);
-                carUpdateDetailDTO.setImageRight(folder.toString().replace("src/main/resources/static", "") + "/" + fileName);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Message errorMessage = new Message("error", "Failed to upload image");
-                model.addAttribute("message", errorMessage);
-                var cars = carService.findAll();
-                model.addAttribute("cars", cars);
-
-                bindingResult.rejectValue("image", "image", "Failed to upload image");
-                return "car/create";
-            }
-
+            carUpdateDetailDTO.setImageFront(imageFrontPath);
         }
+
+        String imageBackPath = imageUploadUtil.uploadImage(imageBackFile, oldcar.getImageBack(), model, bindingResult);
+        if (imageBackPath == null) {
+            return "car/add-car/add-car"; // Upload thất bại
+        } else {
+            carUpdateDetailDTO.setImageBack(imageBackPath);
+        }
+
+        String imageLeftPath = imageUploadUtil.uploadImage(imageLeftFile, oldcar.getImageLeft(), model, bindingResult);
+        if (imageLeftPath == null) {
+            return "car/add-car/add-car"; // Upload thất bại
+        } else {
+            carUpdateDetailDTO.setImageLeft(imageLeftPath);
+        }
+
+        String imageRightPath = imageUploadUtil.uploadImage(imageRightFile, oldcar.getImageRight(), model, bindingResult);
+        if (imageRightPath == null) {
+            return "car/add-car/add-car"; // Upload thất bại
+        } else {
+            carUpdateDetailDTO.setImageRight(imageRightPath);
+        }
+
         var result = carService.update(id, carUpdateDetailDTO);
         if (result == null) {
             var errorMessage = new Message("error", "Failed to update car");
@@ -461,7 +376,7 @@ public class CarController {
         }
         var successMessage = new Message("success", "Car updated successfully");
         redirectAttributes.addFlashAttribute("message", successMessage);
-        return "redirect:owner/owner";
+        return "owner/owner";
     }
 
     @PostMapping("/edit-pricing/{id}")
@@ -506,4 +421,43 @@ public class CarController {
         redirectAttributes.addFlashAttribute("message", successMessage);
         return "owner/owner";
     }
+    
+    @GetMapping("/list")
+    public String list(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        var user = userRepository.findByEmail(userDetails.getUsername());
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        List<Car> cars = user.getCars();
+
+        model.addAttribute("cars", cars);
+        
+       
+        return "car/list";
+    }
+
+    @PostMapping("/listconfirm")
+    public String confirm(@ModelAttribute CarUpdateStatusDTO carUpdateStatusDTO, RedirectAttributes redirectAttributes) {
+        UUID carId;
+        
+        try {
+            carId = UUID.fromString(carUpdateStatusDTO.getId().toString());
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("message", new Message("error", "Invalid car ID format."));
+            return "redirect:/car/list";  // Redirect to the GET /list if UUID format is invalid
+        }
+        
+        // Tiếp tục với logic cập nhật nếu ID hợp lệ
+        var result = carService.update(carId, carUpdateStatusDTO);
+        
+        if (result == null) {
+            redirectAttributes.addFlashAttribute("message", new Message("error", "Failed to update car"));
+            return "redirect:/car/list";  // Redirect to the GET /list
+        }
+        
+        redirectAttributes.addFlashAttribute("message", new Message("success", "Car updated successfully"));
+        return "redirect:/car/list";  // Redirect to the GET /list
+    }
 }
+
