@@ -6,7 +6,7 @@
     <title>Car List</title>
     <link rel="stylesheet" th:href="@{/css/home.css}"/>
     <link rel="stylesheet" th:href="@{/css/listcar/listcar.css}"/>
-    <script type="module" th:src="@{/js/home/home.js}"></script>
+    <!-- <script type="module" th:src="@{/js/home/home.js}"></script> -->
 </head>
 
 <body>
@@ -71,7 +71,7 @@
                             <p class="fw-bold fs-2 mb-0">No. of rides:</p>
                         </div>
                         <div class="col-6 text-start">
-                            <p class="fs-2 mb-0">0</p>
+                            <p class="fs-2 mb-0" th:text="${car.numOfSeats}">0</p>
                         </div>
                     </div>
                 
@@ -99,7 +99,7 @@
                         </div>
                         <div class="col-6 text-start">
                             <p th:text="${car.status}" 
-                               th:class="${car.status == 'BOOKED'} ? 'fs-2 status-booked' : (car.status == 'AVAILABLE' ? 'fs-2 status-available' : 'fs-2 text-success')" 
+                               th:class="${car.status == 'BOOKED'} ? 'fs-2 text-primary' : (car.status == 'AVAILABLE' ? 'fs-2 text-success' : 'fs-2 text-danger')" 
                                class="mb-0"></p>
                         </div>
                     </div>

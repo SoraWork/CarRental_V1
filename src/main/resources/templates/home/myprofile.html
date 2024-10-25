@@ -16,7 +16,7 @@
 <section layout:fragment="content" class="container my-5">
     <div class="row mb-3">
         <div class="col">
-            <a href="#">Home</a> &gt; <a href="#">My Profile</a>
+            <a href="/">Home</a> &gt; <a href="#">My Profile</a>
         </div>
     </div>
     <h2>My Profile</h2>
@@ -65,12 +65,12 @@
                         <input type="text" class="form-control" id="nationalId" name="nationalId" required th:field="*{nationalId}">
                         <span th:if="${#fields.hasErrors('nationalId')}" th:errors="*{nationalId}" class="text-red-500"></span>
                     </div>
-                    <div class="col-md-6">
+                    <!-- <div class="col-md-6">
                         <label for="drivingLicense" class="form-label"><strong>Driving license:</strong></label>
                         <div class="input-group">
                             <input type="file" class="form-control" id="drivingLicense" name="drivingLicense">
                         </div>
-                    </div>
+                    </div> -->
                 </div>
     
                 <h3>Address</h3>

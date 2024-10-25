@@ -6,9 +6,13 @@ import com.hoaiphong.carrental.dtos.car.CarUpdateDetailDTO;
 import com.hoaiphong.carrental.dtos.car.CarUpdatePricingDTO;
 import com.hoaiphong.carrental.dtos.car.CarUpdateStatusDTO;
 import com.hoaiphong.carrental.dtos.messages.Message;
+import com.hoaiphong.carrental.entities.Car;
 import com.hoaiphong.carrental.repositories.UserRepository;
 import com.hoaiphong.carrental.services.CarService;
 import jakarta.validation.Valid;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -418,9 +423,17 @@ public class CarController {
     }
     
     @GetMapping("/list")
-    public String list(Model model) {
-        var cars = carService.findAll();
+    public String list(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        var user = userRepository.findByEmail(userDetails.getUsername());
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        List<Car> cars = user.getCars();
+
         model.addAttribute("cars", cars);
+        
+       
         return "car/list";
     }
 
