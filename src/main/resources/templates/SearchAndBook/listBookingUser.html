@@ -14,8 +14,87 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-
     <style>
+        .custom-padding {
+            padding-left: 15rem;
+            /* Padding bĆŖn trĆ�i */
+            padding-right: 6rem;
+            /* Padding bĆŖn phįŗ£i */
+        }
+
+        .custom-background {
+            background-color: #5f5e5e;
+            /* MĆ u nį»n xĆ�m */
+        }
+
+        .full-height {
+            height: 700px;
+            /* Chiį»u cao cį»‘ Ä‘į»‹nh */
+        }
+
+        .border-black {
+            border: 2px solid black;
+            /* Border Ä‘en */
+        }
+
+        .divCard {
+            height: 300px;
+            width: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Chiều cao của viewport */
+            position: fixed;
+            /* Để cố định modal ở giữa màn hình */
+            top: 0;
+            right: 70vb;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            /* Nền tối */
+            z-index: 1050;
+            /* Đặt z-index cao hơn để hiển thị trên modal khác */
+            /* Bắt đầu với trạng thái ẩn */
+        }
+
+        #ratingModal {
+            display: none;
+        }
+
+        .card {
+            background: white;
+            /* Nền trắng cho nội dung modal */
+            padding: 20px;
+            border-radius: 8px;
+            width: 500px;
+            /* Chiều rộng của modal */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .star {
+            font-size: 10vh;
+            cursor: pointer;
+        }
+
+        .one {
+            color: rgb(255, 0, 0);
+        }
+
+        .two {
+            color: rgb(255, 106, 0);
+        }
+
+        .three {
+            color: rgb(251, 255, 120);
+        }
+
+        .four {
+            color: rgb(255, 255, 0);
+        }
+
+        .five {
+            color: rgb(24, 159, 14);
+        }
+
         .custom-padding {
             padding-left: 15rem;
             /* Padding bên trái */
@@ -391,10 +470,11 @@
                     </div>
                     <div class="flex justify-between">
                         <div class="modal-footer">
-                            <button type="button" id="confirmPaymentDepositGreaterTotal123" class="btn btn-secondary" data-dismiss="modal">Yes</button>
+                            <button type="button" id="confirmPaymentDepositGreaterTotal123" class="btn btn-secondary"
+                                data-dismiss="modal">Yes</button>
                         </div>
                         <div class="modal-footer">
-                            <button type="button"  onclick="closeModal('#depositGreaterModal')"
+                            <button type="button" onclick="closeModal('#depositGreaterModal')"
                                 class="btn btn-secondary " data-dismiss="modal">Close</button>
                         </div>
                     </div>
@@ -421,13 +501,39 @@
                     </div>
                     <div class="modal-footer">
                         <button id="confirmPaymentDepositLessTotal123" type="button" class="btn btn-secondary"
-                            data-dismiss="modal">Confirm</button>
+                            data-dismiss="modal"> Confirm</button>
                         <button type="button" onclick="closeModal('#depositLessModal')" class="btn btn-secondary"
                             data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- Rating Modal -->
+        <div class="divCard " id="ratingModal">
+            <div class="card">
+                <h1>Feedback Ratings</h1>
+                <br />
+                <div>
+                    <span class="star" data-value="1">&#9733;</span>
+                    <span class="star" data-value="2">&#9733;</span>
+                    <span class="star" data-value="3">&#9733;</span>
+                    <span class="star" data-value="4">&#9733;</span>
+                    <span class="star" data-value="5">&#9733;</span>
+                </div>
+                <br />
+                <textarea class="borer border-black rounded-lg" id="content" placeholder="Leave your comment..."
+                    rows="4" cols="50"></textarea>
+                <br />
+                <div class="flex justify-between">
+                    <button id="submitRating" type="submit" class="bg-blue-500 rounded-lg h-12 w-24">Submit
+                        Rating</button>
+                    <button class="bg-red-500 rounded-lg h-12 w-24" onclick="closeModalRating('#ratingModal')">
+                        Skip</button>
+                </div>
+                <h3 id="output">Rating is: 0/5</h3>
+            </div>
+        </div>
+
 
 
         <script>
@@ -490,8 +596,8 @@
                             }
                         },
                         error: function (xhr, status, error) {
-                            console.error("AJAX Error: ", error); 
-                            alert("An error occurred: " + error); 
+                            console.error("AJAX Error: ", error);
+                            alert("An error occurred: " + error);
                         }
                     }); // Kết thúc phần gọi AJAX
                 }); // Kết thúc hàm click
@@ -505,7 +611,7 @@
                         alert("Car ID or Booking ID is missing!");
                         return; // Dừng hàm nếu không có ID
                     }
-
+                    debugger;
                     $.ajax({
                         url: '/processPayment',
                         type: 'POST',
@@ -517,20 +623,102 @@
                             if (response === 'success') {
                                 // Ẩn modal tính toán
                                 $('#depositLessModal').modal('hide');
+                                $('#depositGreaterModal').modal('hide');
+
                                 // Hiển thị modal đánh giá
                                 $('#ratingModal').modal('show');
                             }
                         },
                         error: function (xhr, status, error) {
-                            console.error("AJAX Error: ", error); 
-                            alert("An error occurred: " + error); 
+                            console.error("AJAX Error: ", error);
+                            alert("An error occurred: " + error);
                         }
                     }); // Kết thúc phần gọi AJAX
                 }); // Kết thúc hàm click
 
 
             });
+            document.addEventListener('DOMContentLoaded', function () {
+                let selectedRating = 0;
 
+                // Lấy tất cả các ngôi sao
+                const stars = document.querySelectorAll('.star');
+                stars.forEach(star => {
+                    star.addEventListener('click', function () {
+                        selectedRating = this.getAttribute('data-value'); // Lấy giá trị rating từ thuộc tính data-value
+                        updateStars(selectedRating);
+                    });
+                });
+
+                // Cập nhật màu sắc của các ngôi sao
+                function updateStars(rating) {
+                    stars.forEach((star, index) => {
+                        star.classList.remove('one', 'two', 'three', 'four', 'five'); // Xóa lớp trước đó
+                        if (index < rating) {
+                            star.classList.add(getClassForRating(index + 1));
+                        }
+                    });
+                    document.getElementById('output').innerText = "Rating is: " + rating + "/5";
+                }
+
+                // Lấy lớp màu sắc tương ứng với rating
+                function getClassForRating(rating) {
+                    switch (rating) {
+                        case 1: return 'one';
+                        case 2: return 'two';
+                        case 3: return 'three';
+                        case 4: return 'four';
+                        case 5: return 'five';
+                        default: return '';
+                    }
+                }
+                debugger;
+                // Xử lý sự kiện nhấn nút Submit
+                document.getElementById('submitRating').addEventListener('click', function () {
+                    let comment = document.getElementById('content').value.trim();
+
+
+                    console.log('Selected carId:', carId,
+                        'Selected bookingId:', bookingId, 'rating', selectedRating, 'content', comment);
+                    debugger;
+                    $.ajax({
+                        url: '/submitRating',
+                        type: 'POST',
+                        data: {
+                            carId: carId,
+                            bookingId: bookingId,
+                            rating: selectedRating,
+                            content: comment
+                        },
+                        success: function () {
+                            alert("Rating submitted successfully 123");
+
+                            // Reset rating và comment sau khi gửi
+                            selectedRating = 0;
+                            document.getElementById('content').value = '';
+                            updateStars(0); // Reset ngôi sao về mặc định
+                            closeModalRating('#ratingModal'); // Đóng modal
+                            location.reload();                        },
+                        error: function (xhr, status, error) {
+                            console.error("AJAX Error: ", error);
+                            alert("Failed to submit rating.");
+                        }
+                    });
+                });
+
+                // Xử lý sự kiện double-click để xóa hết sao
+                stars.forEach(star => {
+                    star.addEventListener('dblclick', function () {
+                        selectedRating = 0; // Reset rating về 0
+                        updateStars(selectedRating); // Cập nhật lại giao diện
+                    });
+                });
+            });
+
+
+            function closeModalRating(id) {
+                $(id).modal('hide');
+            }
 
             function closeModal(modalId) {
                 $(modalId).modal('hide');
@@ -546,67 +734,67 @@
             // Hàm tính số ngày giữa hai ngày cho từng phần tử
             function calculateTotalPrice() {
 
-// Lấy tất cả các phần tử startDate, endDate, basePrice
-const startDates = document.querySelectorAll(".startDate");
-const endDates = document.querySelectorAll(".endDate");
-const basePrices = document.querySelectorAll(".basePrice");
-const totalPrices = document.querySelectorAll(".totalPrice");
-const deposits = document.querySelectorAll(".deposit");
-const carId = document.querySelectorAll(".carId123");
-const bookingId = document.querySelectorAll(".bookingId123");
-const yesButton = document.querySelectorAll(".yesButtonClass");
+                // Lấy tất cả các phần tử startDate, endDate, basePrice
+                const startDates = document.querySelectorAll(".startDate");
+                const endDates = document.querySelectorAll(".endDate");
+                const basePrices = document.querySelectorAll(".basePrice");
+                const totalPrices = document.querySelectorAll(".totalPrice");
+                const deposits = document.querySelectorAll(".deposit");
+                const carId = document.querySelectorAll(".carId123");
+                const bookingId = document.querySelectorAll(".bookingId123");
+                const yesButton = document.querySelectorAll(".yesButtonClass");
 
-// Lặp qua tất cả các phần tử đã lấy
-startDates.forEach((startDateElement, index) => {
-    const startDateText = startDateElement.innerText.trim();
-    const endDateText = endDates[index].innerText.trim();
-    const basePriceText = basePrices[index].innerText.trim();
+                // Lặp qua tất cả các phần tử đã lấy
+                startDates.forEach((startDateElement, index) => {
+                    const startDateText = startDateElement.innerText.trim();
+                    const endDateText = endDates[index].innerText.trim();
+                    const basePriceText = basePrices[index].innerText.trim();
 
-    // Chuyển đổi định dạng "dd/mm/yyyy" sang Date
-    const startDateParts = startDateText.split("/");
-    const endDateParts = endDateText.split("/");
+                    // Chuyển đổi định dạng "dd/mm/yyyy" sang Date
+                    const startDateParts = startDateText.split("/");
+                    const endDateParts = endDateText.split("/");
 
-    const startDate = new Date(startDateParts[2], startDateParts[1] - 1, startDateParts[0]);
-    const endDate = new Date(endDateParts[2], endDateParts[1] - 1, endDateParts[0]);
+                    const startDate = new Date(startDateParts[2], startDateParts[1] - 1, startDateParts[0]);
+                    const endDate = new Date(endDateParts[2], endDateParts[1] - 1, endDateParts[0]);
 
-    const basePrice = parseFloat(basePriceText);
-    const deposit = parseFloat(deposits[index].innerText.trim());
+                    const basePrice = parseFloat(basePriceText);
+                    const deposit = parseFloat(deposits[index].innerText.trim());
 
-    if (isNaN(basePrice)) {
-        console.error("Base Price is not a valid number for item " + index);
-        totalPrices[index].innerText = "Invalid Base Price";
-        return;
-    }
+                    if (isNaN(basePrice)) {
+                        console.error("Base Price is not a valid number for item " + index);
+                        totalPrices[index].innerText = "Invalid Base Price";
+                        return;
+                    }
 
-    // Kiểm tra xem ngày có hợp lệ không
-    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-        console.error("Invalid date format for item " + index);
-        totalPrices[index].innerText = "Invalid Date Format";
-        return;
-    }
+                    // Kiểm tra xem ngày có hợp lệ không
+                    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                        console.error("Invalid date format for item " + index);
+                        totalPrices[index].innerText = "Invalid Date Format";
+                        return;
+                    }
 
-    // Tính khoảng thời gian giữa hai ngày
-    const timeDifference = endDate.getTime() - startDate.getTime();
-    const daysBetween = timeDifference / (1000 * 3600 * 24);
+                    // Tính khoảng thời gian giữa hai ngày
+                    const timeDifference = endDate.getTime() - startDate.getTime();
+                    const daysBetween = timeDifference / (1000 * 3600 * 24);
 
-    if (daysBetween <= 0) {
-        console.error("End date must be after start date for item " + index);
-        totalPrices[index].innerText = "Invalid Date Range";
-        return;
-    }
+                    if (daysBetween <= 0) {
+                        console.error("End date must be after start date for item " + index);
+                        totalPrices[index].innerText = "Invalid Date Range";
+                        return;
+                    }
 
-    // Tính tổng giá
-    const totalPrice = daysBetween * basePrice;
-    totalPrices[index].innerText = totalPrice.toLocaleString('vi-VN') + " VND"; // Hiển thị với định dạng VN
+                    // Tính tổng giá
+                    const totalPrice = daysBetween * basePrice;
+                    totalPrices[index].innerText = totalPrice.toLocaleString('vi-VN') + " VND"; // Hiển thị với định dạng VN
 
-    // Thiết lập các thuộc tính dữ liệu cho nút yesButton
-    yesButton[index].setAttribute("data-total", totalPrice);
-    yesButton[index].setAttribute("data-deposit", deposit);
-    yesButton[index].setAttribute("data-car-id", carId[index].innerText.trim());
-    yesButton[index].setAttribute("data-booking-id", bookingId[index].innerText.trim());
-});
-}
-     window.onload = function () {
+                    // Thiết lập các thuộc tính dữ liệu cho nút yesButton
+                    yesButton[index].setAttribute("data-total", totalPrice);
+                    yesButton[index].setAttribute("data-deposit", deposit);
+                    yesButton[index].setAttribute("data-car-id", carId[index].innerText.trim());
+                    yesButton[index].setAttribute("data-booking-id", bookingId[index].innerText.trim());
+                });
+            }
+            window.onload = function () {
                 calculateTotalPrice();
             };
 

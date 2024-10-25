@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -24,11 +25,13 @@ import com.hoaiphong.carrental.entities.Booking;
 import com.hoaiphong.carrental.entities.Car;
 import com.hoaiphong.carrental.entities.CarBooking;
 import com.hoaiphong.carrental.entities.CarBookingId;
+import com.hoaiphong.carrental.entities.FeedBack;
 import com.hoaiphong.carrental.entities.User;
 import com.hoaiphong.carrental.repositories.UserRepository;
 import com.hoaiphong.carrental.services.BookingService;
 import com.hoaiphong.carrental.services.CarBookingService;
 import com.hoaiphong.carrental.services.CarService;
+import com.hoaiphong.carrental.services.FeedBackService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -36,13 +39,14 @@ import jakarta.servlet.http.HttpSession;
 public class SearchController {
 
     private final UserRepository userService;
-
+    private final FeedBackService feedBackService;
     private final CarBookingService carBookingService;
     private final CarService carService;
     private final BookingService bookingService;
 
     public SearchController(CarBookingService carBookingService, CarService carService, BookingService bookingService,
-            UserRepository userService) {
+            UserRepository userService, FeedBackService feedBackService) {
+        this.feedBackService = feedBackService;
         this.userService = userService;
         this.carBookingService = carBookingService;
         this.carService = carService;
@@ -57,8 +61,7 @@ public class SearchController {
             @RequestParam(defaultValue = "2") int size,
             @RequestParam(required = false) String pickupLocation) {
 
-
-                Sort.Direction direction = Sort.Direction.fromString(order); // Convert string to Direction
+        Sort.Direction direction = Sort.Direction.fromString(order); // Convert string to Direction
         var pageable = PageRequest.of(page, size, Sort.by(direction, sort));
 
         // Khai báo biến carBookingsFind ở bên ngoài if/else
@@ -164,6 +167,8 @@ public class SearchController {
         carBooking.setCar(car); // Set đối tượng car nếu cần thiết
         carBooking.setBooking(booking); // Set đối tượng booking nếu cần thiết
         carBooking.setStatus("deposit-pending");
+        carBooking.setTotalPrice(totalPrice);
+
         carBookingService.save(carBooking);
         model.addAttribute("wallet", user.getWallet());
         model.addAttribute("totalPrice", totalPrice);
@@ -228,16 +233,14 @@ public class SearchController {
     @GetMapping("viewBookingDetail")
     public String viewBookingDetail(Model model, HttpSession session,
             @AuthenticationPrincipal UserDetails userDetails) {
-                CarBooking carBooking = (CarBooking) session.getAttribute("carBooking");
-            Booking booking = carBooking.getBooking();
-            var start = booking.getStartDate();
-            var end = booking.getEndDate();
+        CarBooking carBooking = (CarBooking) session.getAttribute("carBooking");
+        Booking booking = carBooking.getBooking();
+        var start = booking.getStartDate();
+        var end = booking.getEndDate();
 
-          
-        
-                long daysBetween = Duration.between(start, end).toDays();
-                double basePrice = carBooking.getCar().getBasePrice();
-                double totalPrice = basePrice * daysBetween;
+        long daysBetween = Duration.between(start, end).toDays();
+        double basePrice = carBooking.getCar().getBasePrice();
+        double totalPrice = basePrice * daysBetween;
         User user = userService.findByEmail(userDetails.getUsername());
         model.addAttribute("daysBetween", daysBetween);
         model.addAttribute("totalPrice", totalPrice);
@@ -276,7 +279,6 @@ public class SearchController {
 
     @GetMapping("listBookingUser")
     public String listBookingUser(Model model,
-    
             @RequestParam(defaultValue = "0") int page, // Page Index - Trang thứ bao nhiêu
             @RequestParam(defaultValue = "2") int size,
             @AuthenticationPrincipal UserDetails userDetails) {
@@ -294,35 +296,62 @@ public class SearchController {
         return "SearchAndBook/listBookingUser";
 
     }
-    
+
     @PostMapping("/processPayment")
     @ResponseBody
-    public String processPayment(@RequestParam("carId") UUID carId, 
-    @RequestParam("bookingId") UUID bookingId,
-    @AuthenticationPrincipal UserDetails userDetails) 
-    {
+    public String processPayment(@RequestParam("carId") UUID carId,
+            @RequestParam("bookingId") UUID bookingId,
+            @AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.findByEmail(userDetails.getUsername());
 
-        CarBooking carBooking = carBookingService.findByCarIdAndBookingId(carId, bookingId);
+        CarBookingId carBookingId = new CarBookingId();
+        carBookingId.setCarId(carId);
+        carBookingId.setBookingId(bookingId);
+
+        CarBooking carBooking = carBookingService.findById(carBookingId);
         Booking booking = bookingService.findById(bookingId);
         Car car = carService.findById(carId);
-
-       long daysBetween = ChronoUnit.DAYS.between(booking.getStartDate(), booking.getEndDate());
-       double totalPrice = car.getBasePrice() * daysBetween;
-       double deposit = car.getDeposit();
+        System.out.println(carBooking.getCar().getBasePrice() + "121654654654654654");
+        long daysBetween = ChronoUnit.DAYS.between(booking.getStartDate(), booking.getEndDate());
+        double totalPrice = car.getBasePrice() * daysBetween;
+        double deposit = car.getDeposit();
         double balance;
-       if (totalPrice > deposit) {
-        balance = user.getWallet()- totalPrice - deposit;
-       user.setWallet(balance);
-       userService.save(user);
-       } else {
-           balance = user.getWallet() +( deposit-totalPrice);
-           user.setWallet(balance);
-           userService.save(user);
-       }
-       carBooking.setStatus("Completed");
-       carBookingService.save(carBooking);
+        if (totalPrice > deposit) {
+            balance = user.getWallet() - totalPrice - deposit;
+            user.setWallet(balance);
+            userService.save(user);
+        } else {
+            balance = user.getWallet() + (deposit - totalPrice);
+            user.setWallet(balance);
+            userService.save(user);
+        }
+        //    carBooking.setStatus("Completed");
+        //    carBookingService.save(carBooking);
         return "success";
+    }
+
+    @PostMapping("submitRating")
+    public ResponseEntity<String> submitRating(@RequestParam("carId") UUID carId,
+            @RequestParam("rating") int rating, @RequestParam("content") String content,
+            @RequestParam("bookingId") UUID bookingId) {
+
+        CarBookingId carBookingId = new CarBookingId();
+        carBookingId.setCarId(carId);
+        carBookingId.setBookingId(bookingId);
+        CarBooking carBooking = carBookingService.findById(carBookingId);
+
+        FeedBack feedBack = new FeedBack();
+        feedBack.setContent(content);
+        feedBack.setRating(rating);
+        feedBack.setDateTime(LocalDateTime.now());
+
+        feedBack.setCarBooking(carBooking);
+        feedBackService.save(feedBack);
+        
+        carBooking.setFeedBack(feedBack);
+        carBookingService.save(carBooking);
+
+        return ResponseEntity.ok("Rating submitted successfully");
     }
 
 }
