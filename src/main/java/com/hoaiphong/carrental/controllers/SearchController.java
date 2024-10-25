@@ -4,6 +4,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -21,12 +23,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.hoaiphong.carrental.dtos.user.CarBookingWithFeedbackDTO;
 import com.hoaiphong.carrental.entities.Booking;
 import com.hoaiphong.carrental.entities.Car;
 import com.hoaiphong.carrental.entities.CarBooking;
 import com.hoaiphong.carrental.entities.CarBookingId;
 import com.hoaiphong.carrental.entities.FeedBack;
 import com.hoaiphong.carrental.entities.User;
+import com.hoaiphong.carrental.repositories.CarBookingRepository;
 import com.hoaiphong.carrental.repositories.UserRepository;
 import com.hoaiphong.carrental.services.BookingService;
 import com.hoaiphong.carrental.services.CarBookingService;
@@ -37,7 +41,7 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class SearchController {
-
+    private final CarBookingRepository carBookingRepository;
     private final UserRepository userService;
     private final FeedBackService feedBackService;
     private final CarBookingService carBookingService;
@@ -45,7 +49,8 @@ public class SearchController {
     private final BookingService bookingService;
 
     public SearchController(CarBookingService carBookingService, CarService carService, BookingService bookingService,
-            UserRepository userService, FeedBackService feedBackService) {
+            UserRepository userService, FeedBackService feedBackService, CarBookingRepository carBookingRepository) {
+        this.carBookingRepository = carBookingRepository;
         this.feedBackService = feedBackService;
         this.userService = userService;
         this.carBookingService = carBookingService;
@@ -347,11 +352,66 @@ public class SearchController {
 
         feedBack.setCarBooking(carBooking);
         feedBackService.save(feedBack);
-        
-        carBooking.setFeedBack(feedBack);
+
+        carBooking.setFeedBackId(feedBack.getId());
         carBookingService.save(carBooking);
 
         return ResponseEntity.ok("Rating submitted successfully");
     }
 
+    @GetMapping("listFeedBack")
+    public String listFeedBack(Model model,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "2") int size,
+            @RequestParam(required = false) Integer star) {
+    
+        var pageable = PageRequest.of(page, size);
+        Page<CarBooking> carBookingPages;
+    
+        // Sử dụng phương thức trả về Page
+        if (star != null && star > 0) {
+            carBookingPages = carBookingRepository.findAllWithFeedbackByRating(star, pageable); // Không cần cast
+        } else {
+            carBookingPages = carBookingService.findByAll(pageable);
+        }
+    
+        List<CarBookingWithFeedbackDTO> carBookingWithFeedBacks = new ArrayList<>();
+        double totalRating = 0.0;
+        int feedbackCount = 0;
+    
+        for (CarBooking carBooking : carBookingPages.getContent()) {
+            FeedBack feedBack = feedBackService.findById(carBooking.getFeedBackId());
+            carBookingWithFeedBacks.add(new CarBookingWithFeedbackDTO(carBooking, feedBack));
+    
+            if (feedBack != null) {
+                totalRating += feedBack.getRating();
+                feedbackCount++;
+            }
+        }
+    
+        // Tính averageRating cho tất cả Feedback
+        List<FeedBack> allFeedbacks = feedBackService.findAll(); // Lấy tất cả feedback
+        double totalAllRatings = 0.0;
+        int totalFeedbackCount = 0;
+    
+        for (FeedBack feedback : allFeedbacks) {
+            totalAllRatings += feedback.getRating();
+            totalFeedbackCount++;
+        }
+    
+        double averageRating = totalFeedbackCount > 0 ? totalAllRatings / totalFeedbackCount : 0.0;
+        averageRating = Math.round(averageRating * 10.0) / 10.0;
+    
+        model.addAttribute("carBookingPages", carBookingWithFeedBacks);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", carBookingPages.getTotalPages());
+        model.addAttribute("totalElements", carBookingPages.getTotalElements());
+        model.addAttribute("pageSize", size);
+        model.addAttribute("pageSizes", new int[]{2, 5, 10, 20});
+        model.addAttribute("totalRating", averageRating);
+        model.addAttribute("selectedStar", star);
+    
+        return "SearchAndBook/listFeedBack";
+    }
+    
 }

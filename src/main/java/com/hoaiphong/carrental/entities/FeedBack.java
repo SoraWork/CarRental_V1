@@ -40,11 +40,16 @@ public class FeedBack {
 
     @Column(name = "Date_time")
     private LocalDateTime dateTime;
-
+    
     @OneToOne
     @JoinColumns({
         @JoinColumn(name = "booking_id", referencedColumnName = "booking_id", updatable = false),
         @JoinColumn(name = "car_id", referencedColumnName = "car_id", updatable = false)
     })
     private CarBooking carBooking;
+
+  
+   
+
+
 }
