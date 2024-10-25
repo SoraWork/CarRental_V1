@@ -2,8 +2,19 @@ package com.hoaiphong.carrental.entities;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -12,6 +23,7 @@ import lombok.*;
 @Entity
 @Table(name = "car_bookings")
 public class CarBooking {
+
     @EmbeddedId
     private CarBookingId carBookingId;
 
@@ -91,10 +103,8 @@ public class CarBooking {
     @Column(name = "Total_price")
     private double totalPrice;
 
-    @OneToOne
-    @JoinColumn(name = "id")
+
+    @OneToOne(mappedBy = "carBooking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private FeedBack feedBack;
-
-
 
 }

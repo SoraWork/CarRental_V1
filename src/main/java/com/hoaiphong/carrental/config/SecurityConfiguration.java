@@ -1,5 +1,7 @@
 package com.hoaiphong.carrental.config;
 
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -11,8 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
@@ -32,11 +32,20 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/").permitAll()
+                        .requestMatchers("/detail").permitAll()
+                        .requestMatchers("/search").permitAll()
+                        .requestMatchers("/book").permitAll()
+                        .requestMatchers("/listCar").permitAll()
+
+
                         .requestMatchers("/about").permitAll()
                         .requestMatchers("/error/**").permitAll()
                         .requestMatchers("/car/**").hasAuthority("ROLE_OWNER")
                         .requestMatchers("/customer/**").hasAuthority("ROLE_CUSTOMER") // Chỉ cho phép CUSTOMER truy cập vào các URL bắt đầu bằng /customer/**
                         .requestMatchers("/owner/**").hasAuthority("ROLE_OWNER") // Chỉ cho phép OWNER truy cập vào các URL bắt đầu bằng /owner/**
+                        .requestMatchers("/processPayment/**").permitAll()
+
+                        
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
