@@ -30,7 +30,7 @@ import com.hoaiphong.carrental.entities.User;
 import com.hoaiphong.carrental.repositories.UserRepository;
 import com.hoaiphong.carrental.services.BookingService;
 import com.hoaiphong.carrental.services.CarBookingService;
-import com.hoaiphong.carrental.services.CarService;
+import com.hoaiphong.carrental.services.CarServiceBooking;
 import com.hoaiphong.carrental.services.FeedBackService;
 
 import jakarta.servlet.http.HttpSession;
@@ -41,10 +41,10 @@ public class SearchController {
     private final UserRepository userService;
     private final FeedBackService feedBackService;
     private final CarBookingService carBookingService;
-    private final CarService carService;
+    private final CarServiceBooking carService;
     private final BookingService bookingService;
 
-    public SearchController(CarBookingService carBookingService, CarService carService, BookingService bookingService,
+    public SearchController(CarBookingService carBookingService, CarServiceBooking carService, BookingService bookingService,
             UserRepository userService, FeedBackService feedBackService) {
         this.feedBackService = feedBackService;
         this.userService = userService;

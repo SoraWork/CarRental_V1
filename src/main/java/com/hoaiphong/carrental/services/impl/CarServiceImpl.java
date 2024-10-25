@@ -478,6 +478,12 @@ public class CarServiceImpl implements CarService {
         return updatedCarDTO;
     }
 
+    @Override
+    public Page<Car> search(String name, Pageable pageable) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'search'");
+    }
+
    
 
 }

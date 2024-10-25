@@ -8,21 +8,21 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.hoaiphong.carrental.entities.Car;
-import com.hoaiphong.carrental.repositories.CarRepository;
-import com.hoaiphong.carrental.services.CarService;
+import com.hoaiphong.carrental.repositories.CarRepositoryBooking;
+import com.hoaiphong.carrental.services.CarServiceBooking;
 
 @Service
-public class CarServiceImlp implements CarService {
+public class CarServiceBookingImlp implements CarServiceBooking {
 
-    private final CarRepository carRepository;
+    private final CarRepositoryBooking carRepositoryBooking;
 
-    public CarServiceImlp(CarRepository carRepository) {
-        this.carRepository = carRepository;
+    public CarServiceBookingImlp(CarRepositoryBooking carRepositoryBooking) {
+        this.carRepositoryBooking = carRepositoryBooking;
     }
 
     @Override
     public Car findById(UUID id) {
-        return (Car) carRepository.findById(id).orElse(null);
+        return (Car) carRepositoryBooking.findById(id).orElse(null);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class CarServiceImlp implements CarService {
         };
 
         // Tìm kiếm và trả về kết quả dưới dạng Page<Car>
-        return carRepository.findAll(spec, pageable);
+        return carRepositoryBooking.findAll(spec, pageable);
     }
 
 }
