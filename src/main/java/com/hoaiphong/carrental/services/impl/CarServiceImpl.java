@@ -2,6 +2,7 @@ package com.hoaiphong.carrental.services.impl;
 
 import com.hoaiphong.carrental.dtos.car.*;
 import com.hoaiphong.carrental.entities.Car;
+import com.hoaiphong.carrental.entities.User;
 import com.hoaiphong.carrental.repositories.CarRepository;
 import com.hoaiphong.carrental.services.CarService;
 import jakarta.persistence.criteria.Predicate;
@@ -281,7 +282,7 @@ public class CarServiceImpl implements CarService {
         car.setNoFoodInCar(carCreateDTO.isNoFoodInCar());
         car.setOther(carCreateDTO.isOther());
         car.setOtherMessage(carCreateDTO.getOtherMessage());
-        car.setStatus("available");
+        car.setStatus("Available");
         car.setUser(carCreateDTO.getUser());
 
         carRepository.save(car);
@@ -479,10 +480,25 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public Page<Car> search(String name, Pageable pageable) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'search'");
+    public Page<CarDTO> findByUser(User user, Pageable pageable) {
+       // Lấy danh sách xe theo người dùng và phân trang
+        Page<Car> cars = carRepository.findByUser(user, pageable);
+
+        // Chuyển đổi các Car sang CarDTO và trả về trang kết quả
+        return cars.map(car -> {
+            var carDTO = new CarDTO();
+            carDTO.setId(car.getId());
+            carDTO.setMileage(car.getMileage());
+            carDTO.setFuelConsumption(car.getFuelConsumption());
+            carDTO.setAddress(car.getAddress());
+            carDTO.setDescription(car.getDescription());
+            carDTO.setStatus(car.getStatus());
+            carDTO.setUser(car.getUser());
+            return carDTO;
+        });
     }
+
+    
 
    
 

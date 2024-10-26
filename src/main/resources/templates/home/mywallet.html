@@ -90,7 +90,7 @@
         
     
         <h2>Transactions</h2>
-        <form class="mb-3">
+        <form class="mb-3" action="/mywallet" method="get">
             <div class="d-flex mb-2 justify-content-between">
                 <div class="me-2 flex-grow-1">
                     <label for="from" class="form-label"><strong>From:</strong></label>
@@ -133,6 +133,40 @@
 
             </tbody>
         </table>
+        <!-- Phân trang -->
+        <div class="card-footer pagination p-3 d-flex justify-content-between align-items-center">
+            <!-- Lựa chọn số lượng bản ghi mỗi trang -->
+            <div class="select-size">
+                <label for="pageSize" class="text-sm font-medium">Page Size:</label>
+                <select id="pageSize" name="pageSize" class="p-2 border rounded-md"
+                        onchange="window.location.href = '/mywallet?page=0&size=' + this.value">
+                    <option th:each="size : ${pageSizes}" th:value="${size}" th:text="${size}"
+                            th:selected="${size == pageSize}"></option>
+                </select>
+            </div>
+            <!-- Thanh phân trang -->
+            <ul class="pagination m-0">
+                <!-- Nút đầu tiên -->
+                <li class="page-item" th:classappend="${page == 0} ? 'disabled' : ''">
+                    <a class="page-link" th:href="@{/mywallet(page=0, size=${pageSize})}">
+                        <i class="fa-solid fa-angle-double-left"></i>
+                    </a>
+                </li>
+                
+                <!-- Các trang ở giữa -->
+                <li class="page-item" th:each="i : ${#numbers.sequence(page - pageLimit < 0 ? 0 : page - pageLimit,  totalPages - 1 - page >= pageLimit ? page + pageLimit  : totalPages - 1)}">
+                    <a class="page-link" th:href="@{/mywallet(page=${i}, size=${pageSize})}" th:text="${i + 1}" th:classappend="${i == page} ? 'active' : ''"></a>
+                </li>
+                
+                <!-- Nút cuối cùng -->
+                <li class="page-item" th:classappend="${page + 1 >= totalPages} ? 'disabled' : ''">
+                    <a class="page-link" th:href="@{/mywallet(page=${totalPages - 1}, size=${pageSize})}">
+                        <i class="fa-solid fa-angle-double-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
     
         
     </div>

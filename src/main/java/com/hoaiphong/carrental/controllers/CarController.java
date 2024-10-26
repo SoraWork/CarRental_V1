@@ -7,11 +7,18 @@ import com.hoaiphong.carrental.dtos.car.CarUpdatePricingDTO;
 import com.hoaiphong.carrental.dtos.car.CarUpdateStatusDTO;
 import com.hoaiphong.carrental.dtos.messages.Message;
 import com.hoaiphong.carrental.entities.Car;
+import com.hoaiphong.carrental.entities.User;
+import com.hoaiphong.carrental.repositories.CarRepository;
 import com.hoaiphong.carrental.repositories.UserRepository;
 import com.hoaiphong.carrental.services.CarService;
+import com.hoaiphong.carrental.services.UserService;
+
 import jakarta.validation.Valid;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,8 +41,12 @@ public class CarController {
     private final CarService carService;
     private final ImageUploadUtil imageUploadUtil;
     private final UserRepository userRepository;
+    private final UserService userService;
+    private final CarRepository carRepository;
 
-    public CarController(CarService carService, ImageUploadUtil imageUploadUtil, UserRepository userRepository) {
+    public CarController(CarService carService, ImageUploadUtil imageUploadUtil, UserRepository userRepository, UserService userService, CarRepository carRepository) {
+        this.carRepository = carRepository;
+        this.userService = userService;
         this.imageUploadUtil = imageUploadUtil;
         this.carService = carService;
         this.userRepository = userRepository;
@@ -306,7 +317,7 @@ public class CarController {
         }
         var successMessage = new Message("success", "Category created successfully");
         redirectAttributes.addFlashAttribute("message", successMessage);
-        return "owner/owner";
+        return "redirect:/car/list";
     }
 
     @GetMapping("/edit/{id}")
@@ -376,7 +387,7 @@ public class CarController {
         }
         var successMessage = new Message("success", "Car updated successfully");
         redirectAttributes.addFlashAttribute("message", successMessage);
-        return "owner/owner";
+        return "redirect:/car/list";
     }
 
     @PostMapping("/edit-pricing/{id}")
@@ -398,7 +409,7 @@ public class CarController {
         }
         var successMessage = new Message("success", "Car updated successfully");
         redirectAttributes.addFlashAttribute("message", successMessage);
-        return "owner/owner";
+        return "redirect:/car/list";
     }
 
     @PostMapping("/edit-status/{id}")
@@ -419,23 +430,46 @@ public class CarController {
         }
         var successMessage = new Message("success", "Car updated successfully");
         redirectAttributes.addFlashAttribute("message", successMessage);
-        return "owner/owner";
+        return "redirect:/car/list";
     }
     
-    @GetMapping("/list")
-    public String list(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        var user = userRepository.findByEmail(userDetails.getUsername());
-        if (user == null) {
-            return "redirect:/login";
+   @GetMapping("/list")
+    public String list(
+            @RequestParam(defaultValue = "0") int page,   // Trang hiện tại
+            @RequestParam(defaultValue = "6") int size,  // Số bản ghi trên mỗi trang
+            Model model) {
+        
+        // Lấy tên đăng nhập của người dùng hiện tại
+        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        User currentUser = userService.findByUsername(currentUsername);
+        
+        // Kiểm tra nếu currentUser không null
+        if (currentUser == null) {
+            model.addAttribute("error", "User not found");
+            return "home/error";
         }
 
-        List<Car> cars = user.getCars();
+        // Thiết lập phân trang (không sắp xếp)
+        PageRequest pageable = PageRequest.of(page, size);
 
+        // Lấy danh sách xe của người dùng phân trang
+        Page<Car> cars = carRepository.findByUser(currentUser, pageable);
+
+        long bookedCount = carRepository.countByStatus("Booked");
+        model.addAttribute("bookedCount", bookedCount);
+
+        // Thêm các thuộc tính vào model
         model.addAttribute("cars", cars);
-        
-       
+        model.addAttribute("totalPages", cars.getTotalPages());
+        model.addAttribute("totalElements", cars.getTotalElements());
+        model.addAttribute("pageLimit", 3);  // Giới hạn số trang hiển thị
+        model.addAttribute("page", page);
+        model.addAttribute("pageSize", size);
+        model.addAttribute("pageSizes", new Integer[]{6, 12, 18, 24, 30});
+
         return "car/list";
     }
+
 
     @PostMapping("/listconfirm")
     public String confirm(@ModelAttribute CarUpdateStatusDTO carUpdateStatusDTO, RedirectAttributes redirectAttributes) {

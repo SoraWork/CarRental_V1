@@ -1,7 +1,7 @@
 package com.hoaiphong.carrental.services;
 
 import com.hoaiphong.carrental.dtos.car.*;
-import com.hoaiphong.carrental.entities.Car;
+import com.hoaiphong.carrental.entities.User;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +14,7 @@ public interface CarService {
 
     Page<CarDTO> findAll(String keyword, Pageable pageable);
 
-    Page<Car> search(String name, Pageable pageable);
+    Page<CarDTO> findByUser(User user, Pageable pageable);
 
     CarDTO findById(UUID id);
 

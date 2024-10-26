@@ -5,6 +5,8 @@ import java.util.UUID;
 
 import java.time.LocalDate;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -111,7 +113,7 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setId(transactionUpdateWalletDTO.getId());
         transaction.setAmount(transactionUpdateWalletDTO.getAmount());
         transaction.setType(transactionUpdateWalletDTO.getType());
-        transaction.setDateTime(transactionUpdateWalletDTO.getDateTime());
+        transaction.setDateTime(LocalDate.now());
         transaction.setBookingNo("N/A");
         transaction.setCarName("N/A");
         
@@ -133,13 +135,41 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<Transaction> findByUser(User user) {
-        return transactionRepository.findByUser(user);
+    public Page<TransactionDTO> findByUser(User user, Pageable pageable) {
+        // Lấy danh sách giao dịch theo người dùng và phân trang
+    Page<Transaction> transactions = transactionRepository.findByUser(user, pageable);
+
+    // Chuyển đổi các Transaction thành TransactionDTO và trả về trang kết quả
+    return transactions.map(transaction -> {
+        var transactionDTO = new TransactionDTO();
+        transactionDTO.setId(transaction.getId());
+        transactionDTO.setAmount(transaction.getAmount());
+        transactionDTO.setType(transaction.getType());
+        transactionDTO.setDateTime(transaction.getDateTime());
+        transactionDTO.setBookingNo(transaction.getBookingNo());
+        transactionDTO.setCarName(transaction.getCarName());
+        transactionDTO.setUserId(transaction.getUser().getId());
+        return transactionDTO;
+    });
     }
 
     @Override
-    public List<Transaction> findByUserAndDate(User user, LocalDate  startDate, LocalDate  endDate) {
-        return transactionRepository.findByUserAndDateTimeBetween(user, startDate, endDate);
+    public Page<TransactionDTO> findByUserAndDate(User user, LocalDate  startDate, LocalDate  endDate, Pageable pageable) {
+        // Lấy danh sách giao dịch theo người dùng và phân trang
+        Page<Transaction> transactions = transactionRepository.findByUserAndDateTimeBetween(user, startDate, endDate, pageable);
+ 
+        // Chuyển đổi các Transaction thành TransactionDTO và trả về trang kết quả
+        return transactions.map(transaction -> {
+            var transactionDTO = new TransactionDTO();
+            transactionDTO.setId(transaction.getId());
+            transactionDTO.setAmount(transaction.getAmount());
+            transactionDTO.setType(transaction.getType());
+            transactionDTO.setDateTime(transaction.getDateTime());
+            transactionDTO.setBookingNo(transaction.getBookingNo());
+            transactionDTO.setCarName(transaction.getCarName());
+            transactionDTO.setUserId(transaction.getUser().getId());
+            return transactionDTO;
+        });
     }
 
    

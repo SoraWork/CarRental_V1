@@ -1,6 +1,6 @@
 package com.hoaiphong.carrental.entities;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
 import jakarta.persistence.*;
@@ -24,7 +24,7 @@ public class Transaction {
     private String type;
 
     @Column(name = "date_time")
-    private LocalDateTime dateTime;
+    private LocalDate dateTime;
 
     @Column(name = "booking_no")
     private String bookingNo;

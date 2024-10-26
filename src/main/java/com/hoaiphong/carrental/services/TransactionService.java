@@ -3,11 +3,13 @@ package com.hoaiphong.carrental.services;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.time.LocalDate;
 
 import com.hoaiphong.carrental.dtos.transaction.TransactionDTO;
 import com.hoaiphong.carrental.dtos.transaction.TransactionUpdateWalletDTO;
-import com.hoaiphong.carrental.entities.Transaction;
 import com.hoaiphong.carrental.entities.User;
 
 public interface TransactionService {
@@ -20,8 +22,8 @@ public interface TransactionService {
 
     TransactionDTO create(TransactionUpdateWalletDTO transactionUpdateWalletDTO);
 
-    List<Transaction> findByUser(User user);
+    Page<TransactionDTO> findByUser(User user, Pageable pageable);
 
-    List<Transaction> findByUserAndDate(User user, LocalDate  startDate, LocalDate  endDate);
+    Page<TransactionDTO> findByUserAndDate(User user, LocalDate  startDate, LocalDate  endDate, Pageable pageable);
 
 }
