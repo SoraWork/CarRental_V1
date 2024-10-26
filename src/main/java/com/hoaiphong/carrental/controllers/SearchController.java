@@ -224,8 +224,8 @@ public class SearchController {
 
         // Lưu phương thức thanh toán vào carBooking
         carBooking.setPaymentMethod(paymentMethod);
-        carBooking.setTotalPrice(totalPrice); // Nếu bạn có thuộc tính totalPrice trong CarBooking
-        carBooking.setStatus("in-progress");// Lưu carBooking vào cơ sở dữ liệu
+        carBooking.setTotalPrice(totalPrice);
+        carBooking.setStatus("Confirm");
         carBookingService.save(carBooking);
         // Nếu tất cả điều kiện thỏa mãn
         model.addAttribute("daysBetween", daysBetween);
@@ -302,6 +302,34 @@ public class SearchController {
 
     }
 
+   @PostMapping("/confirmPickUP")
+   public String confirmPickUp(@RequestParam("carId") UUID carId,
+   @RequestParam("bookingId") UUID bookingId){
+
+    CarBookingId carBookingId = new CarBookingId();
+    carBookingId.setCarId(carId);
+    carBookingId.setBookingId(bookingId);
+    CarBooking carBooking = carBookingService.findById(carBookingId);
+    carBooking.setStatus("in-progress");
+    carBookingService.save(carBooking);
+
+    return "redirect:/listBookingUser";
+
+   }
+   @PostMapping("/cancelBooking")
+   public String cancelBooking(@RequestParam("carId") UUID carId,
+   @RequestParam("bookingId") UUID bookingId){
+
+    CarBookingId carBookingId = new CarBookingId();
+    carBookingId.setCarId(carId);
+    carBookingId.setBookingId(bookingId);
+    CarBooking carBooking = carBookingService.findById(carBookingId);
+    carBooking.setStatus("cancelled");
+    carBookingService.save(carBooking);
+
+    return "redirect:/listBookingUser";
+   }
+
     @PostMapping("/processPayment")
     @ResponseBody
     public String processPayment(@RequestParam("carId") UUID carId,
@@ -330,8 +358,8 @@ public class SearchController {
             user.setWallet(balance);
             userService.save(user);
         }
-        //    carBooking.setStatus("Completed");
-        //    carBookingService.save(carBooking);
+           carBooking.setStatus("Completed");
+           carBookingService.save(carBooking);
         return "success";
     }
 

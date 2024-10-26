@@ -240,7 +240,7 @@
 
                 <!--fom infomation-->
                 <div class="w-full h-auto bg-gray-100 flex flex-col items-center">
-                    <form class="custom-background flex flex-col w-full custom-padding space-y-8 py-5" method="POST"
+                    <form id="bookingForm" class="custom-background flex flex-col w-full custom-padding space-y-8 py-5" method="POST"
                         th:action="@{/bookingPayment}" th:object="${carBooking}">
 
                         <input type="hidden" name="carId" th:value="${carId}" />
@@ -332,7 +332,8 @@
 
 
 
-                        <div class="custom-background flex flex-col w-full custom-padding space-y-8 py-5" style="padding-left:0px">
+                        <div class="custom-background flex flex-col w-full custom-padding space-y-8 py-5"
+                            style="padding-left:0px">
                             <div class="font-bold text-4xl text-left">Driver information</div>
                             <div class="mb-4 flex items-center">
                                 <input type="checkbox" id="driver-agree" class="mr-2">
@@ -431,7 +432,7 @@
 
                             <div class="flex justify-end space-x-4 mt-4">
                                 <div>
-                                    <button type="" class="bg-blue-500 hover:bg-gray-100 text-black font-bold
+                                    <button type="submit" class="bg-blue-500 hover:bg-gray-100 text-black font-bold
                             py-2 px-7 rounded" style="min-width: 30vh;">Next</button>
                                 </div>
                                 <div>
@@ -445,17 +446,46 @@
             </div>
 
         </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const forms = document.querySelectorAll("form"); // Chọn tất cả các form
+        
+                forms.forEach(form => {
+                    const requiredFields = [
+                        "renterFullName", "renterDateOfBirth", "renterPhone", "renterEmail",
+                        "renterNationalId", "renterDrivingLicense", "renterCity",
+                        "driverFullName", "driverDateOfBirth", "driverPhone", "driverEmail",
+                        "driverNationalId", "driverDrivingLicense", "driverCity"
+                    ];
+        
+                    form.addEventListener("submit", function (event) {
+                        let isValid = true;
+                        requiredFields.forEach((field) => {
+                            const input = form.querySelector(`[name="${field}"]`);
+                            if (input && !input.value.trim()) {
+                                isValid = false;
+                                input.classList.add("border-red-500");
+                                input.nextElementSibling?.classList.add("text-red-500");
+                            } else if (input) {
+                                input.classList.remove("border-red-500");
+                                input.nextElementSibling?.classList.remove("text-red-500");
+                            }
+                        });
+        
+                        if (!isValid) {
+                            alert("Please fill in all required fields.");
+                            event.preventDefault(); // Ngăn chặn form gửi
+                        }
+                    });
+                });
+            });
+        </script>
+        
 
 
     </section>
 
-    <script>
-        function changePerPage(delta) {
-            const input = document.getElementById('perPage');
-            let currentValue = parseInt(input.value);
-            input.value = Math.max(1, currentValue + delta); // GiÃ¡Â»â€ºi hÃ¡ÂºÂ¡n tÃ¡Â»â€˜i thiÃ¡Â»Æ’u lÃƒ  1
-        }
-    </script>
+
     <!-- aaaaaa -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>

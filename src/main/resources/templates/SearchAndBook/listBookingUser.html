@@ -139,8 +139,7 @@
             <div class="bg-white h-auto w-screen flex flex-col px-4 py-4">
                 <div class="font-bold text-6xl text-left">My Booking</div>
                 <div class="flex items-center justify-between pt-4">
-                    <div class="pl-5 text-4xl">There are 10 cars that are available for you</div>
-                    <div class="flex items-center space-x-4 pr-16">
+                    <div class="pl-5 text-4xl">There are <span th:text="${totalElements}"></span> Bookings that are available for you</div>                    <div class="flex items-center space-x-4 pr-16">
                         <!--button paging-->
                         <div class="buttons">
                             <nav>
@@ -309,19 +308,20 @@
                                                             </div>
                                                         </td>
                                                         <td class="py-1">
+                                                            <form th:action="@{/confirmPickUP}" method="post">
+                                                                <!-- Trường ẩn để gửi carId và bookingId qua @RequestParam -->
+                                                                <input type="hidden" name="carId"
+                                                                    th:value="${carBooking.car.id}" />
+                                                                <input type="hidden" name="bookingId"
+                                                                    th:value="${carBooking.booking.id}" />
 
-                                                            <a th:href="@{/detail/{carId}(carId=${carBooking.Car.id})}"
-                                                                class="d-block">
                                                                 <button
-                                                                    th:if="${carBooking.status == 'deposit-pending'}"
-                                                                    class="bg-blue-500 text-white font-bold py-2 px-5 rounded-lg w-full">
-                                                                    View Detail
+                                                                    th:if="${carBooking.status == 'Confirm' || carBooking.status == 'deposit-pending'}"
+                                                                    type="submit"
+                                                                    class="bg-gray-800 text-white font-bold py-2 px-5 rounded-lg w-full">
+                                                                    Confirm Pick-up
                                                                 </button>
-                                                            </a>
-                                                            <button th:if="${carBooking.status == 'Confirm'}"
-                                                                class="bg-gray-800 text-black font-bold py-2 px-5 rounded-lg w-full">
-                                                                Confirm Pick-up
-                                                            </button>
+                                                            </form>
                                                         </td>
 
                                                     </tr>
@@ -336,16 +336,26 @@
                                                             th:text="${carBooking.Booking.id}"></td>
                                                         <td>
 
-                                                            <button th:if="${carBooking.status == 'Confirm'}"
-                                                                class="bg-red-500 text-white font-bold py-2 px-5 rounded-lg w-full">
-                                                                Cancel Booking
-                                                            </button>
+
+                                                            <form th:action="@{/cancelBooking}" method="post">
+                                                                <!-- Trường ẩn để gửi carId và bookingId qua @RequestParam -->
+                                                                <input type="hidden" name="carId"
+                                                                    th:value="${carBooking.car.id}" />
+                                                                <input type="hidden" name="bookingId"
+                                                                    th:value="${carBooking.booking.id}" />
+
+                                                                <button th:if="${carBooking.status == 'Confirm'|| carBooking.status == 'deposit-pending'}"
+                                                                    type="submit"
+                                                                    class="bg-red-500 text-white font-bold py-2 px-5 rounded-lg w-full">
+                                                                    Cancel Booking
+                                                                </button>
+                                                            </form>
 
                                                             <button th:if="${carBooking.status == 'in-progress'}"
                                                                 id="yesButton"
                                                                 class="bg-blue-500 text-white font-bold yesButton yesButtonClass  px-5 py-2 rounded-lg w-full"
                                                                 data-toggle="modal" data-target="#returnCarModal">
-                                                                Return Off
+                                                                Return Car
                                                             </button>
                                                         </td>
                                                     </tr>
@@ -375,13 +385,12 @@
                                                             Giay,
                                                             Ha
                                                             Noi</td>
-                                                        <td th:text="${carBooking.Car.getId()}"></td>
-                                                        <td th:text="${carBooking.Booking.getId()}"></td>
+
                                                     </tr>
                                                     <tr>
                                                         <td class="font-bold  text-left">Status</td>
-                                                        <td class="text-blue-500 text-center text-left"
-                                                            th:text="${carBooking.status}">
+                                                        <td class="text-blue-500 " style="text-align: left
+                                                        ;" th:text="${carBooking.status}">
                                                             Available</td>
                                                     </tr>
                                                 </tbody>
@@ -698,7 +707,8 @@
                             document.getElementById('content').value = '';
                             updateStars(0); // Reset ngôi sao về mặc định
                             closeModalRating('#ratingModal'); // Đóng modal
-                            location.reload();                        },
+                            location.reload();
+                        },
                         error: function (xhr, status, error) {
                             console.error("AJAX Error: ", error);
                             alert("Failed to submit rating.");
