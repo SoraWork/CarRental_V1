@@ -160,19 +160,19 @@
                         </div>
 
                         <div class="relative inline-block text-left">
-                            <button
-                                class="inline-flex items-center justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none">
-                                Newest to Latest
-                                <i class="ml-2 fa-solid fa-caret-down"></i>
-                            </button>
-                            <div
-                                class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none hidden group-hover:block">
-                                <div class="py-1">
-                                    <a href="#"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Newest</a>
-                                    <a href="#"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Oldest</a>
-                                </div>
+                            <div class="flex items-center space-x-2">
+                                <label class="text-sm font-medium">Sort by:</label>
+                                <a th:href="@{/listBookingUser(sort='renterPhone', order='desc', page=0, size=${pageSize})}"
+                                    class="p-2 border border-slate-300 rounded-md bg-blue-500 text-white hover:bg-blue-700">
+                                    Newest
+                                </a>
+                                <a th:href="@{/listBookingUser( sort='renterPhone', order='asc', page=0, size=${pageSize})}"
+                                    class="p-2 border border-slate-300 rounded-md bg-blue-500 text-white hover:bg-blue-700">
+                                    Oldest
+
+
+                                    
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -365,6 +365,7 @@
                                                             th:text="${carBooking.Car.basePrice}">
                                                             900k/day
                                                         </td>
+                                                        <td th:text="${carBooking.renterPhone}"></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="font-bold text-left">Deposit</td>
@@ -411,53 +412,60 @@
             <div class="card-footer p-3" th:if="${totalPages == 0}">
                 <p class="text-center text-gray-700">No Car found</p>
             </div>
-            <div class="card-footer pagination  flex justify-between items-center min-w-full" th:if="${totalPages > 0} "
+
+            <!--phân trang-->
+            <div class="card-footer pagination flex justify-between items-center min-w-full" th:if="${totalPages > 0}"
                 style="width: 700px;">
-                <!-- Show select page size -->
-                <div class="flex justify-between items-center">
-                    <div>
-                        <label for="pageSize" class="block text-sm font-medium text-gray-700 mb-2">Page Size:</label>
-                        <select id="pageSize" name="pageSize" class="p-2 border border-slate-300 rounded-md"
-                            onchange="window.location.href = '/listBookingUser?page=0&size=' + this.value">
-                            <option th:each="size : ${pageSizes}" th:value="${size}" th:text="${size}"
-                                th:selected="${size == pageSize}"></option>
-                        </select>
-
-                    </div>
-                </div>
-                <ul class="pagination-step flex justify-center items-center gap-2">
-                    <!-- Previous Page -->
-                    <li>
-                        <a class="p-3" th:href="@{/listBookingUser(page=${currentPage - 1}, size=${pageSize})}"
-                            th:classappend="${currentPage == 0} ? 'pointer-events-none text-slate-300' : ''">
-                            <i class="fa-solid fa-angle-left"></i>
-                        </a>
-                    </li>
-
-                    <!-- Page Numbers -->
-                    <li th:each="pageNum : ${#numbers.sequence(0, totalPages - 1 < 0 ? 0 : totalPages - 1)}">
-                        <a class="p-3" th:href="@{/listBookingUser(  page=${pageNum}, size=${pageSize})}"
-                            th:classappend="${pageNum == currentPage} ? 'inline-block text-center bg-blue-700 rounded-full w-12 h-12 text-white' : ''">
-                            <span th:text="${pageNum + 1}"></span>
-                        </a>
-                    </li>
-
-                    <!-- Next Page - Disabled if currentPage is the last page -->
-                    <li>
-                        <a class="p-3" th:href="@{/search(order=${order}, page=${currentPage + 1}, size=${pageSize})}"
-                            th:classappend="${currentPage == totalPages - 1} ? 'pointer-events-none text-slate-300' : ''">
-                            <i class="fa-solid fa-angle-right"></i>
-                        </a>
-                    </li>
-                </ul>
-
-                <!-- Show item 0-100 of 1000 -->
-                <div class="flex justify-center items-center gap-2">
-                    <span class="text-sm text-gray-700"
-                        th:text="|Show ${(currentPage * pageSize + 1) > totalElements ? totalElements : (currentPage * pageSize + 1)} - ${(currentPage + 1) * pageSize > totalElements ? totalElements : (currentPage + 1) * pageSize} of ${totalElements}|">
-                    </span>
-                </div>
-            </div>
+               <!-- Show select page size -->
+               <div class="flex justify-between items-center">
+                   <div>
+                       <label for="pageSize" class="block text-sm font-medium text-gray-700 mb-2">Page Size:</label>
+                       <select id="pageSize" name="pageSize" class="p-2 border border-slate-300 rounded-md"
+                               onchange="window.location.href = '/listBookingUser?page=0&size=' + this.value + 
+                               '&sort=renterPhone&order=' + /*[[${order}]]*/ 'asc'">
+                           <option th:each="size : ${pageSizes}" th:value="${size}" th:text="${size}"
+                                   th:selected="${size == pageSize}"></option>
+                       </select>
+                   </div>
+               </div>
+           
+               <ul class="pagination-step flex justify-center items-center gap-2">
+                   <!-- Previous Page -->
+                   <li>
+                       <a class="p-3" th:href="@{/listBookingUser(page=${currentPage - 1}, size=${pageSize}, sort='renterPhone', order=${order})}"
+                          th:classappend="${currentPage == 0} ? 'pointer-events-none text-slate-300' : ''">
+                           <i class="fa-solid fa-angle-left"></i>
+                       </a>
+                   </li>
+           
+                   <!-- Page Numbers -->
+                   <li th:each="pageNum : ${#numbers.sequence(0, totalPages - 1 < 0 ? 0 : totalPages - 1)}">
+                       <a class="p-3" th:href="@{/listBookingUser(page=${pageNum}, size=${pageSize}, sort='renterPhone', order=${order})}"
+                          th:classappend="${pageNum == currentPage} ? 'inline-block text-center bg-blue-700 rounded-full w-12 h-12 text-white' : ''">
+                           <span th:text="${pageNum + 1}"></span>
+                       </a>
+                   </li>
+           
+                   <!-- Next Page - Disabled if currentPage is the last page -->
+                   <li>
+                       <a class="p-3" th:href="@{/listBookingUser(page=${currentPage + 1}, size=${pageSize}, sort='renterPhone', order=${order})}"
+                          th:classappend="${currentPage == totalPages - 1} ? 'pointer-events-none text-slate-300' : ''">
+                           <i class="fa-solid fa-angle-right"></i>
+                       </a>
+                   </li>
+               </ul>
+           
+               <!-- Show item 0-100 of 1000 -->
+               <div class="flex justify-center items-center gap-2">
+                   <span class="text-sm text-gray-700"
+                         th:text="|Show ${(currentPage * pageSize + 1) > totalElements ? totalElements : (currentPage * pageSize + 1)} - ${(currentPage + 1) * pageSize > totalElements ? totalElements : (currentPage + 1) * pageSize} of ${totalElements}|">
+                   </span>
+               </div>
+           </div>
+           
+            
+           
+           
 
         </div>
         <!-- Modal cho deposit lớn hơn total -->

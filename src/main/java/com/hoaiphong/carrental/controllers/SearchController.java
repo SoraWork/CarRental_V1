@@ -284,24 +284,30 @@ public class SearchController {
 
     @GetMapping("listBookingUser")
     public String listBookingUser(Model model,
+            @RequestParam(defaultValue = "renterPhone") String sort,
+            @RequestParam(defaultValue = "asc") String order, // Thêm tham số order
             @RequestParam(defaultValue = "0") int page, // Page Index - Trang thứ bao nhiêu
             @RequestParam(defaultValue = "2") int size,
             @AuthenticationPrincipal UserDetails userDetails) {
+        
         User user = userService.findByEmail(userDetails.getUsername());
-        var pageable = PageRequest.of(page, size); // Chỉ phân trang mà không cần sắp xếp
+        
+        // Xác định hướng sắp xếp dựa trên tham số order
+        Sort.Direction direction = order.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        var pageable = PageRequest.of(page, size, direction, sort); // Sử dụng sort và order
+    
         Page<CarBooking> carBookingPages = carBookingService.findByAll(user.getId(), pageable);
-
+    
         model.addAttribute("carBookings", carBookingPages.getContent()); // Danh sách các CarBooking
         model.addAttribute("currentPage", page); // Trang hiện tại
         model.addAttribute("totalPages", carBookingPages.getTotalPages()); // Tổng số trang
         model.addAttribute("totalElements", carBookingPages.getTotalElements()); // Tổng số phần tử
         model.addAttribute("pageSize", size);
         model.addAttribute("pageSizes", new int[]{2, 5, 10, 20});
-        // Khai báo biến cars với dữ liệu được phân trang
-        return "SearchAndBook/listBookingUser";
-
+    
+        return "SearchAndBook/listBookingUser";  
     }
-
+    
    @PostMapping("/confirmPickUP")
    public String confirmPickUp(@RequestParam("carId") UUID carId,
    @RequestParam("bookingId") UUID bookingId){
