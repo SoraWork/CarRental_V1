@@ -1,14 +1,15 @@
 package com.hoaiphong.carrental.services.impl;
 
 import java.util.UUID;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.hoaiphong.carrental.entities.Car;
+import com.hoaiphong.carrental.repositories.CarRepository;
 import com.hoaiphong.carrental.repositories.CarRepositoryBooking;
+import com.hoaiphong.carrental.services.CarService;
 import com.hoaiphong.carrental.services.CarServiceBooking;
 
 @Service
@@ -25,7 +26,7 @@ public class CarServiceBookingImlp implements CarServiceBooking {
         return (Car) carRepositoryBooking.findById(id).orElse(null);
     }
 
-    @Override
+   @Override
     public Page<Car> search(String name, Pageable pageable) {
         Specification<Car> spec = (root, query, criteriaBuilder) -> {
             if (name == null || name.isEmpty()) {

@@ -1,15 +1,14 @@
 package com.hoaiphong.carrental.entities;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -103,8 +102,8 @@ public class CarBooking {
     @Column(name = "Total_price")
     private double totalPrice;
 
+    @Column(name = "feedBack_id")
+    private UUID feedBackId;
 
-    @OneToOne(mappedBy = "carBooking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private FeedBack feedBack;
-
+    // @OneToOne(mappedBy = "carBooking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 }

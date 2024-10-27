@@ -4,7 +4,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.UUID;
+import java.util.*;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,12 +21,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.hoaiphong.carrental.dtos.carbooking.CarBookingWithFeedbackDTO;
 import com.hoaiphong.carrental.entities.Booking;
 import com.hoaiphong.carrental.entities.Car;
 import com.hoaiphong.carrental.entities.CarBooking;
 import com.hoaiphong.carrental.entities.CarBookingId;
 import com.hoaiphong.carrental.entities.FeedBack;
 import com.hoaiphong.carrental.entities.User;
+import com.hoaiphong.carrental.repositories.CarBookingRepository;
 import com.hoaiphong.carrental.repositories.UserRepository;
 import com.hoaiphong.carrental.services.BookingService;
 import com.hoaiphong.carrental.services.CarBookingService;
@@ -37,7 +39,7 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class SearchController {
-
+    private final CarBookingRepository carBookingRepository;
     private final UserRepository userService;
     private final FeedBackService feedBackService;
     private final CarBookingService carBookingService;
@@ -45,7 +47,8 @@ public class SearchController {
     private final BookingService bookingService;
 
     public SearchController(CarBookingService carBookingService, CarServiceBooking carService, BookingService bookingService,
-            UserRepository userService, FeedBackService feedBackService) {
+            UserRepository userService, FeedBackService feedBackService, CarBookingRepository carBookingRepository) {
+        this.carBookingRepository = carBookingRepository;
         this.feedBackService = feedBackService;
         this.userService = userService;
         this.carBookingService = carBookingService;
@@ -99,7 +102,6 @@ public class SearchController {
 
         return "SearchAndBook/detail";
     }
-
     @GetMapping("/bookingInformation/{carId}")
     public String bookingInformation(
             @PathVariable("carId") UUID carId,
@@ -219,8 +221,8 @@ public class SearchController {
 
         // Lưu phương thức thanh toán vào carBooking
         carBooking.setPaymentMethod(paymentMethod);
-        carBooking.setTotalPrice(totalPrice); // Nếu bạn có thuộc tính totalPrice trong CarBooking
-        carBooking.setStatus("in-progress");// Lưu carBooking vào cơ sở dữ liệu
+        carBooking.setTotalPrice(totalPrice);
+        carBooking.setStatus("Confirm");
         carBookingService.save(carBooking);
         // Nếu tất cả điều kiện thỏa mãn
         model.addAttribute("daysBetween", daysBetween);
@@ -296,62 +298,143 @@ public class SearchController {
         return "SearchAndBook/listBookingUser";
 
     }
+    @PostMapping("/confirmPickUP")
+   public String confirmPickUp(@RequestParam("carId") UUID carId,
+   @RequestParam("bookingId") UUID bookingId){
 
-    @PostMapping("/processPayment")
-    @ResponseBody
-    public String processPayment(@RequestParam("carId") UUID carId,
-            @RequestParam("bookingId") UUID bookingId,
-            @AuthenticationPrincipal UserDetails userDetails) {
-        User user = userService.findByEmail(userDetails.getUsername());
+    CarBookingId carBookingId = new CarBookingId();
+    carBookingId.setCarId(carId);
+    carBookingId.setBookingId(bookingId);
+    CarBooking carBooking = carBookingService.findById(carBookingId);
+    carBooking.setStatus("in-progress");
+    carBookingService.save(carBooking);
 
-        CarBookingId carBookingId = new CarBookingId();
-        carBookingId.setCarId(carId);
-        carBookingId.setBookingId(bookingId);
+    return "redirect:/listBookingUser";
 
-        CarBooking carBooking = carBookingService.findById(carBookingId);
-        Booking booking = bookingService.findById(bookingId);
-        Car car = carService.findById(carId);
-        System.out.println(carBooking.getCar().getBasePrice() + "121654654654654654");
-        long daysBetween = ChronoUnit.DAYS.between(booking.getStartDate(), booking.getEndDate());
-        double totalPrice = car.getBasePrice() * daysBetween;
-        double deposit = car.getDeposit();
-        double balance;
-        if (totalPrice > deposit) {
-            balance = user.getWallet() - totalPrice - deposit;
-            user.setWallet(balance);
-            userService.save(user);
+   }
+   @PostMapping("/cancelBooking")
+   public String cancelBooking(@RequestParam("carId") UUID carId,
+   @RequestParam("bookingId") UUID bookingId){
+
+    CarBookingId carBookingId = new CarBookingId();
+    carBookingId.setCarId(carId);
+    carBookingId.setBookingId(bookingId);
+    CarBooking carBooking = carBookingService.findById(carBookingId);
+    carBooking.setStatus("cancelled");
+    carBookingService.save(carBooking);
+
+    return "redirect:/listBookingUser";
+   }
+
+   @PostMapping("/processPayment")
+   @ResponseBody
+   public String processPayment(@RequestParam("carId") UUID carId,
+           @RequestParam("bookingId") UUID bookingId,
+           @AuthenticationPrincipal UserDetails userDetails) {
+       User user = userService.findByEmail(userDetails.getUsername());
+
+       CarBookingId carBookingId = new CarBookingId();
+       carBookingId.setCarId(carId);
+       carBookingId.setBookingId(bookingId);
+
+       CarBooking carBooking = carBookingService.findById(carBookingId);
+       Booking booking = bookingService.findById(bookingId);
+       Car car = carService.findById(carId);
+       System.out.println(carBooking.getCar().getBasePrice() + "121654654654654654");
+       long daysBetween = ChronoUnit.DAYS.between(booking.getStartDate(), booking.getEndDate());
+       double totalPrice = car.getBasePrice() * daysBetween;
+       double deposit = car.getDeposit();
+       double balance;
+       if (totalPrice > deposit) {
+           balance = user.getWallet() - totalPrice - deposit;
+           user.setWallet(balance);
+           userService.save(user);
+       } else {
+           balance = user.getWallet() + (deposit - totalPrice);
+           user.setWallet(balance);
+           userService.save(user);
+       }
+          carBooking.setStatus("Completed");
+          carBookingService.save(carBooking);
+       return "success";
+   }  
+   
+   @PostMapping("submitRating")
+   public ResponseEntity<String> submitRating(@RequestParam("carId") UUID carId,
+           @RequestParam("rating") int rating, @RequestParam("content") String content,
+           @RequestParam("bookingId") UUID bookingId) {
+
+       CarBookingId carBookingId = new CarBookingId();
+       carBookingId.setCarId(carId);
+       carBookingId.setBookingId(bookingId);
+       CarBooking carBooking = carBookingService.findById(carBookingId);
+
+       FeedBack feedBack = new FeedBack();
+       feedBack.setContent(content);
+       feedBack.setRating(rating);
+       feedBack.setDateTime(LocalDateTime.now());
+
+       feedBack.setCarBooking(carBooking);
+       feedBackService.save(feedBack);
+
+       carBooking.setFeedBackId(feedBack.getId());
+       carBookingService.save(carBooking);
+
+       return ResponseEntity.ok("Rating submitted successfully");
+   }
+    @GetMapping("listFeedBack")
+    public String listFeedBack(Model model,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "2") int size,
+            @RequestParam(required = false) Integer star) {
+    
+        var pageable = PageRequest.of(page, size);
+        Page<CarBooking> carBookingPages;
+    
+        // Sử dụng phương thức trả về Page
+        if (star != null && star > 0) {
+            carBookingPages = carBookingRepository.findAllWithFeedbackByRating(star, pageable); // Không cần cast
         } else {
-            balance = user.getWallet() + (deposit - totalPrice);
-            user.setWallet(balance);
-            userService.save(user);
+            carBookingPages = carBookingService.findByAll(pageable);
         }
-        //    carBooking.setStatus("Completed");
-        //    carBookingService.save(carBooking);
-        return "success";
-    }
-
-    @PostMapping("submitRating")
-    public ResponseEntity<String> submitRating(@RequestParam("carId") UUID carId,
-            @RequestParam("rating") int rating, @RequestParam("content") String content,
-            @RequestParam("bookingId") UUID bookingId) {
-
-        CarBookingId carBookingId = new CarBookingId();
-        carBookingId.setCarId(carId);
-        carBookingId.setBookingId(bookingId);
-        CarBooking carBooking = carBookingService.findById(carBookingId);
-
-        FeedBack feedBack = new FeedBack();
-        feedBack.setContent(content);
-        feedBack.setRating(rating);
-        feedBack.setDateTime(LocalDateTime.now());
-
-        feedBack.setCarBooking(carBooking);
-        feedBackService.save(feedBack);
-        
-        carBooking.setFeedBack(feedBack);
-        carBookingService.save(carBooking);
-
-        return ResponseEntity.ok("Rating submitted successfully");
+    
+        List<CarBookingWithFeedbackDTO> carBookingWithFeedBacks = new ArrayList<>();
+        double totalRating = 0.0;
+        int feedbackCount = 0;
+    
+        for (CarBooking carBooking : carBookingPages.getContent()) {
+            FeedBack feedBack = feedBackService.findById(carBooking.getFeedBackId());
+            carBookingWithFeedBacks.add(new CarBookingWithFeedbackDTO(carBooking, feedBack));
+    
+            if (feedBack != null) {
+                totalRating += feedBack.getRating();
+                feedbackCount++;
+            }
+        }
+    
+        // Tính averageRating cho tất cả Feedback
+        List<FeedBack> allFeedbacks = feedBackService.findAll(); // Lấy tất cả feedback
+        double totalAllRatings = 0.0;
+        int totalFeedbackCount = 0;
+    
+        for (FeedBack feedback : allFeedbacks) {
+            totalAllRatings += feedback.getRating();
+            totalFeedbackCount++;
+        }
+    
+        double averageRating = totalFeedbackCount > 0 ? totalAllRatings / totalFeedbackCount : 0.0;
+        averageRating = Math.round(averageRating * 10.0) / 10.0;
+    
+        model.addAttribute("carBookingPages", carBookingWithFeedBacks);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", carBookingPages.getTotalPages());
+        model.addAttribute("totalElements", carBookingPages.getTotalElements());
+        model.addAttribute("pageSize", size);
+        model.addAttribute("pageSizes", new int[]{2, 5, 10, 20});
+        model.addAttribute("totalRating", averageRating);
+        model.addAttribute("selectedStar", star);
+    
+        return "SearchAndBook/listFeedBack";
     }
 
 }

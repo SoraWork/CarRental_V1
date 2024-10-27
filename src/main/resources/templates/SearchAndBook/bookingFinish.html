@@ -152,7 +152,7 @@
                         pickup.</li>
                 </ul>
                 <div class="flex justify-center items-center space-x-7 mb-10">
-                    <div><a href="#" class=" text-blue-500 hover:underline"> Go to homepage</a></div>
+                    <div><a href="/" class=" text-blue-500 hover:underline"> Go to homepage</a></div>
                     <a th:href="@{/search}">
                         <div><button class="bg-red-100 py-2 px-4 border-black rounded"> Book anther car</button></div>
                     </a>
@@ -160,9 +160,12 @@
                         <form th:action="@{/viewBookingDetail}" method="get">
                             <input type="hidden" name="daysBetween" th:value="${daysBetween}">
                             <input type="hidden" name="totalPrice" th:value="${totalPrice}">
-                            <button class="bg-blue-300 px-5 py-2 border-black rounded">View Book</button>
+                            <button class="bg-blue-300 px-5 py-2 border-black rounded">View Booking Detail</button>
                         </form>
                     </div>
+                    <a th:href="@{/listBookingUser}">
+                        <button type="button" class="bg-blue-500 text-white font-bold px-5 py-2 rounded-lg">List Booking</button>
+                    </a>
 
                 </div>
             </div>

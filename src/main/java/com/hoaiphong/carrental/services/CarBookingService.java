@@ -32,4 +32,6 @@ public interface CarBookingService {
 
     CarBooking findByCarIdAndBookingId(UUID carId, UUID bookingId);
     CarBooking findById (CarBookingId carBooking);
+    Page<CarBooking> findByAll(Pageable pageable);
+    Double calculateTotalRatingForCarBookings(List<CarBooking> carBookings);
 }
