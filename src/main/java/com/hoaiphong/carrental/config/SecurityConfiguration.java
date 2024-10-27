@@ -33,9 +33,10 @@ public class SecurityConfiguration {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/detail").permitAll()
-                        .requestMatchers("/search").permitAll()
-                        .requestMatchers("/book").permitAll()
-                        .requestMatchers("/listCar").permitAll()
+                        .requestMatchers("/search/**").hasAuthority("ROLE_CUSTOMER")
+                        .requestMatchers("/bookingInformation/**").hasAuthority("ROLE_CUSTOMER")
+                        .requestMatchers("/bookingPayment/**").hasAuthority("ROLE_CUSTOMER")
+                        .requestMatchers("/bookingFinish").hasAuthority("ROLE_CUSTOMER")
 
 
                         .requestMatchers("/about").permitAll()
