@@ -50,7 +50,7 @@
         <div class="flex flex-col">
             <div class="bg-gray-100 h-full w-screen">
                 <div class="w-full h-12 bg-white text-black flex items-center pl-16">
-                    <a href="/">Home</a> > Search Result
+                    <a href="#">Home</a> > Search Result
                 </div>
                 <div class="w-full h-auto bg-gray-100 flex flex-col items-center">
                     <form class="custom-background flex flex-col w-full custom-padding space-y-8 py-5 " method="GET"
@@ -102,7 +102,8 @@
             <div class="bg-white h-auto w-screen flex flex-col px-4 py-4">
                 <div class="font-bold text-6xl text-left">Search Result</div>
                 <div class="flex items-center justify-between pt-4">
-                    <div class="pl-5 text-4xl">There are 10 cars that are available for you</div>
+                    <div class="pl-5 text-4xl">There are <span th:text="${totalElements}"></span> cars that are
+                        available for you</div>
                     <div class="flex items-center space-x-4 pr-16">
                         <!--button paging-->
                         <div class="buttons">
@@ -317,13 +318,18 @@
                                             </td>
                                             <td class="align-middle text-center">
                                                 <div class="flex flex-col">
-                                                    <button
-                                                        class="btn btn-outline-dark bg-blue-500 text-white font-bold py-1 px-1 rounded-lg">
+                                                    <button type="button" th:data-car-id="${car.id}"
+                                                        onclick="handleRentNow(this)"
+                                                        class="bg-green-500 text-white font-bold py-2 px-5 rounded-lg w-full">
                                                         Rent Now
                                                     </button>
-                                                    <button
-                                                        class="btn btn-outline-dark  mt-2 bg-blue-500 text-white font-bold py-1 px-1 rounded-lg">View
-                                                        Detail</button>
+                                                    <a th:href="@{/detail/{carId}(carId=${car.id})}" class="d-block">
+                                                        <button
+                                                            class="bg-blue-500 text-white font-bold py-2 px-5 rounded-lg w-full">
+                                                            <!-- Đặt width cho button -->
+                                                            View Detail
+                                                        </button>
+                                                    </a>
                                                 </div>
                                             </td>
 
