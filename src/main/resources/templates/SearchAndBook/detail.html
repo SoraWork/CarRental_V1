@@ -122,11 +122,11 @@
                       <span th:text="${car.name}">Nissan Navara 2017</span>
                     </th>
                     <th class="text-center font-bold bg-blue-600 text-white">
-                      <form th:action="@{/search}" method="GET">
-                        <button type="submit" class="bg-blue-500 text-white font-bold py-3 px-7 rounded-lg">
-                          Rent Now
-                        </button>
-                      </form>
+                      <button type="button" th:data-car-id="${car.id}" onclick="openModal()"
+                        class="bg-green-500 text-white font-bold py-2 px-5 rounded-lg w-full">
+                        Rent Now
+                      </button>
+
                     </th>
                   </tr>
                 </thead>
@@ -141,7 +141,10 @@
                       </div>
                     </td>
                     <td>
-
+                      <button class="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg">View
+                        Detail</button>
+                    </td>
+                  </tr>
                   <tr>
                     <td class="font-bold">No of rides</td>
                     <td class="font-bold" th:text="${car.numOfSeats}">0</td>
@@ -405,10 +408,79 @@
         </div>
 
       </div>
+<!-- Modal -->
+<div id="rentModal"
+    class="hidden fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-75 flex items-center justify-center">
+    <div class="bg-white rounded-lg p-5 w-1/3">
+        <h2 class="text-lg font-bold mb-4">Pick Up and Drop Off Date and Time</h2>
+        <span id="123" style="display: none;" th:text="${car.id}"></span>
+        <!-- Chọn thời gian -->
+        <div class="mb-4">
+            <label class="block font-bold mb-1">Pick Up Date and Time</label>
+            <input type="date" id="startDate" class="border rounded py-2 px-3 w-1/2">
+            <input type="time" id="startTime" class="border rounded py-2 px-3 w-1/4">
+        </div>
+        <div class="mb-4">
+            <label class="block font-bold mb-1">Drop Off Date and Time</label>
+            <input type="date" id="endDate" class="border rounded py-2 px-3 w-1/2">
+            <input type="time" id="endTime" class="border rounded py-2 px-3 w-1/4">
+        </div>
+
+        <!-- Nút View Detail và nút Cancel -->
+        <div class="flex justify-between mt-4">
+            <button type="button" onclick="closeModal()"
+                class="bg-gray-500 text-white font-bold py-2 px-5 rounded-lg">
+                Cancel
+            </button>
+            <button type="button" onclick="submitBookingForm()"
+                class="bg-blue-500 text-white font-bold py-2 px-5 rounded-lg">
+                View Detail
+            </button>
+        </div>
+    </div>
+</div>
+
     </div>
 
 
-
+    <script>
+      function openModal() {
+          document.getElementById('rentModal').classList.remove('hidden');
+      }
+  
+      function closeModal() {
+          document.getElementById('rentModal').classList.add('hidden');
+      }
+  
+      function submitBookingForm() {
+          const startDate = document.getElementById('startDate').value;
+          const startTime = document.getElementById('startTime').value;
+          const endDate = document.getElementById('endDate').value;
+          const endTime = document.getElementById('endTime').value;
+  
+          // Kiểm tra xem tất cả các trường đã được nhập chưa
+          if (!startTime || !endTime || !startDate || !endDate) {
+              alert('Please enter start and end date and time');
+              return;
+          }
+  
+          // Kiểm tra xem ngày bắt đầu có trước ngày kết thúc không
+          if (startDate > endDate || (startDate === endDate && startTime > endTime)) {
+              alert('Start date and time must be before end date and time');
+              return;
+          }
+  
+          const startDateTime = `${startDate}T${startTime}`;
+          const endDateTime = `${endDate}T${endTime}`;
+  
+          const carId = document.getElementById('123').innerText;
+  
+          const rentNowLink = `/bookingInformation/${carId}?startDateTime=${encodeURIComponent(startDateTime)}&endDateTime=${encodeURIComponent(endDateTime)}`;
+  
+          window.location.href = rentNowLink;
+      }
+  </script>
+  
 
     <script>
       function changePerPage(delta) {
