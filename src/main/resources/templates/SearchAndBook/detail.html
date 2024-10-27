@@ -122,9 +122,11 @@
                       <span th:text="${car.name}">Nissan Navara 2017</span>
                     </th>
                     <th class="text-center font-bold bg-blue-600 text-white">
-                      <button class="bg-blue-500 text-white font-bold py-3 px-7 rounded-lg">
-                        Rent Now
-                      </button>
+                      <form th:action="@{/search}" method="GET">
+                        <button type="submit" class="bg-blue-500 text-white font-bold py-3 px-7 rounded-lg">
+                          Rent Now
+                        </button>
+                      </form>
                     </th>
                   </tr>
                 </thead>
@@ -139,10 +141,7 @@
                       </div>
                     </td>
                     <td>
-                      <button class="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg">View
-                        Detail</button>
-                    </td>
-                  </tr>
+
                   <tr>
                     <td class="font-bold">No of rides</td>
                     <td class="font-bold" th:text="${car.numOfSeats}">0</td>
@@ -158,7 +157,7 @@
                   </tr>
                   <tr>
                     <td class="font-bold text-center">Status</td>
-                    <td class="text-blue-500 text-center" >Available</td>
+                    <td class="text-blue-500 text-center">Available</td>
                   </tr>
 
                 </tbody>
@@ -186,13 +185,12 @@
               tabindex="0">
               <div class="container mt-4" style="margin-left: 20px;">
                 <div class="row row-cols-2 gy-4 gx-1">
-                  <div class="col fw-bold text-start">License Plate : <span
-                      th:text="${car.licensePlate}"></span></div>
+                  <div class="col fw-bold text-start">License Plate : <span th:text="${car.licensePlate}"></span></div>
                   <div class="col fw-bold text-start">Color :<span th:text="${car.color}"></span></div>
                   <div class="col fw-bold text-start">Brand Name : <span th:text="${car.brand}"></span></div>
                   <div class="col fw-bold text-start">Model : <span th:text="${car.model}"></span></div>
-                  <div class="col fw-bold text-start">Production year : <span
-                      th:text="${car.productionYear}"></span></div>
+                  <div class="col fw-bold text-start">Production year : <span th:text="${car.productionYear}"></span>
+                  </div>
                   <div class="col fw-bold text-start">numOfSeats : <span th:text="${car.numOfSeats}"></span>
                   </div>
                   <div class="col fw-bold text-start">Transmission:
@@ -201,8 +199,7 @@
                   <div class="col fw-bold text-start">Fuel:
                     <span th:text="${car.fuelType ==1 ? 'Yes' : 'No'}"></span>
                   </div>
-                  <div class="col fw-bold text-start">Documents : <span
-                      th:text="${car.registrationPaper}"></span></div>
+                  <div class="col fw-bold text-start">Documents : <span th:text="${car.registrationPaper}"></span></div>
                 </div>
               </div>
 
@@ -221,8 +218,7 @@
                       <td>1</td>
                       <td>Register paper</td>
                       <td>
-                        <span
-                          th:text="${car.registrationPaper == 'not verified' ? 'not verified' : 'verified'}"></span>
+                        <span th:text="${car.registrationPaper == 'not verified' ? 'not verified' : 'verified'}"></span>
 
                       </td>
                     </tr>
@@ -238,8 +234,7 @@
                       <td>3</td>
                       <td>Insurance</td>
                       <td>
-                        <span
-                          th:text="${car.insurance == 'not verified' ? 'not verified' : 'verified'}"></span>
+                        <span th:text="${car.insurance == 'not verified' ? 'not verified' : 'verified'}"></span>
                       </td>
                     </tr>
                   </tbody>
@@ -254,8 +249,8 @@
               <div class="container text-start mt-5 ms-5">
                 <div class="row row-cols-1">
                   <div class="col fw-bold fs-5 py-3">Mileage : <span th:text="${car.mileage}"></span></div>
-                  <div class="col fw-bold fs-5 py-3">Fuel consumption : <span
-                      th:text="${car.fuelConsumption}"></span>18 liter/100 km</span></div>
+                  <div class="col fw-bold fs-5 py-3">Fuel consumption : <span th:text="${car.fuelConsumption}"></span>18
+                    liter/100 km</span></div>
                   <div class="col fw-bold fs-5 py-3">Address : <span th:text="${car.address}"> </span></div>
                   <div class="col py-3">Note: Full address will be available after you've paid the deposit to rent.
                   </div>
@@ -277,21 +272,20 @@
                         <i class="fas fa-bluetooth fa-1x text-blue-500 me-2"></i>
                         <label class="form-check-label me-3" for="bluetooth">Bluetooth</label>
                         <input class="form-check-input" type="checkbox" id="bluetooth"
-                        th:checked="${car.functionsBluetooth == 1}">
+                          th:checked="${car.functionsBluetooth == 1}">
                       </div>
 
                       <div class="form-check mb-3 d-flex align-items-center">
                         <i class="fas fa-map-marker-alt fa-1x text-red-500 me-2"></i>
                         <label class="form-check-label me-3" for="gps">GPS</label>
-                        <input class="form-check-input" type="checkbox" id="gps"
-                          th:checked="${car.functionsGPS == 1}">
+                        <input class="form-check-input" type="checkbox" id="gps" th:checked="${car.functionsGPS == 1}">
                       </div>
 
                       <div class="form-check mb-3 d-flex align-items-center">
                         <i class="fas fa-sun fa-1x text-yellow-500 me-2"></i>
                         <label class="form-check-label me-3" for="camera">Camera</label>
                         <input class="form-check-input" type="checkbox" id="camera"
-                        th:checked="${car.functionsCamera == 1}">
+                          th:checked="${car.functionsCamera == 1}">
                       </div>
                     </div>
 
@@ -301,7 +295,7 @@
                         <i class="fas fa-lock fa-1x text-gray-500 me-2"></i>
                         <label class="form-check-label me-3" for="sunroof">Sun Roof</label>
                         <input class="form-check-input" type="checkbox" id="sunroof"
-                        th:checked="${car.functionsSunRoof == 1}">
+                          th:checked="${car.functionsSunRoof == 1}">
                       </div>
 
                       <div class="form-check mb-3 d-flex align-items-center">
@@ -358,8 +352,8 @@
                   <div class="row align-items-center">
                     <!-- Required deposit -->
                     <div class="col-3 fw-bold my-1">Required deposit</div>
-                    <div class="col-2 px-1 border border-dark my-1"><span
-                        th:text="${car.deposit}">15.000.000</span></div>
+                    <div class="col-2 px-1 border border-dark my-1"><span th:text="${car.deposit}">15.000.000</span>
+                    </div>
                     <div class="col-2 ms-4 ps-5 my-1">VND</div>
                   </div>
 
