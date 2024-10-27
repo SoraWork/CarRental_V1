@@ -11,10 +11,11 @@
 
 <body>
     <section layout:fragment="content" class="container my-5" style="max-width: 1800px; margin: 20px auto;">
-    <h1>Car List</h1>
+    <h1>List of Cars</h1>
     <a href="/car/create" class="btn btn-primary my-3 py-2 w-15 border border-dark rounded">
        Add Car
     </a>
+    <p class="mb-3 fs-2">Booked cars: <span th:text="${bookedCount}">0</span></p>
     <!-- Vòng lặp qua danh sách cars -->
     <div th:each="car, iterStat : ${cars}" class="car-card d-flex flex-row border mb-3 p-3">
         <!-- Carousel cho các ảnh của xe -->
@@ -99,7 +100,7 @@
                         </div>
                         <div class="col-6 text-start">
                             <p th:text="${car.status}" 
-                               th:class="${car.status == 'BOOKED'} ? 'fs-2 text-primary' : (car.status == 'AVAILABLE' ? 'fs-2 text-success' : 'fs-2 text-danger')" 
+                               th:class="${car.status == 'Available' ? 'fs-2 text-success' : (car.status == 'Booked' ? 'fs-2 text-primary' : (car.status == 'Stopped' ? 'fs-2 text-danger' : ''))}"
                                class="mb-0"></p>
                         </div>
                     </div>
@@ -113,70 +114,123 @@
                     <div class="action-buttons w-100">
                         <!-- Luôn hiển thị nút View details -->
                         <a class="btn btn-primary mb-2 w-100" th:href="@{/car/edit/{id}(id=${car.id})}">View details</a>
-                        
-                        <!-- Nút Confirm deposit chỉ hiển thị nếu status không phải là BOOKED -->
-                        <button class="btn btn-primary mb-2 w-100" 
-                                th:if="${car.status != 'BOOKED'}"
+                
+                        <!-- Nút Confirm deposit chỉ hiển thị nếu status không phải là 'Booked' hoặc 'Stopped' -->
+                        <button class="btn btn-primary mb-2 w-100"
+                                th:if="${car.status != 'Booked' and car.status != 'Stopped'}"
                                 th:attr="onclick='openModal(' + '\'' + ${car.id} + '\'' + ')'">
                             Confirm deposit
                         </button>
-                        
-                        <!-- Nút ConfirmPayment chỉ hiển thị nếu status không phải là AVAILABLE -->
-                        <button type="button" class="btn btn-primary mb-2 w-100" 
-                                th:if="${car.status != 'AVAILABLE'}"
+                
+                        <!-- Nút ConfirmPayment chỉ hiển thị nếu status không phải là 'Available' hoặc 'Stopped' -->
+                        <button type="button" class="btn btn-primary mb-2 w-100"
+                                th:if="${car.status != 'Available' and car.status != 'Stopped'}"
                                 th:attr="onclick='openPaymentModal(' + '\'' + ${car.id} + '\'' + ')'">
                             ConfirmPayment
                         </button>
                     </div>
                 </div>
+                
             </div>
         </div>
     </div>
 
 
-    
-    <!-- Modal (pop-up) -->
-    <div id="confirmModal" class="modal">
-        <div class="modal-content">
-            <h2>Bạn có chắc chắn muốn cập nhật trạng thái xe này không?</h2>
-            
-            <!-- Form nằm trong modal -->
-            <form id="confirmForm" th:action="@{/car/listconfirm}" method="post">
-                <input type="hidden" id="carIdInput" name="id" th:value="*{id}"/>
-                <input type="hidden" value="BOOKED" name="status"/>
-            </form>
-    
-            <div class="modal-buttons">
-                <button class="btn btn-confirm" onclick="submitForm()">Yes</button>
-                <button class="btn btn-cancel" onclick="closeModal()">No</button>
-            </div>
+      <!-- Pagination Controls -->
+      <div class="card-footer d-flex justify-content-between align-items-center">
+        <!-- Select page size -->
+        <div>
+            <label for="pageSize" class="form-label">Page Size:</label>
+            <select id="pageSize" name="pageSize" class="form-select"
+                    onchange="window.location.href = '/list?page=0&size=' + this.value">
+                <option th:each="size : ${pageSizes}" th:value="${size}" th:text="${size}"
+                        th:selected="${size == pageSize}"></option>
+            </select>
+        </div>
+
+        <!-- Pagination Links -->
+        <ul class="pagination mb-0">
+            <!-- First Page -->
+            <li class="page-item" th:classappend="${page == 0} ? 'disabled' : ''">
+                <a class="page-link" th:href="@{/car/list(page=0, size=${pageSize})}">
+                    <i class="fa-solid fa-angle-double-left"></i>
+                </a>
+            </li>
+
+            <!-- Page numbers -->
+            <li class="page-item" th:each="i : ${#numbers.sequence(page - pageLimit < 0 ? 0 : page - pageLimit, totalPages - 1 - page >= pageLimit ? page + pageLimit : totalPages - 1)}">
+                <a class="page-link" th:classappend="${i} == ${page} ? 'active' : ''"
+                   th:href="@{/car/list(page=${i}, size=${pageSize})}" th:text="${i + 1}"></a>
+            </li>
+
+            <!-- Last Page -->
+            <li class="page-item" th:classappend="${page == totalPages - 1} ? 'disabled' : ''">
+                <a class="page-link" th:href="@{/car/list(page=${totalPages - 1}, size=${pageSize})}">
+                    <i class="fa-solid fa-angle-double-right"></i>
+                </a>
+            </li>
+        </ul>
+
+        <!-- Page Info -->
+        <div class="text-secondary">
+            <span th:text="${page * pageSize + 1}"></span> - 
+            <span th:text="${(page + 1) * pageSize > totalElements ? totalElements : (page + 1) * pageSize}"></span> 
+            of <span th:text="${totalElements}"></span> items
         </div>
     </div>
 
-    <script type="text/javascript">
-        // Mở modal và đặt giá trị carId vào input ẩn
-        function openModal(carId) {
-            document.getElementById("carIdInput").value = carId; // Gán carId vào input ẩn
-            document.getElementById("confirmModal").style.display = "flex"; // Hiển thị modal
-        }
-        // Mở modal và đặt giá trị carId vào input ẩn cho ConfirmPayment
-        function openPaymentModal(carId) {
-            document.getElementById("carIdInput").value = carId; // Gán carId vào input ẩn
-            document.querySelector('input[name="status"]').value = 'AVAILABLE'; // Thiết lập giá trị trạng thái
-            document.getElementById("confirmModal").style.display = "flex"; // Hiển thị modal
-        }
+   <!-- Modal (pop-up) -->
+<div id="confirmModal" class="modal">
+    <div class="modal-content">
+        <!-- Phần thông báo động -->
+        <h2 id="modalTitle">Bạn có chắc chắn muốn cập nhật trạng thái xe này không?</h2>
+        <p id="modalMessage"></p>
+        
+        <!-- Form nằm trong modal -->
+        <form id="confirmForm" th:action="@{/car/listconfirm}" method="post">
+            <input type="hidden" id="carIdInput" name="id" th:value="*{id}"/>
+            <input type="hidden" id="statusInput" name="status" value=""/>
+        </form>
 
-        // Đóng modal
-        function closeModal() {
-            document.getElementById("confirmModal").style.display = "none";
-        }
+        <div class="modal-buttons">
+            <button class="btn btn-confirm" onclick="submitForm()">Yes</button>
+            <button class="btn btn-cancel" onclick="closeModal()">No</button>
+        </div>
+    </div>
+</div>
 
-        // Gửi form khi người dùng chọn "Yes"
-        function submitForm() {
-            console.log(document.getElementById("carIdInput").value);
-            document.getElementById("confirmForm").submit();
-        }
-    </script>
+<script type="text/javascript">
+    // Mở modal và đặt giá trị carId vào input ẩn cho Confirm Deposit
+    function openModal(carId) {
+        document.getElementById("carIdInput").value = carId; // Gán carId vào input ẩn
+        document.getElementById("statusInput").value = 'Booked'; // Thiết lập giá trị trạng thái
+        document.getElementById("modalTitle").innerText = "Confirm Deposit";
+        document.getElementById("modalMessage").innerText = 
+            "Please confirm that you have received the deposit for this booking. This will allow the customer to pick-up the car at the agreed date and time.";
+        document.getElementById("confirmModal").style.display = "flex"; // Hiển thị modal
+    }
+
+    // Mở modal và đặt giá trị carId vào input ẩn cho Confirm Payment
+    function openPaymentModal(carId) {
+        document.getElementById("carIdInput").value = carId; // Gán carId vào input ẩn
+        document.getElementById("statusInput").value = 'Available'; // Thiết lập giá trị trạng thái
+        document.getElementById("modalTitle").innerText = "Confirm Payment";
+        document.getElementById("modalMessage").innerText = 
+            "Please confirm that you have received the payment for this booking.";
+        document.getElementById("confirmModal").style.display = "flex"; // Hiển thị modal
+    }
+
+    // Đóng modal
+    function closeModal() {
+        document.getElementById("confirmModal").style.display = "none";
+    }
+
+    // Gửi form khi người dùng chọn "Yes"
+    function submitForm() {
+        document.getElementById("confirmForm").submit();
+    }
+</script>
+
 </section>
 
 

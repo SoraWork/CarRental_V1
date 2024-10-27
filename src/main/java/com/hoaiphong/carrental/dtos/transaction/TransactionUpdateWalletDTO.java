@@ -18,10 +18,11 @@ public class TransactionUpdateWalletDTO {
 
     private UUID id;
 
-    @NotNull(message = "Wallet balance cannot be null") // Thay NotBlank bằng NotNull
-    @Positive(message = "Wallet balance must be positive") // Thêm ràng buộc số dương nếu cần
+    @NotNull(message = "Wallet balance cannot be null") 
+    @Positive(message = "Wallet balance must be positive") 
     private double amount;
 
+    @NotNull(message = "Transaction type cannot be null")
     private String type;
 
     private LocalDateTime dateTime;

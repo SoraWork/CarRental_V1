@@ -35,75 +35,13 @@
                     class="form-bg border border-dark p-2 rounded shadow py-3 px-5"
             >
                 <h3>Find the ideal car rental for your trip</h3>
-                <form>
-                    <label class="fs-5">PICK-Up LOCATION</label>
-                    <input
-                            type="text"
-                            class="form-control border-dark"
-                            placeholder="Pick-up location"
-                    />
-                    <div>
-                        <label class="fs-5">
-                            PICK-UP DATE AND TIME
-                        </label>
-                        <div
-                                class="d-flex justify-content-between gap-3"
-                        >
-                            <div
-                                    class="d-flex justify-content-between align-items-center gap-2 col-8"
-                            >
-                                <input
-                                        type="date"
-                                        class="form-control border-dark"
-                                        placeholder="Pick-up date"
-                                />
-                                <i
-                                        class="fa-solid fa-calendar-days fs-4 text-1"
-                                ></i>
-                            </div>
-                            <div>
-                                <input
-                                        type="time"
-                                        class="form-control border-dark"
-                                        placeholder="Pick-up time"
-                                />
-                            </div>
-                        </div>
-                        <div>
-                            <label class="fs-5">
-                                DROP-OFF DATE AND TIME
-                            </label>
-                            <div
-                                    class="d-flex justify-content-between gap-3"
-                            >
-                                <div
-                                        class="d-flex justify-content-between align-items-center gap-2 col-8"
-                                >
-                                    <input
-                                            type="date"
-                                            class="form-control border-dark"
-                                            placeholder="Drop-off date"
-                                    />
-                                    <i
-                                            class="fa-solid fa-calendar-days fs-4 text-1"
-                                    ></i>
-                                </div>
-                                <div>
-                                    <input
-                                            type="time"
-                                            class="form-control border-dark"
-                                            placeholder="Drop-off time"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <button
-                            class="btn btn-primary my-3 w-50 mx-auto d-flex justify-content-center border-dark"
-                    >
-                        SEARCH
-                    </button>
-                </form>
+                <a
+                class="btn btn-primary my-3 w-50 mx-auto d-flex justify-content-center border-dark"
+                th:href="@{/search}"
+            >
+                SEARCH
+            </a>
+            
             </div>
         </div>
     </div>

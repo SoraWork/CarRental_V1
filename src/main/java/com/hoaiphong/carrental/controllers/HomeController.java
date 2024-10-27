@@ -1,8 +1,12 @@
 package com.hoaiphong.carrental.controllers;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -113,31 +117,61 @@ public class HomeController {
     }
 
     @GetMapping("mywallet")
-    public String myWallet(Model model) {
-        // Lấy username của người dùng đang đăng nhập
-        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-        System.out.println(currentUsername);
-        
-        User currentUser = userService.findByUsername(currentUsername); 
+public String myWallet(
+        @RequestParam(value = "from", required = false) String from, 
+        @RequestParam(value = "to", required = false) String to,
+        @RequestParam(defaultValue = "0") int page,   // Trang hiện tại
+        @RequestParam(defaultValue = "10") int size,  // Số bản ghi trên mỗi trang
+        Model model) {
 
-            // Kiểm tra nếu currentUser không null
-        if (currentUser == null) {
-            model.addAttribute("error", "User not found");
-            return "home/error"; // Trang lỗi (nếu cần)
-        }
-    
-        // Lấy thông tin ví của người dùng
-        Double currentUserWallet = currentUser.getWallet(); // Lấy ví từ đối tượng User
-        model.addAttribute("currentUserWallet", currentUserWallet); // Thêm vào model
-            
-        model.addAttribute("userupdatewalletDTO", new UserUpdateWalletDTO());
-        model.addAttribute("transactionUpdateWalletDTO", new TransactionUpdateWalletDTO());
-            // Tìm giao dịch theo người dùng đang đăng nhập
-            var transactions = transactionService.findByUser(currentUser);
-        
-            model.addAttribute("transactions", transactions);
-            return "home/mywallet";
+    // Lấy username của người dùng đang đăng nhập
+    String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+    System.out.println(currentUsername);
+
+    User currentUser = userService.findByUsername(currentUsername);
+
+    // Kiểm tra nếu currentUser không null
+    if (currentUser == null) {
+        model.addAttribute("error", "User not found");
+        return "home/error";
     }
+
+    // Lấy thông tin ví của người dùng
+    Double currentUserWallet = currentUser.getWallet();
+    model.addAttribute("currentUserWallet", currentUserWallet);
+
+    model.addAttribute("userupdatewalletDTO", new UserUpdateWalletDTO());
+    model.addAttribute("transactionUpdateWalletDTO", new TransactionUpdateWalletDTO());
+
+    // Thiết lập phân trang
+    Pageable pageable = PageRequest.of(page, size);
+
+    Page<TransactionDTO> transactions;
+
+    // Nếu có từ ngày và đến ngày, gọi phương thức findByUserAndDate
+    if (from != null && to != null && !from.isEmpty() && !to.isEmpty()) {
+        LocalDate startDate = LocalDate.parse(from);
+        LocalDate endDate = LocalDate.parse(to);
+        transactions = transactionService.findByUserAndDate(currentUser, startDate, endDate, pageable);
+    } else {
+        // Nếu không có ngày, lấy tất cả giao dịch của người dùng
+        transactions = transactionService.findByUser(currentUser, pageable);
+    }
+
+    // Thêm các thuộc tính vào model
+    model.addAttribute("transactions", transactions);
+    model.addAttribute("totalPages", transactions.getTotalPages());
+    model.addAttribute("totalElements", transactions.getTotalElements());
+    model.addAttribute("pageLimit", 3);  // Giới hạn số trang hiển thị
+    model.addAttribute("page", page);
+    model.addAttribute("pageSize", size);
+    model.addAttribute("pageSizes", new Integer[]{10, 20, 30, 50, 100});
+
+    return "home/mywallet";
+}
+
+    
+
 
 
     @PostMapping("mywallet")

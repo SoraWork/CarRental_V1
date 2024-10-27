@@ -119,17 +119,17 @@
                                 </div>
 
                                 <select class="fs-3 px-2" id="status" name="status"
-                                        th:classappend="${carUpdateStatusDTO.status == 'available' ? 'text-success' : (carUpdateStatusDTO.status == 'booked' ? 'text-primary' : (carUpdateStatusDTO.status == 'stopped' ? 'text-danger' : ''))}"
+                                        th:classappend="${carUpdateStatusDTO.status == 'Available' ? 'text-success' : (carUpdateStatusDTO.status == 'Booked' ? 'text-primary' : (carUpdateStatusDTO.status == 'Stopped' ? 'text-danger' : ''))}"
                                         title="status">
                                     <option class="text-success"
-                                            th:selected="${carUpdateStatusDTO.status == 'available'}" value="available">
+                                            th:selected="${carUpdateStatusDTO.status == 'Available'}" value="Available">
                                         Available
                                     </option>
-                                    <option class="text-primary" th:selected="${carUpdateStatusDTO.status == 'booked'}"
-                                            value="booked">Booked
+                                    <option class="text-primary" th:selected="${carUpdateStatusDTO.status == 'Booked'}"
+                                            value="Booked">Booked
                                     </option>
-                                    <option class="text-danger" th:selected="${carUpdateStatusDTO.status == 'stopped'}"
-                                            value="stopped">Stopped
+                                    <option class="text-danger" th:selected="${carUpdateStatusDTO.status == 'Stopped'}"
+                                            value="Stopped">Stopped
                                     </option>
                                 </select>
 

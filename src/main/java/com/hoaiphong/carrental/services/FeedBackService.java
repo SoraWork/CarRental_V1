@@ -6,21 +6,17 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.hoaiphong.carrental.dtos.feedback.FeedBackDTO;
-
+import com.hoaiphong.carrental.entities.FeedBack;
 
 public interface FeedBackService {
-    List<FeedBackDTO> findAll();
 
-    FeedBackDTO findById(UUID id);
+    void save(FeedBack feedBack);
 
-    Page<FeedBackDTO> findAll(Pageable pageable);
+    FeedBack findById(UUID id);
 
-    Page<FeedBackDTO> findByRating(int rating, Pageable pageable);
+    List<FeedBack> findAll();
 
-    FeedBackDTO findByRating(int rating);
-
-    FeedBackDTO create(FeedBackDTO feedBackDTO);
-
-
+    public Page<FeedBack> findAllFeedback(Pageable pageable);
+    List<FeedBack> findByFeedBackID(UUID feedBackId);
+    
 }
