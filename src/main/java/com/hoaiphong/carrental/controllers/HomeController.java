@@ -69,7 +69,6 @@ public class HomeController {
         User currentUser = userService.findByUsername(currentUsername);
 
         if (currentUser != null) {
-            // Chuyển thông tin người dùng vào DTO để dễ dàng hiển thị
             UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
             userUpdateDTO.setFullName(currentUser.getName());
             userUpdateDTO.setPhone(currentUser.getPhone());
