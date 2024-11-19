@@ -338,10 +338,10 @@ public class CarController {
     public String edit(@PathVariable UUID id,
                        @ModelAttribute @Valid CarUpdateDetailDTO carUpdateDetailDTO,
                        RedirectAttributes redirectAttributes,
-                       @RequestParam("imageFrontFile") MultipartFile imageFrontFile,
-                       @RequestParam("imageBackFile") MultipartFile imageBackFile,
-                       @RequestParam("imageLeftFile") MultipartFile imageLeftFile,
-                       @RequestParam("imageRightFile") MultipartFile imageRightFile,
+                       @RequestParam(required = false) MultipartFile imageFrontFile,
+                       @RequestParam(required = false) MultipartFile imageBackFile,
+                       @RequestParam(required = false) MultipartFile imageLeftFile,
+                       @RequestParam(required = false) MultipartFile imageRightFile,
                        BindingResult bindingResult,
                        Model model) {
         if (bindingResult.hasErrors()) {
